@@ -1,0 +1,328 @@
+SET check_function_bodies = false
+;
+
+CREATE TABLE public.badges(
+  id serial NOT NULL,
+  "name" character varying(100) NOT NULL,
+  description text,
+  icon_url character varying(255),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT badges_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.calendar(
+  id serial NOT NULL,
+  user_id integer,
+  date date NOT NULL,
+  plan_id integer,
+  notes text,
+  day_log_id integer,
+  CONSTRAINT calendar_pkey PRIMARY KEY(id),
+  CONSTRAINT calendar_key UNIQUE(day_log_id)
+);
+
+CREATE TABLE public.day_log(
+  id integer NOT NULL,
+  user_id integer NOT NULL,
+  steps integer,
+  calories_intake integer,
+  CONSTRAINT day_log_pkey PRIMARY KEY(id),
+  CONSTRAINT day_log_key UNIQUE(user_id)
+);
+
+CREATE TABLE public.exercise_files(
+  id integer NOT NULL,
+  exercise_id integer NOT NULL,
+  file_path character varying(255) NOT NULL,
+  CONSTRAINT exercise_files_pkey PRIMARY KEY(id),
+  CONSTRAINT exercise_files_key UNIQUE(exercise_id)
+);
+
+CREATE TABLE public.exercises(
+  id serial NOT NULL,
+  "name" character varying(100) NOT NULL,
+  description text,
+  muscles_targeted character varying(255),
+  equipment_required character varying(255),
+  is_custom boolean DEFAULT false,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT exercises_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.food_items(
+  id serial NOT NULL,
+  "name" character varying(100) NOT NULL,
+  calories integer NOT NULL,
+  protein_g numeric(5,2),
+  carbs_g numeric(5,2),
+  fat_g numeric(5,2),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT food_items_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.forum_posts(
+  id serial NOT NULL,
+  user_id integer,
+  title character varying(200),
+  "content" text,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT forum_posts_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.leaderboard_entries(
+  id serial NOT NULL,
+  leaderboard_id integer,
+  user_id integer,
+  score numeric(10,2),
+  rank integer,
+  updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT leaderboard_entries_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.leaderboards(
+  id serial NOT NULL,
+  "name" character varying(100) NOT NULL,
+  criteria character varying(50),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT leaderboards_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.plan_exercises(
+  id serial NOT NULL,
+  plan_id integer,
+  exercise_id integer,
+  "sets" integer,
+  reps integer,
+  weight numeric(5,2),
+  rest_time_seconds integer,
+  CONSTRAINT plan_exercises_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.post_comments(
+  id serial NOT NULL,
+  post_id integer,
+  user_id integer,
+  "content" text,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT post_comments_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.progress(
+  id serial NOT NULL,
+  user_id integer,
+  date date NOT NULL,
+  weight_kg numeric(5,2),
+  body_fat_percentage numeric(5,2),
+  notes text,
+  CONSTRAINT progress_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.reminders(
+  id serial NOT NULL,
+  user_id integer,
+  message text NOT NULL,
+  reminder_time timestamp without time zone NOT NULL,
+  CONSTRAINT reminders_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.training_plan_comment(
+  id integer NOT NULL,
+  plan_id integer NOT NULL,
+  user_id integer NOT NULL,
+  "content" text NOT NULL,
+  CONSTRAINT training_plan_comment_pkey PRIMARY KEY(id),
+  CONSTRAINT training_plan_comment_key UNIQUE(plan_id),
+  CONSTRAINT training_plan_comment_key1 UNIQUE(user_id)
+);
+
+CREATE TABLE public.training_plans(
+  id serial NOT NULL,
+  user_id integer,
+  "name" character varying(100) NOT NULL,
+  description text,
+  is_public boolean DEFAULT false,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT training_plans_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.user_badges(
+  id serial NOT NULL,
+  user_id integer,
+  badge_id integer,
+  awarded_at timestamp without time zone NOT NULL,
+  CONSTRAINT user_badges_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.user_meals(
+  id serial NOT NULL,
+  user_id integer,
+  food_item_id integer,
+  quantity integer NOT NULL,
+  meal_time timestamp without time zone NOT NULL,
+  day_log_id integer,
+  CONSTRAINT user_meals_pkey PRIMARY KEY(id),
+  CONSTRAINT user_meals_key UNIQUE(day_log_id)
+);
+
+CREATE TABLE public.user_profiles(
+  id serial NOT NULL,
+  user_id integer,
+  first_name character varying(50),
+  last_name character varying(50),
+  date_of_birth date,
+  gender character varying(10),
+  height_cm integer,
+  weight_kg numeric(5,2),
+  avatar_url character varying(255),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT user_profiles_pkey PRIMARY KEY(id)
+);
+
+CREATE TABLE public.users(
+  id serial NOT NULL,
+  username character varying(25) NOT NULL,
+  email character varying(25) NOT NULL,
+  password_hash character varying(255) NOT NULL,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT users_pkey PRIMARY KEY(id),
+  CONSTRAINT users_email_key UNIQUE(email),
+  CONSTRAINT users_username_key UNIQUE(username)
+);
+
+CREATE TABLE public.workout_logs(
+  id serial NOT NULL,
+  user_id integer,
+  exercise_id integer,
+  day_log_id integer NOT NULL,
+  performed_sets integer,
+  performed_reps integer,
+  weight numeric(5,2),
+  duration_seconds integer,
+  performed_at timestamp without time zone NOT NULL,
+  hearth_rate integer,
+  CONSTRAINT workout_logs_pkey PRIMARY KEY(id),
+  CONSTRAINT workout_logs_key UNIQUE(day_log_id)
+);
+
+ALTER TABLE public.calendar
+  ADD CONSTRAINT calendar_plan_id_fkey
+    FOREIGN KEY (plan_id) REFERENCES public.training_plans (id) ON DELETE Set null
+      ON UPDATE No action;
+
+ALTER TABLE public.calendar
+  ADD CONSTRAINT calendar_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.forum_posts
+  ADD CONSTRAINT forum_posts_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.leaderboard_entries
+  ADD CONSTRAINT leaderboard_entries_leaderboard_id_fkey
+    FOREIGN KEY (leaderboard_id) REFERENCES public.leaderboards (id)
+      ON DELETE Cascade ON UPDATE No action;
+
+ALTER TABLE public.leaderboard_entries
+  ADD CONSTRAINT leaderboard_entries_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.plan_exercises
+  ADD CONSTRAINT plan_exercises_exercise_id_fkey
+    FOREIGN KEY (exercise_id) REFERENCES public.exercises (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.plan_exercises
+  ADD CONSTRAINT plan_exercises_plan_id_fkey
+    FOREIGN KEY (plan_id) REFERENCES public.training_plans (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.post_comments
+  ADD CONSTRAINT post_comments_post_id_fkey
+    FOREIGN KEY (post_id) REFERENCES public.forum_posts (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.post_comments
+  ADD CONSTRAINT post_comments_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.progress
+  ADD CONSTRAINT progress_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.reminders
+  ADD CONSTRAINT reminders_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.training_plans
+  ADD CONSTRAINT training_plans_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.user_badges
+  ADD CONSTRAINT user_badges_badge_id_fkey
+    FOREIGN KEY (badge_id) REFERENCES public.badges (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.user_badges
+  ADD CONSTRAINT user_badges_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.user_meals
+  ADD CONSTRAINT user_meals_food_item_id_fkey
+    FOREIGN KEY (food_item_id) REFERENCES public.food_items (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.user_meals
+  ADD CONSTRAINT user_meals_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.user_profiles
+  ADD CONSTRAINT user_profiles_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.workout_logs
+  ADD CONSTRAINT workout_logs_exercise_id_fkey
+    FOREIGN KEY (exercise_id) REFERENCES public.exercises (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.workout_logs
+  ADD CONSTRAINT workout_logs_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES public.users (id) ON DELETE Cascade
+      ON UPDATE No action;
+
+ALTER TABLE public.exercises
+  ADD CONSTRAINT exercises_id_fkey
+    FOREIGN KEY (id) REFERENCES public.exercise_files (exercise_id);
+
+ALTER TABLE public.users
+  ADD CONSTRAINT users_id_fkey
+    FOREIGN KEY (id) REFERENCES public.day_log (user_id);
+
+ALTER TABLE public.day_log
+  ADD CONSTRAINT day_log_id_fkey
+    FOREIGN KEY (id) REFERENCES public.workout_logs (day_log_id);
+
+ALTER TABLE public.day_log
+  ADD CONSTRAINT day_log_id_fkey1
+    FOREIGN KEY (id) REFERENCES public.calendar (day_log_id);
+
+ALTER TABLE public.day_log
+  ADD CONSTRAINT day_log_id_fkey2
+    FOREIGN KEY (id) REFERENCES public.user_meals (day_log_id);
+
+ALTER TABLE public.training_plans
+  ADD CONSTRAINT training_plans_id_fkey
+    FOREIGN KEY (id) REFERENCES public.training_plan_comment (plan_id);
+
+ALTER TABLE public.users
+  ADD CONSTRAINT users_id_fkey1
+    FOREIGN KEY (id) REFERENCES public.training_plan_comment (user_id);
