@@ -1,130 +1,136 @@
 "use client";
 
 
-import Image from "next/image";
-import { gql, useQuery } from "@apollo/client";
-
+import { gql, useQuery, useMutation } from "@apollo/client";
+import { useState } from "react";
 
 const GET_USERS = gql`
   query {
     users {
       id
-      name
+      username
       email
     }
   }
 `;
 
+const CREATE_USER = gql`
+  mutation CreateUser($username: String!, $email: String!, $password: String!) {
+    createUser(username: $username, email: $email, password: $password) {
+      id
+      username
+      email
+    }
+  }
+`;
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+}
+
 export default function Home() {
-  const { loading, error, data } = useQuery(GET_USERS);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  // Fetch Users
+  const { loading: usersLoading, error: usersError, data: usersData, refetch } =
+  useQuery<{ users: User[] }>(GET_USERS);
 
+  // Create User Mutation
+  const [createUser, { loading: creatingUser, error: createError }] = useMutation<{
+    createUser: User;
+  }>(CREATE_USER, {
+    onCompleted: () => {
+      // Refetch users after creating a user
+      refetch();
+      setUsername("");
+      setEmail("");
+      setPassword("");
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createUser({
+        variables: {
+          username,
+          email,
+          password,
+        },
+      });
+    } catch (err) {
+      console.error("Error creating user:", err);
+    }
+  };
+
+  if (usersLoading) return <p>Loading users...</p>;
+  if (usersError) return <p>Error loading users: {usersError.message}</p>;
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-      <h1 className="text-2xl font-bold">Users List</h1>
+        {/* User Creation Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 max-w-md mx-auto"
+        >
+          <h2 className="text-xl font-bold">Create New User</h2>
+          <label>
+            Username:
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="border p-2 rounded w-full text-black"
+              required
+            />
+          </label>
+          <label>
+            Email:
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border p-2 rounded w-full text-black"
+              required
+            />
+          </label>
+          <label>
+            Password:
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border p-2 rounded w-full text-black"
+              required
+            />
+          </label>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            disabled={creatingUser}
+          >
+            {creatingUser ? "Creating..." : "Create User"}
+          </button>
+          {createError && (
+            <p className="text-red-600">Error creating user: {createError.message}</p>
+          )}
+        </form>
+
+        {/* User List */}
+        <h1 className="text-2xl font-bold">Users List</h1>
         <ul>
-          {data.users.map((user: any) => (
+          {usersData?.users.map((user) => (
             <li key={user.id}>
-              {user.name} ({user.email})
+              {user.username} ({user.email})
             </li>
           ))}
         </ul>
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

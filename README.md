@@ -12,6 +12,8 @@ Ensure you have the following installed:
   node -v  # Should print v22.11.0
   ```
   If not, run:
+  
+  using Mac:
   ```bash
   nvm install 22.11.0
   ```
@@ -20,15 +22,28 @@ Ensure you have the following installed:
   nvm alias default 22.11.0
   ```
 
+  using Windows:
+  download installer
+
 - **NPM v10.9.0**
   ```bash
   npm -v  # Should print 10.9.0
+  ```
+  if not, run:
+
+  using Windows:
+  ```bash
+  npm install -g npm@10.9.1
   ```
 
 - **NVM (Node Version Manager)**
   ```bash
   nvm --version  # Should print 0.39.7
   ```
+  if not, run:
+
+  using Windows:
+  download installer
 
 - **PostgreSQL**
   - Mac:
