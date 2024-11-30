@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import PlanCreatorGeneralCard, { UpdatedProps } from "./PlanCreatorComponents/PlanCreatorGeneralCard";
-import PlanCreatorDayCard, { PlanedExercises } from "./PlanCreatorDayCard";
+import PlanCreatorDayCard, { PlanedExercises } from "./PlanCreatorComponents/PlanCreatorDayCard";
+import PlanCreatorSummaryCard from "./PlanCreatorComponents/PlanCreatorSummaryCard";
 
 
 export default function PlanCreator() {
@@ -15,6 +16,14 @@ export default function PlanCreator() {
     const [ isPublic, setIsPublic ] = useState(false)
 
     const [ eachDayExercises, setEachDayExercises ] = useState<PlanedExercises[][]>([]);
+
+    const planProps = {
+        numberOfWorkingDays,
+        name,
+        description,
+        isPublic,
+        eachDayExercises,
+      };
 
     const updatePropsFromChildGeneral = (newProps: UpdatedProps) => {
         setName(newProps.name);
@@ -59,13 +68,16 @@ export default function PlanCreator() {
                     <PlanCreatorDayCard currentDayProp={currentDay} updateParentProps={updatePropsFromChildExerciseDay}></PlanCreatorDayCard>
                 }
                 {currentAction == "sumary" &&
-                    <button
-                    type="submit"
-                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-                    onClick={handleSubmit}
-                    >
-                        Create Plan
-                    </button>
+                    <>
+                        <PlanCreatorSummaryCard summaryProps={planProps}></PlanCreatorSummaryCard>
+                        <button
+                        type="submit"
+                        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                        onClick={handleSubmit}
+                        >
+                            Create Plan
+                        </button>
+                    </>
                 }
             </form>
         </div>
