@@ -1,9 +1,9 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { typeDefs, resolvers } from "../graphql";
+import { schema } from "../graphql";
 
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ schema });
 
 (async () => {
   const { url } = await startStandaloneServer(server, {
