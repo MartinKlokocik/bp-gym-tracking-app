@@ -7,77 +7,77 @@ datasource db {
   url      = env("DATABASE_URL") // Replace with your database URL
 }
 
-model Calendar {
-  id       Int           @id @default(autoincrement())
+model Calendars {
+  id       Int            @id @default(autoincrement())
   userId   Int?
   date     DateTime
   planId   Int?
   notes    String?
-  dayLogId Int?          @unique(map: "Calendar_DayLogId_Unique")
-  user     User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan     TrainingPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
-  dayLog   DayLog?       @relation(fields: [dayLogId], references: [id]) // Opposite relation
+  dayLogId Int?           @unique(map: "Calendar_DayLogId_Unique")
+  user     Users?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan     TrainingPlans? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  dayLog   DayLogs?       @relation(fields: [dayLogId], references: [id]) // Opposite relation
 
   @@unique([dayLogId], map: "Calendar_DayLogId_Unique_Index")
 }
 
-model DayLog {
-  id             Int          @id @default(autoincrement())
+model DayLogs {
+  id             Int           @id @default(autoincrement())
   userId         Int
   steps          Int?
   caloriesIntake Int?
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workoutLogs    WorkoutLog[] // Relation with WorkoutLog
-  calendar       Calendar?    @relation // Relation with Calendar
+  user           Users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workoutLogs    WorkoutLogs[] // Relation with WorkoutLog
+  calendar       Calendars?    @relation // Relation with Calendar
 }
 
-model ExerciseFile {
-  id         Int      @id @default(autoincrement())
+model ExerciseFiles {
+  id         Int       @id @default(autoincrement())
   exerciseId Int
   filePath   String
-  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  exercise   Exercises @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 
   @@unique([exerciseId], map: "ExerciseFile_ExerciseId_Unique")
 }
 
-model Exercise {
-  id                Int            @id @default(autoincrement())
-  name              String         @unique
+model Exercises {
+  id                Int             @id @default(autoincrement())
+  name              String          @unique
   description       String?
   musclesTargeted   String?
   equipmentRequired String?
-  isCustom          Boolean        @default(false)
-  createdAt         DateTime       @default(now())
-  planExercises     PlanExercise[]
-  workoutLogs       WorkoutLog[]
-  exerciseFiles     ExerciseFile[]
+  isCustom          Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  planExercises     PlanExercises[]
+  workoutLogs       WorkoutLogs[]
+  exerciseFiles     ExerciseFiles[]
 }
 
-model PlanExercise {
-  id              Int           @id @default(autoincrement())
+model PlanExercises {
+  id              Int            @id @default(autoincrement())
   planId          Int?
   exerciseId      Int?
   sets            Int?
   reps            Int?
   weight          Float?
   restTimeSeconds Int?
-  plan            TrainingPlan? @relation(fields: [planId], references: [id], onDelete: Cascade)
-  exercise        Exercise?     @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  plan            TrainingPlans? @relation(fields: [planId], references: [id], onDelete: Cascade)
+  exercise        Exercises?     @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
 }
 
-model TrainingPlan {
-  id            Int            @id @default(autoincrement())
+model TrainingPlans {
+  id            Int             @id @default(autoincrement())
   userId        Int?
   name          String
   description   String?
-  isPublic      Boolean        @default(false)
-  createdAt     DateTime       @default(now())
-  user          User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planExercises PlanExercise[]
-  calendars     Calendar[]
+  isPublic      Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  user          Users?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planExercises PlanExercises[]
+  calendars     Calendars[]
 }
 
-model UserProfile {
+model UserProfiles {
   id          Int       @id @default(autoincrement())
   userId      Int       @unique
   firstName   String?
@@ -88,34 +88,34 @@ model UserProfile {
   weightKg    Float?
   avatarUrl   String?
   createdAt   DateTime  @default(now())
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id            Int            @id @default(autoincrement())
-  username      String         @unique
-  email         String         @unique
+model Users {
+  id            Int             @id @default(autoincrement())
+  username      String          @unique
+  email         String          @unique
   passwordHash  String
-  createdAt     DateTime       @default(now())
-  trainingPlans TrainingPlan[]
-  userProfile   UserProfile?
-  dayLogs       DayLog[]
-  calendars     Calendar[]
-  workoutLogs   WorkoutLog[]
+  createdAt     DateTime        @default(now())
+  trainingPlans TrainingPlans[]
+  userProfile   UserProfiles?
+  dayLogs       DayLogs[]
+  calendars     Calendars[]
+  workoutLogs   WorkoutLogs[]
 }
 
-model WorkoutLog {
-  id              Int       @id @default(autoincrement())
+model WorkoutLogs {
+  id              Int        @id @default(autoincrement())
   userId          Int?
   exerciseId      Int?
-  dayLogId        Int       @unique(map: "WorkoutLog_DayLogId_Unique")
+  dayLogId        Int        @unique(map: "WorkoutLog_DayLogId_Unique")
   performedSets   Int?
   performedReps   Int?
   weight          Float?
   durationSeconds Int?
   performedAt     DateTime
   heartRate       Int?
-  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exercise        Exercise? @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  dayLog          DayLog?   @relation(fields: [dayLogId], references: [id]) // Opposite relation
+  user            Users?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise        Exercises? @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  dayLog          DayLogs?   @relation(fields: [dayLogId], references: [id]) // Opposite relation
 }
