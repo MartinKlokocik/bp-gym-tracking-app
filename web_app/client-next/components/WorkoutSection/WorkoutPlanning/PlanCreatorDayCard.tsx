@@ -10,9 +10,10 @@ export interface PlanedExercises {
 
 interface PlanCreatorDayCardProps {
     updateParentProps: (workouts: PlanedExercises[]) => void;
+    currentDayProp: number;
 }
 
-export default function PlanCreatorDayCard({ updateParentProps }: PlanCreatorDayCardProps) {
+export default function PlanCreatorDayCard({ updateParentProps, currentDayProp }: PlanCreatorDayCardProps) {
     const [ workouts, setWorkouts ] = useState([
         { exercise: "", reps: 0, restTime: 0 }
     ])
@@ -33,11 +34,15 @@ export default function PlanCreatorDayCard({ updateParentProps }: PlanCreatorDay
 
     const handleNext = () => {
         updateParentProps(workouts);
+        setWorkouts([
+            { exercise: "", reps: 0, restTime: 0 }
+        ]);
         console.log("dayUPdated")
     }
 
     return (
-        <>
+        <>  
+            <h2>Planning day {currentDayProp}</h2>
             {workouts.map((workout, index) => (
             <div key={index} className="border p-4 rounded">
                 <label className="flex flex-col mb-2">

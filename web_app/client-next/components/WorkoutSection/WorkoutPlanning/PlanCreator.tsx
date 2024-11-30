@@ -6,7 +6,8 @@ import PlanCreatorDayCard, { PlanedExercises } from "./PlanCreatorDayCard";
 
 
 export default function PlanCreator() {
-    const [ currentAction, setCurrentAction ] = useState(0);
+    const [ currentAction, setCurrentAction ] = useState("general");
+    const [ currentDay, setCurrentDay ] = useState(1);
     const [ numberOfWorkingDays, setNumberOfWorkingDays ] = useState(0)
 
     const [ name, setName ] = useState("");
@@ -21,15 +22,19 @@ export default function PlanCreator() {
         setNumberOfWorkingDays(newProps.numberOfWorkingDays);
         setIsPublic(newProps.isPublic);
 
-        setCurrentAction(currentAction + 1);
+        setCurrentAction("day");
     }
 
     const updatePropsFromChildExerciseDay = (newProps: PlanedExercises[]) => {
         const updatedExercises = [...eachDayExercises, newProps];
         setEachDayExercises(updatedExercises);
-        
+
         console.log(eachDayExercises);
-        setCurrentAction(currentAction + 1);
+        setCurrentDay(currentDay + 1);
+
+        if (currentDay >= numberOfWorkingDays) {
+            setCurrentAction("sumary");
+        }
     }
     
     const handleSubmit = async (e: React.FormEvent) => {
@@ -40,25 +45,28 @@ export default function PlanCreator() {
         console.log(description);
         console.log(numberOfWorkingDays);
         console.log(isPublic);
+        console.log(eachDayExercises);
     }
 
     return (
         <div className="max-w-md mx-auto p-4 border rounded-lg shadow">
             <h2 className="text-xl font-bold mb-4">Create New Plan</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                {currentAction == 0 && 
+                {currentAction == "general" && 
                     <PlanCreatorGeneralCard updateParentProps={updatePropsFromChildGeneral}></PlanCreatorGeneralCard>
                 }
-                {currentAction > 0 &&
-                    <PlanCreatorDayCard updateParentProps={updatePropsFromChildExerciseDay}></PlanCreatorDayCard>
+                {currentAction == "day" &&
+                    <PlanCreatorDayCard currentDayProp={currentDay} updateParentProps={updatePropsFromChildExerciseDay}></PlanCreatorDayCard>
                 }
-                <button
-                type="submit"
-                className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-                onClick={handleSubmit}
-                >
-                Create Plan
-                </button>
+                {currentAction == "sumary" &&
+                    <button
+                    type="submit"
+                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                    onClick={handleSubmit}
+                    >
+                        Create Plan
+                    </button>
+                }
             </form>
         </div>
     );
