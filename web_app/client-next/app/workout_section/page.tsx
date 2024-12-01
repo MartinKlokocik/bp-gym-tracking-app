@@ -9,10 +9,16 @@ export default function Home() {
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">
-      <button className="p-1 bg-white text-black rounded m-1" onClick={() => setOverview(true)}>
+      <button className={`p-1 rounded m-1 border ${
+          !overview ? "bg-white text-black" : "bg-black text-white"
+        }`} 
+        onClick={() => setOverview(true)}>
         My plan overview
       </button>
-      <button className="p-1 bg-white text-black rounded m-1" onClick={() => setOverview(false)}>
+      <button className={`p-1 rounded m-1 border ${
+          overview ? "bg-white text-black" : "bg-black text-white"
+        }`}  
+        onClick={() => setOverview(false)}>
         Plan editor
       </button>
 

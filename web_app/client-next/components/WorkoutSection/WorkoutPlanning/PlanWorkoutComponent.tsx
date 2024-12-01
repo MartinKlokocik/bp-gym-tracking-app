@@ -9,10 +9,16 @@ export default function PlanWorkoutComponent() {
 
   return (
     <div className="font-[family-name:var(--font-geist-sans)]">
-      <button className="p-1 bg-black text-white rounded m-1 border" onClick={() => setActiveView("ExerciseCreator")}>
+      <button className={`p-1 rounded m-1 border ${
+          activeView === "ExerciseCreator" ? "bg-white text-black" : "bg-black text-white"
+        }`} 
+        onClick={() => setActiveView("ExerciseCreator")}>
         Create Exercise
       </button>
-      <button className="p-1 bg-black text-white rounded m-1 border" onClick={() => setActiveView("PlanCreator")}>
+      <button className={`p-1 rounded m-1 border ${
+          activeView === "PlanCreator" ? "bg-white text-black" : "bg-black text-white"
+        }`} 
+        onClick={() => setActiveView("PlanCreator")}>
         Create Plan
       </button>
 
