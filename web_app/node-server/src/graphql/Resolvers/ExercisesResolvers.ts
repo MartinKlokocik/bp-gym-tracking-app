@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const exercisesResolvers = {
     Query: {
-      users: async () => await prisma.exercises.findMany()
+      Exercises: async () => await prisma.exercises.findMany()
     },
     Mutation: {
       createExercise: async (

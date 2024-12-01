@@ -34,9 +34,9 @@ export default function PlanCreatorSummaryCard({ summaryProps }: PlanProps) {
             {eachDayExercises.map((day, index) => (
                 <div key={index}>
                 <h3>Day {index + 1}</h3>
-                {day.map((exercise, idx) => (
+                {day.map((workout, idx) => (
                     <p key={idx}>
-                    {exercise.exercise} - {exercise.reps} reps
+                    {workout.exercise?.name} - {workout.reps} reps
                     </p>
                 ))}
                 </div>

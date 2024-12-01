@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useQuery } from "@apollo/client";
+import { Exercise, GET_EXERCISES } from "@/graphql/ExercisesConsts";
 
 export interface PlanedExercises {
-    exercise: string;
+    exercise: Exercise | null;
     reps: number;
     restTime: number;
   }
@@ -14,31 +16,43 @@ interface PlanCreatorDayCardProps {
 }
 
 export default function PlanCreatorDayCard({ updateParentProps, currentDayProp }: PlanCreatorDayCardProps) {
-    const [ workouts, setWorkouts ] = useState([
-        { exercise: "", reps: 0, restTime: 0 }
-    ])
+    const { loading, error, data } = useQuery(GET_EXERCISES);
+
+    const [workouts, setWorkouts] = useState<PlanedExercises[]>([
+        { exercise: null, reps: 0, restTime: 0 },
+      ]);
+      
 
     const handleAddExercise = () => {
         setWorkouts([
             ...workouts,
-            { exercise: "", reps: 0, restTime: 0 }
+            { exercise: null, reps: 0, restTime: 0 }
         ])
     }
 
     const handleChange = (index: number, field: string, value: string | number) => {
         const updatedWorkouts = workouts.map((workout, i) =>
-          i === index ? { ...workout, [field]: value } : workout
-        );
+            i === index
+              ? {
+                  ...workout,
+                  [field]: field === "exercise" ? data.Exercises.find((ex: Exercise) => ex.id === value) : value,
+                }
+              : workout
+          );
+        
         setWorkouts(updatedWorkouts);
       };
 
     const handleNext = () => {
         updateParentProps(workouts);
         setWorkouts([
-            { exercise: "", reps: 0, restTime: 0 }
+            { exercise: null, reps: 0, restTime: 0 }
         ]);
         console.log("dayUPdated")
     }
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
 
     return (
         <>  
@@ -46,16 +60,24 @@ export default function PlanCreatorDayCard({ updateParentProps, currentDayProp }
             {workouts.map((workout, index) => (
             <div key={index} className="border p-4 rounded">
                 <label className="flex flex-col mb-2">
-                Exercise:
-                <input
-                    type="text"
-                    value={workout.exercise}
+                Select exercise:
+                <select
+                    value={workout.exercise?.id || ""}
                     onChange={(e) =>
                     handleChange(index, "exercise", e.target.value)
                     }
                     className="border p-2 rounded text-black"
                     required
-                />
+                >
+                    <option value="" disabled>
+                        -- Select an Exercise --
+                    </option>
+                    {data.Exercises.map((exercise: Exercise) => (
+                    <option key={exercise.id} value={exercise.id}>
+                        {exercise.name}
+                    </option>
+                    ))}
+                </select>
                 </label>
                 <label className="flex flex-col mb-2">
                 Reps:
