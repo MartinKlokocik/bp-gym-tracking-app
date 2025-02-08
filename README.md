@@ -50,6 +50,12 @@ Ensure you have the following installed:
     ```bash
     brew install postgresql
     ```
+    ```bash
+    brew services start postgresql
+    ```
+    ```bash
+    createdb gymtrackdb
+    ```
     You can also download PostgreSQL from the official site to have pg admin 4 graphical IDE.
   - Windows:
     Download and install PostgreSQL from the official site.
