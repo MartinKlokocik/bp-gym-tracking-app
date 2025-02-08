@@ -1,14 +1,18 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 
-import usersTypeDefs from "./TypeDefs/UsersTypeDefs";
+// Resolvers
 import usersResolvers from "./Resolvers/UsersResolvers";
 import exercisesResolvers from "./Resolvers/ExercisesResolvers";
-import exercisesTypeDefs from "./TypeDefs/ExercisesTypeDefs";
+import trainingPlansResolvers from "./Resolvers/TrainingPlansResolvers";
 
+// TypeDefs
+import usersTypeDefs from "./TypeDefs/UsersTypeDefs";
+import exercisesTypeDefs from "./TypeDefs/ExercisesTypeDefs";
+import trainingPlansTypeDefs from "./TypeDefs/TrainingPlansTypeDefs";
 
 const schema = makeExecutableSchema({
-    typeDefs: [usersTypeDefs, exercisesTypeDefs],
-    resolvers: [usersResolvers, exercisesResolvers],
+    typeDefs: [usersTypeDefs, exercisesTypeDefs, trainingPlansTypeDefs],
+    resolvers: [usersResolvers, exercisesResolvers, trainingPlansResolvers],
   });
 
 export { schema };
