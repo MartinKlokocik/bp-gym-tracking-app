@@ -3,9 +3,16 @@ import { addDays, format, subDays } from 'date-fns'
 import { useState } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 
-export const CalendarBar = () => {
+type CalendarBarProps = {
+  selectedDate: Date
+  setSelectedDate: (date: Date) => void
+}
+
+export const CalendarBar = ({
+  selectedDate,
+  setSelectedDate,
+}: CalendarBarProps) => {
   const [startDate, setStartDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState(new Date())
 
   const handlePrevWeek = () => {
     setStartDate(subDays(startDate, 7))
