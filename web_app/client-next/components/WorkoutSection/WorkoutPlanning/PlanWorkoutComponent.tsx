@@ -1,31 +1,44 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import ExerciseCreator from "./ExerciseCreator";
-import PlanCreator from "./PlanCreator";
+import { useState } from 'react'
+import ExerciseCreator from './ExerciseCreator'
+import PlanCreator from './PlanCreator'
+import { Button, ButtonGroup } from '@heroui/react'
 
 export default function PlanWorkoutComponent() {
-  const [ activeView, setActiveView ] = useState("WorkoutCreator");
+  const [activeView, setActiveView] = useState('WorkoutCreator')
 
   return (
-    <div className="font-[family-name:var(--font-geist-sans)]">
-      <button className={`p-1 rounded m-1 border ${
-          activeView === "ExerciseCreator" ? "bg-white text-black" : "bg-black text-white"
-        }`} 
-        onClick={() => setActiveView("ExerciseCreator")}>
-        Create Exercise
-      </button>
-      <button className={`p-1 rounded m-1 border ${
-          activeView === "PlanCreator" ? "bg-white text-black" : "bg-black text-white"
-        }`} 
-        onClick={() => setActiveView("PlanCreator")}>
-        Create Plan
-      </button>
+    <>
+      <ButtonGroup className='ml-2'>
+        <Button
+          variant="bordered"
+          className={` ${
+            activeView === 'ExerciseCreator'
+              ? 'bg-white text-black'
+              : 'bg-black text-white'
+          }`}
+          onClick={() => setActiveView('ExerciseCreator')}
+        >
+          Create Exercise
+        </Button>
+        <Button
+          variant="bordered"
+          className={` ${
+            activeView === 'PlanCreator'
+              ? 'bg-white text-black'
+              : 'bg-black text-white'
+          }`}
+          onClick={() => setActiveView('PlanCreator')}
+        >
+          Create Plan
+        </Button>
+      </ButtonGroup>
 
       <div>
-        {activeView == "ExerciseCreator" && <ExerciseCreator></ExerciseCreator>}
-        {activeView == "PlanCreator" && <PlanCreator></PlanCreator>}
+        {activeView == 'ExerciseCreator' && <ExerciseCreator></ExerciseCreator>}
+        {activeView == 'PlanCreator' && <PlanCreator></PlanCreator>}
       </div>
-    </div>
-  );
+    </>
+  )
 }

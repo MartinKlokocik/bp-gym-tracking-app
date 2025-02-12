@@ -1,33 +1,37 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import WorkoutOverviewComponent from "@/components/WorkoutSection/WorkoutOverview/WorkoutOverviewComponent";
-import PlanWorkoutComponent from "@/components/WorkoutSection/WorkoutPlanning/PlanWorkoutComponent";
-
+import { useState } from 'react'
+import WorkoutOverviewComponent from '@/components/WorkoutSection/WorkoutOverview/WorkoutOverviewComponent'
+import PlanWorkoutComponent from '@/components/WorkoutSection/WorkoutPlanning/PlanWorkoutComponent'
+import { Button, ButtonGroup } from '@heroui/react'
 export default function Home() {
-  const [ overview, setOverview ] = useState(true);
+  const [overview, setOverview] = useState(true)
 
   return (
-    <div className="font-[family-name:var(--font-geist-sans)]">
-      <button className={`p-1 rounded m-1 border ${
-          !overview ? "bg-white text-black" : "bg-black text-white"
-        }`} 
-        onClick={() => setOverview(true)}>
-        My plan overview
-      </button>
-      <button className={`p-1 rounded m-1 border ${
-          overview ? "bg-white text-black" : "bg-black text-white"
-        }`}  
-        onClick={() => setOverview(false)}>
-        Plan editor
-      </button>
-
+    <div>
+      <ButtonGroup className="m-2">
+        <Button
+          variant="bordered"
+          className={` ${
+            !overview ? 'bg-white text-black' : 'bg-black text-white'
+          }`}
+          onClick={() => setOverview(true)}
+        >
+          My progress overview
+        </Button>
+        <Button
+          variant="bordered"
+          className={` ${
+            overview ? 'bg-white text-black' : 'bg-black text-white'
+          }`}
+          onClick={() => setOverview(false)}
+        >
+          Plan editor
+        </Button>
+      </ButtonGroup>
       <div>
-        {overview 
-        ? (<WorkoutOverviewComponent></WorkoutOverviewComponent>)
-        : (<PlanWorkoutComponent></PlanWorkoutComponent>)
-        }
+        {overview ? <WorkoutOverviewComponent /> : <PlanWorkoutComponent />}
       </div>
     </div>
-  );
+  )
 }

@@ -1,72 +1,89 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useState } from "react";
+import Link from 'next/link'
+import {
+  Button,
+  NavbarBrand,
+  NavbarContent,
+  Navbar as NavbarHeroui,
+  NavbarItem,
+} from '@heroui/react'
+import { usePathname } from 'next/navigation'
+
+export const AcmeLogo = () => {
+  return (
+    <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
+      <path
+        clipRule="evenodd"
+        d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
+        fill="currentColor"
+        fillRule="evenodd"
+      />
+    </svg>
+  )
+}
 
 export default function Navbar() {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-
-  const handleSignOut = () => {
-    console.log("Signing out...");
-    // Add sign-out logic here
-  };
+  const pathname = usePathname()
+  const activeItem = pathname.split('/').pop()
 
   return (
-    <nav className="flex items-center justify-between px-8 py-0 shadow-md bg-white">
-      {/* Left Side: Logo */}
-      <div className="text-xl font-bold">
-        <Link href="/">
-          <img
-            src="/logo.png" // Replace with the path to your logo image
-            alt="Logo"
-            className="w-12 h-12 object-contain" // Adjust size as needed
-          />
-        </Link>
-      </div>
-
-      {/* Center: Links */}
-      <div className="space-x-6">
-        <Link href="/" className="text-gray-800 hover:text-blue-600">
+    <NavbarHeroui
+      maxWidth="full"
+      isBlurred={false}
+      classNames={{
+        item: [
+          'flex',
+          'relative',
+          'h-full',
+          'items-center',
+          "data-[active=true]:after:content-['']",
+          'data-[active=true]:after:absolute',
+          'data-[active=true]:after:bottom-0',
+          'data-[active=true]:after:left-0',
+          'data-[active=true]:after:right-0',
+          'data-[active=true]:after:h-[2px]',
+          'data-[active=true]:after:rounded-[2px]',
+          'data-[active=true]:after:bg-primary',
+        ],
+      }}
+    >
+      <NavbarBrand>
+        <AcmeLogo />
+        <p className="font-bold text-inherit">ACME</p>
+      </NavbarBrand>
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarItem isActive={activeItem === 'dashboard'}>
+          <Link color="foreground" href="/dashboard">
             Dashboard
-        </Link>
-        <Link href="/workout_section" className="text-gray-800 hover:text-blue-600">
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={activeItem === 'workout_section'}>
+          <Link aria-current="page" href="/workout_section">
             Workouts section
-        </Link>
-        <Link href="/" className="text-gray-800 hover:text-blue-600">
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={activeItem === 'food_section'}>
+          <Link color="foreground" href="/">
             Food section
-        </Link>
-        <Link href="/" className="text-gray-800 hover:text-blue-600">
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive={activeItem === 'community_section'}>
+          <Link color="foreground" href="/">
             Community section
-        </Link>
-      </div>
-
-      {/* Right Side: User Avatar */}
-      <div className="relative">
-        <button onClick={toggleDropdown} className="focus:outline-none">
-          <img
-            src="/avatar-placeholder.png" // Replace with user's avatar URL
-            alt="User Avatar"
-            className="w-10 h-10 rounded-full"
-          />
-        </button>
-
-        {/* Dropdown Menu */}
-        {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md overflow-hidden z-10">
-            <Link href="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-              Edit Profile
-            </Link>
-            <button
-              onClick={handleSignOut}
-              className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-            >
-              Sign Out
-            </button>
-          </div>
-        )}
-      </div>
-    </nav>
-  );
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <NavbarItem className="hidden lg:flex">
+          <Link href="#">Login</Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Button as={Link} color="primary" href="#" variant="flat">
+            Sign Up
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+    </NavbarHeroui>
+  )
 }
