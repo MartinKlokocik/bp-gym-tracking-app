@@ -64,12 +64,12 @@ export default function Navbar() {
           </Link>
         </NavbarItem>
         <NavbarItem isActive={activeItem === 'food_section'}>
-          <Link color="foreground" href="/">
+          <Link color="foreground" href="/food_section">
             Food section
           </Link>
         </NavbarItem>
         <NavbarItem isActive={activeItem === 'community_section'}>
-          <Link color="foreground" href="/">
+          <Link color="foreground" href="/community_section">
             Community section
           </Link>
         </NavbarItem>
