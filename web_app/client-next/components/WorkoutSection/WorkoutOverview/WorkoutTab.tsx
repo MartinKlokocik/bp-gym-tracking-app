@@ -7,7 +7,7 @@ import { BackwardIcon } from '@heroicons/react/16/solid'
 import { getCalendarDay, getLatestExerciseRecord } from '../utils'
 import { Accordion, AccordionItem } from '@heroui/accordion'
 import { Input, Image } from '@heroui/react'
-
+import { GymProgressChart } from './GymProgressChart'
 type WorkoutTabProps = {
   selectedDate: Date
 }
@@ -71,7 +71,7 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
   )
 
   return (
-    <div className="flex flex-row justify-center items-center w-4/5 h-full pb-10">
+    <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-8">
       {!isDisplaying() ? (
         <div>
           <p>There is not workout record for this day.</p>
@@ -90,8 +90,8 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
             />
           </button>
           <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5">
-            <div className="flex flex-row justify-between items-flex-start w-full h-full">
-              <div className="flex flex-col gap-4">
+            <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8">
+              <div className="flex flex-col gap-4 w-[40%]">
                 <h2 className="text-2xl font-semibold">
                   Exercise number {exerciseIndex + 1}:{' '}
                   {selectedPlannedExercise?.exercise.name}
@@ -103,8 +103,10 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
                   height={400}
                 />
               </div>
-              <div className="flex flex-col">
-                <h2>GRAPH PLACEHOLDER</h2>
+              <div className="flex flex-col items-start w-[60%]">
+                <GymProgressChart
+                  exercise={selectedPlannedExercise?.exercise}
+                />
               </div>
             </div>
 

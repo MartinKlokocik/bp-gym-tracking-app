@@ -33,3 +33,10 @@ export const getLatestExerciseRecord = (
 
   return filteredRecords.length > 0 ? filteredRecords[0] : null
 }
+
+export const getExerciseRecords = (exercise: Exercise | undefined) => {
+  if (!exercise) return []
+  return dummyExerciseRecords.filter(
+    record => record.exercise.id === exercise.id
+  )
+}
