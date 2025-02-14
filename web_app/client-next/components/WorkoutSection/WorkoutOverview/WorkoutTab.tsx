@@ -5,9 +5,18 @@ import { CalendarDay, PlannedExercise } from '../types'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { BackwardIcon } from '@heroicons/react/16/solid'
 import { getCalendarDay, getLatestExerciseRecord } from '../utils'
-import { Accordion, AccordionItem } from '@heroui/accordion'
-import { Input, Image, Textarea } from '@heroui/react'
+import {
+  Input,
+  Image,
+  Button,
+  Textarea,
+  RadioGroup,
+  Radio,
+  Accordion,
+  AccordionItem,
+} from '@heroui/react'
 import { GymProgressChart } from './GymProgressChart'
+import { CheckIcon } from 'lucide-react'
 type WorkoutTabProps = {
   selectedDate: Date
 }
@@ -23,6 +32,7 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
     selectedPlannedExercise?.notes?.trim() ||
       'Put your notes for this exercise here'
   )
+  const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false)
 
   useEffect(() => {
     const day = getCalendarDay(selectedDate)
@@ -93,8 +103,44 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
               }`}
             />
           </button>
-          <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5">
-            <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8">
+          <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5 gap-4">
+            <div className="flex w-full justify-end gap-10">
+              <RadioGroup orientation="horizontal">
+                <Radio
+                  value="0"
+                  defaultChecked
+                  color="warning"
+                  description="This exercise is not completed today yet"
+                >
+                  Not marked
+                </Radio>
+                <Radio
+                  value="1"
+                  color="success"
+                  description="This exercise is completed today"
+                >
+                  Completed
+                </Radio>
+                <Radio
+                  value="2"
+                  color="danger"
+                  description="Skipping this exercise for today"
+                >
+                  Failed
+                </Radio>
+              </RadioGroup>
+              <Button
+                variant={isWorkoutCompleted ? 'solid' : 'bordered'}
+                color="primary"
+                startContent={<CheckIcon />}
+                onPress={() => setIsWorkoutCompleted(!isWorkoutCompleted)}
+              >
+                {isWorkoutCompleted
+                  ? 'Unmark workout as completed'
+                  : 'Mark workout as completed'}
+              </Button>
+            </div>
+            <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
               <div className="flex flex-col gap-4 w-[40%]">
                 <h2 className="text-2xl font-semibold">
                   Exercise number {exerciseIndex + 1}:{' '}
