@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { CalendarDay, PlannedExercise } from '../types'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
-import { BackwardIcon } from '@heroicons/react/16/solid'
 import { getCalendarDay, getLatestExerciseRecord } from '../utils'
 import {
   Input,
@@ -16,7 +14,7 @@ import {
   AccordionItem,
 } from '@heroui/react'
 import { GymProgressChart } from './GymProgressChart'
-import { CheckIcon } from 'lucide-react'
+import { CheckIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
 type WorkoutTabProps = {
   selectedDate: Date
 }
@@ -97,10 +95,11 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
             onClick={handlePrevExercise}
             disabled={exerciseIndex == 0}
           >
-            <ChevronLeftIcon
-              className={`text-white w-16 h-16 ${
+            <ChevronLeft
+              className={`text-white ${
                 exerciseIndex == 0 ? 'disabled-white-button' : ''
               }`}
+              size={80}
             />
           </button>
           <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5 gap-4">
@@ -164,7 +163,7 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
               <div className="flex flex-col w-auto h-full items-start justify-start">
                 <div className="flex flex-row gap-4 justify-between w-full">
                   <h2 className="text-lg font-semibold flex items-center gap-2">
-                    <BackwardIcon className="w-5 h-5" />
+                    <StepBack size={20} />
                     Previous
                   </h2>
                   <h2 className="text-lg font-semibold">Current</h2>
@@ -219,13 +218,14 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
             </div>
           </div>
           <button className="text-white p-2" onClick={handleNextExercise}>
-            <ChevronRightIcon
-              className={`text-white w-16 h-16 ${
+            <ChevronRight
+              className={`text-white ${
                 exerciseIndex ==
                 (calendarDay?.workout.exercises?.length ?? 0) - 1
                   ? 'disabled-white-button'
                   : ''
               }`}
+              size={80}
             />
           </button>
         </>

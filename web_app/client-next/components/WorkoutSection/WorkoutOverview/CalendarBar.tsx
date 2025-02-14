@@ -1,7 +1,7 @@
 'use client'
 import { addDays, format, subDays } from 'date-fns'
 import { useState } from 'react'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 type CalendarBarProps = {
   selectedDate: Date
@@ -25,7 +25,7 @@ export const CalendarBar = ({
   return (
     <div className="flex items-center justify-between gap-2 bg-black p-4 rounded-lg">
       <button className="text-white p-2" onClick={handlePrevWeek}>
-        <ChevronLeftIcon className="text-white w-6 h-6" />
+        <ChevronLeft size={32} />
       </button>
       <div className="flex items-center gap-2">
         {[...Array(7)].map((_, i) => {
@@ -53,7 +53,7 @@ export const CalendarBar = ({
         })}
       </div>
       <button className="text-white p-2" onClick={handleNextWeek}>
-        <ChevronRightIcon className="text-white w-6 h-6" />
+        <ChevronRight size={32} />
       </button>
     </div>
   )
