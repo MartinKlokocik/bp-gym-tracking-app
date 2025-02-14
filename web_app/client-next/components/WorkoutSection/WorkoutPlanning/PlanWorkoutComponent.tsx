@@ -1,44 +1,51 @@
 'use client'
 
-import { useState } from 'react'
-import ExerciseCreator from './ExerciseCreator'
-import PlanCreator from './PlanCreator'
-import { Button, ButtonGroup } from '@heroui/react'
+import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
+import { PlanCreatorModal } from './PlanCreatorModal'
+import { Plus } from 'lucide-react'
+import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 
 export default function PlanWorkoutComponent() {
-  const [activeView, setActiveView] = useState('WorkoutCreator')
+  const {
+    isOpen: isExerciseCreatorOpen,
+    onOpen: onExerciseCreatorOpen,
+    onOpenChange: onExerciseCreatorOpenChange,
+  } = useDisclosure()
+  const {
+    isOpen: isPlanCreatorOpen,
+    onOpen: onPlanCreatorOpen,
+    onOpenChange: onPlanCreatorOpenChange,
+  } = useDisclosure()
 
   return (
     <>
-      <ButtonGroup className='ml-2'>
+      <ButtonGroup className="ml-2">
         <Button
           variant="bordered"
-          className={` ${
-            activeView === 'ExerciseCreator'
-              ? 'bg-white text-black'
-              : 'bg-black text-white'
-          }`}
-          onClick={() => setActiveView('ExerciseCreator')}
+          className={'bg-white text-black'}
+          onPress={onExerciseCreatorOpen}
+          startContent={<Plus size={16} />}
         >
-          Create Exercise
+          Add Exercise
         </Button>
         <Button
           variant="bordered"
-          className={` ${
-            activeView === 'PlanCreator'
-              ? 'bg-white text-black'
-              : 'bg-black text-white'
-          }`}
-          onClick={() => setActiveView('PlanCreator')}
+          className={'bg-white text-black'}
+          onPress={onPlanCreatorOpen}
+          startContent={<Plus size={16} />}
         >
-          Create Plan
+          Add Plan
         </Button>
       </ButtonGroup>
 
-      <div>
-        {activeView == 'ExerciseCreator' && <ExerciseCreator></ExerciseCreator>}
-        {activeView == 'PlanCreator' && <PlanCreator></PlanCreator>}
-      </div>
+      <PlanCreatorModal
+        isOpen={isPlanCreatorOpen}
+        onOpenChange={onPlanCreatorOpenChange}
+      />
+      <ExerciseCreatorModal
+        isOpen={isExerciseCreatorOpen}
+        onOpenChange={onExerciseCreatorOpenChange}
+      />
     </>
   )
 }

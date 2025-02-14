@@ -4,7 +4,7 @@ import {
   ExerciseRecord,
   PlannedWorkoutDay,
 } from './types'
-import { dummyCalendarDays, dummyExerciseRecords } from './DummyData'
+import { dummyCalendarDays, dummyExerciseRecords, dummyExercises } from './DummyData'
 import { isSameDay } from 'date-fns'
 
 export const getCalendarDay = (date: Date) => {
@@ -39,4 +39,8 @@ export const getExerciseRecords = (exercise: Exercise | undefined) => {
   return dummyExerciseRecords.filter(
     record => record.exercise.id === exercise.id
   )
+}
+
+export const getExerciseById = (exerciseId: string) => {
+  return dummyExercises.find(exercise => exercise.id === exerciseId)
 }

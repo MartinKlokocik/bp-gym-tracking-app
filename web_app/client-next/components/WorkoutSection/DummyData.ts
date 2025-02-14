@@ -14,7 +14,6 @@ export const dummyExercises: Exercise[] = [
     description: 'A chest exercise using a barbell.',
     muscleGroup: 'Chest',
     equipment: ['Barbell', 'Bench'],
-    personalBest: 100,
     image: 'bench-press.png',
   },
   {
@@ -23,7 +22,6 @@ export const dummyExercises: Exercise[] = [
     description: 'A lower-body exercise targeting legs and glutes.',
     muscleGroup: 'Legs',
     equipment: ['Barbell', 'Squat Rack'],
-    personalBest: 150,
     image: 'squat.png',
   },
 ]
@@ -32,18 +30,23 @@ export const dummyPlannedExercises: PlannedExercise[] = [
   {
     id: 'pe1',
     exercise: dummyExercises[0],
-    sets: 4,
-    reps: 10,
-    weights: [80, 85, 90, 95],
-    restTime: [60, 60, 60, 60],
+    sets: [
+      { id: 's1', reps: 10, restTime: 60 },
+      { id: 's2', reps: 10, restTime: 60 },
+      { id: 's3', reps: 10, restTime: 60 },
+      { id: 's4', reps: 10, restTime: 60 },
+    ],
   },
   {
     id: 'pe2',
     exercise: dummyExercises[1],
-    sets: 5,
-    reps: 8,
-    weights: [100, 110, 120, 130, 140],
-    restTime: [90, 90, 90, 90, 90],
+    sets: [
+      { id: 's1', reps: 8, restTime: 90 },
+      { id: 's2', reps: 8, restTime: 90 },
+      { id: 's3', reps: 8, restTime: 90 },
+      { id: 's4', reps: 8, restTime: 90 },
+      { id: 's5', reps: 8, restTime: 90 },
+    ],
   },
 ]
 
@@ -84,29 +87,41 @@ export const dummyExerciseRecords: ExerciseRecord[] = [
     userId: 'user1',
     timestamp: new Date('2024-05-06T10:30:00Z'),
     exercise: dummyExercises[0],
-    sets: 3,
-    reps: [10, 8, 6],
-    weights: [80, 90, 100],
-    restTime: [60, 60, 90],
+    sets: [
+      { id: 's1', reps: 10, restTime: 60 },
+      { id: 's2', reps: 8, restTime: 60 },
+      { id: 's3', reps: 6, restTime: 90 },
+    ],
   },
   {
     id: 'er2',
     userId: 'user1',
     timestamp: new Date('2024-05-07T14:00:00Z'),
     exercise: dummyExercises[0],
-    sets: 3,
-    reps: [12, 10, 8],
-    weights: [85, 95, 105],
-    restTime: [60, 60, 90],
+    sets: [
+      { id: 's1', reps: 12, restTime: 60 },
+      { id: 's2', reps: 10, restTime: 60 },
+      { id: 's3', reps: 8, restTime: 90 },
+    ],
   },
   {
     id: 'er3',
     userId: 'user1',
     timestamp: new Date('2024-05-06T11:00:00Z'),
     exercise: dummyExercises[1],
-    sets: 3,
-    reps: [8, 6, 4],
-    weights: [120, 130, 140],
-    restTime: [90, 90, 120],
+    sets: [
+      { id: 's1', reps: 8, restTime: 90 },
+      { id: 's2', reps: 6, restTime: 90 },
+      { id: 's3', reps: 4, restTime: 120 },
+    ],
   },
+]
+
+export const muscleGroups = [
+  { value: 'legs', label: 'Legs' },
+  { value: 'chest', label: 'Chest' },
+  { value: 'back', label: 'Back' },
+  { value: 'shoulders', label: 'Shoulders' },
+  { value: 'arms', label: 'Arms' },
+  { value: 'core', label: 'Core' },
 ]

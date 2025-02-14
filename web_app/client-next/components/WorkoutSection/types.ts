@@ -4,17 +4,20 @@ export type Exercise = {
   description: string
   muscleGroup: string
   equipment: Array<string>
-  personalBest: number
   image: string
 }
 
 export type PlannedExercise = {
   id: string
   exercise: Exercise
-  sets: number
+  sets: Set[]
+  notes?: string
+}
+
+export type Set = {
+  id: string
   reps: number
-  weights: Array<number>
-  restTime: Array<number>
+  restTime?: number
 }
 
 export type PlannedWorkoutDay = {
@@ -40,9 +43,6 @@ export type ExerciseRecord = {
   userId: string
   timestamp: Date
   exercise: Exercise
-  sets: number
-  reps: Array<number>
-  weights: Array<number>
-  restTime: Array<number>
+  sets: Set[]
 }
 
