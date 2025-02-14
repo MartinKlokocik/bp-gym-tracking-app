@@ -43,6 +43,5 @@ export type ExerciseRecord = {
   userId: string
   timestamp: Date
   exercise: Exercise
-  sets: Set[]
+  sets: (Set & { weight: number })[]
 }
-

@@ -88,9 +88,9 @@ export const dummyExerciseRecords: ExerciseRecord[] = [
     timestamp: new Date('2024-05-06T10:30:00Z'),
     exercise: dummyExercises[0],
     sets: [
-      { id: 's1', reps: 10, restTime: 60 },
-      { id: 's2', reps: 8, restTime: 60 },
-      { id: 's3', reps: 6, restTime: 90 },
+      { id: 's1', reps: 10, restTime: 60, weight: 100 },
+      { id: 's2', reps: 8, restTime: 60, weight: 80 },
+      { id: 's3', reps: 6, restTime: 90, weight: 60 },
     ],
   },
   {
@@ -99,9 +99,9 @@ export const dummyExerciseRecords: ExerciseRecord[] = [
     timestamp: new Date('2024-05-07T14:00:00Z'),
     exercise: dummyExercises[0],
     sets: [
-      { id: 's1', reps: 12, restTime: 60 },
-      { id: 's2', reps: 10, restTime: 60 },
-      { id: 's3', reps: 8, restTime: 90 },
+      { id: 's1', reps: 12, restTime: 60, weight: 120 },
+      { id: 's2', reps: 10, restTime: 60, weight: 100 },
+      { id: 's3', reps: 8, restTime: 90, weight: 80 },
     ],
   },
   {
@@ -110,9 +110,9 @@ export const dummyExerciseRecords: ExerciseRecord[] = [
     timestamp: new Date('2024-05-06T11:00:00Z'),
     exercise: dummyExercises[1],
     sets: [
-      { id: 's1', reps: 8, restTime: 90 },
-      { id: 's2', reps: 6, restTime: 90 },
-      { id: 's3', reps: 4, restTime: 120 },
+      { id: 's1', reps: 8, restTime: 90, weight: 80 },
+      { id: 's2', reps: 6, restTime: 90, weight: 60 },
+      { id: 's3', reps: 4, restTime: 120, weight: 40 },
     ],
   },
 ]

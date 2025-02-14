@@ -22,14 +22,11 @@ const aggregateWorkoutData = (data: ExerciseRecord[], metric: string) => {
     date: record.timestamp.toISOString().split('T')[0], // Format date
     value:
       metric === 'totalVolume'
-        ? record.weights.reduce(
-            (sum, weight, idx) => sum + weight * record.reps[idx],
-            0
-          )
+        ? record.sets.reduce((sum, set) => sum + set.weight * set.reps, 0)
         : metric === 'maxWeight'
-          ? Math.max(...record.weights)
-          : record.weights.reduce((sum, weight) => sum + weight, 0) /
-            record.weights.length,
+          ? Math.max(...record.sets.map(set => set.weight))
+          : record.sets.reduce((sum, set) => sum + set.weight, 0) /
+            record.sets.length,
   }))
 }
 
@@ -49,7 +46,7 @@ export const GymProgressChart = ({ exercise }: GymProgressChartProps) => {
       <ButtonGroup className="mb-6">
         <Button
           variant="bordered"
-          onClick={() => setMetric('totalVolume')}
+          onPress={() => setMetric('totalVolume')}
           className={metric === 'totalVolume' ? 'bg-yellow-500 text-black' : ''}
         >
           Total Volume
@@ -63,7 +60,7 @@ export const GymProgressChart = ({ exercise }: GymProgressChartProps) => {
         </Button>
         <Button
           variant="bordered"
-          onClick={() => setMetric('avgWeight')}
+          onPress={() => setMetric('avgWeight')}
           className={metric === 'avgWeight' ? 'bg-green-500 text-white' : ''}
         >
           Avg Weight

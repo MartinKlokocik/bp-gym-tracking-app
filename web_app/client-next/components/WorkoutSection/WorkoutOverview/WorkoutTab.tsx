@@ -24,7 +24,7 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
     const day = getCalendarDay(selectedDate)
     if (day) {
       setCalendarDay(day)
-      setselectedPlannedExercise(calendarDay?.workout.exercises[0] ?? null)
+      setselectedPlannedExercise(day.workout.exercises[0] ?? null)
     } else {
       setCalendarDay(undefined)
       setselectedPlannedExercise(null)
@@ -119,7 +119,7 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
                 <h2 className="text-lg font-semibold">Current</h2>
               </div>
 
-              {latestExerciseRecord?.weights?.map((weight, index) => (
+              {latestExerciseRecord?.sets?.map((set, index) => (
                 <div
                   key={index}
                   className="grid grid-cols-2 gap-4 items-center"
@@ -129,13 +129,13 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
                     <Accordion>
                       <AccordionItem
                         aria-label={`Set ${index + 1}`}
-                        title={`Set ${index + 1}: ${weight} kg`}
+                        title={`Set ${index + 1}: ${set.weight} kg`}
                         subtitle="See details"
                         className="w-full"
                       >
                         <div className="text-gray-300">
-                          <p>📊 {latestExerciseRecord.reps[index]} reps</p>
-                          <p>⏳ {latestExerciseRecord.restTime[index]} sec</p>
+                          <p>📊 {set.reps} reps</p>
+                          <p>⏳ {set.restTime} sec</p>
                           <p>💓 {/* TODO: Add pulse data */}</p>
                         </div>
                       </AccordionItem>
@@ -147,7 +147,7 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
                     label={`Set ${index + 1}`}
                     placeholder="Enter current weight"
                     type="number"
-                    value={weight.toString()}
+                    value={set.weight.toString()}
                     variant="underlined"
                     className="w-full"
                   />
