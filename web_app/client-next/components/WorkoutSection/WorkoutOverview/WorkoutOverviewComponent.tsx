@@ -6,7 +6,7 @@ import { WorkoutTab } from './WorkoutTab'
 export default function WorkoutOverviewComponent() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   return (
-    <div className="flex flex-col h-full w-full items-center justify-center">
+    <div className="flex flex-col h-full w-full items-center justify-center mt-5">
       <CalendarBar
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}

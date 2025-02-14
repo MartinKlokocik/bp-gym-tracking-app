@@ -8,30 +8,32 @@ export default function Home() {
   const [overview, setOverview] = useState(true)
 
   return (
-    <div>
-      <ButtonGroup className="m-2">
-        <Button
-          variant="bordered"
-          className={` ${
-            !overview ? 'bg-white text-black' : 'bg-black text-white'
-          }`}
-          onClick={() => setOverview(true)}
-        >
-          My progress overview
-        </Button>
-        <Button
-          variant="bordered"
-          className={` ${
-            overview ? 'bg-white text-black' : 'bg-black text-white'
-          }`}
-          onClick={() => setOverview(false)}
-        >
-          Plan editor
-        </Button>
-      </ButtonGroup>
+    <>
+      <div className="flex w-full items-center justify-center mt-5">
+        <ButtonGroup>
+          <Button
+            variant="bordered"
+            className={` ${
+              !overview ? 'bg-white text-black' : 'bg-black text-white'
+            }`}
+            onPress={() => setOverview(true)}
+          >
+            My progress overview
+          </Button>
+          <Button
+            variant="bordered"
+            className={` ${
+              overview ? 'bg-white text-black' : 'bg-black text-white'
+            }`}
+            onPress={() => setOverview(false)}
+          >
+            Plan editor
+          </Button>
+        </ButtonGroup>
+      </div>
       <div>
         {overview ? <WorkoutOverviewComponent /> : <PlanWorkoutComponent />}
       </div>
-    </div>
+    </>
   )
 }
