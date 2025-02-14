@@ -6,7 +6,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { BackwardIcon } from '@heroicons/react/16/solid'
 import { getCalendarDay, getLatestExerciseRecord } from '../utils'
 import { Accordion, AccordionItem } from '@heroui/accordion'
-import { Input, Image } from '@heroui/react'
+import { Input, Image, Textarea } from '@heroui/react'
 import { GymProgressChart } from './GymProgressChart'
 type WorkoutTabProps = {
   selectedDate: Date
@@ -19,6 +19,10 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [selectedPlannedExercise, setselectedPlannedExercise] =
     useState<PlannedExercise | null>(calendarDay?.workout.exercises[0] ?? null)
+  const [notes, setNotes] = useState(
+    selectedPlannedExercise?.notes?.trim() ||
+      'Put your notes for this exercise here'
+  )
 
   useEffect(() => {
     const day = getCalendarDay(selectedDate)
@@ -110,49 +114,62 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
               </div>
             </div>
 
-            <div className="flex flex-col w-full h-full items-start justify-start">
-              <div className="grid grid-cols-2 gap-4">
-                <h2 className="text-lg font-semibold flex items-center gap-2">
-                  <BackwardIcon className="w-5 h-5" />
-                  Previous
-                </h2>
-                <h2 className="text-lg font-semibold">Current</h2>
-              </div>
-
-              {latestExerciseRecord?.sets?.map((set, index) => (
-                <div
-                  key={index}
-                  className="grid grid-cols-2 gap-4 items-center"
-                >
-                  {/* Previous Section */}
-                  <div>
-                    <Accordion>
-                      <AccordionItem
-                        aria-label={`Set ${index + 1}`}
-                        title={`Set ${index + 1}: ${set.weight} kg`}
-                        subtitle="See details"
-                        className="w-full"
-                      >
-                        <div className="text-gray-300">
-                          <p>📊 {set.reps} reps</p>
-                          <p>⏳ {set.restTime} sec</p>
-                          <p>💓 {/* TODO: Add pulse data */}</p>
-                        </div>
-                      </AccordionItem>
-                    </Accordion>
-                  </div>
-
-                  {/* Current Section */}
-                  <Input
-                    label={`Set ${index + 1}`}
-                    placeholder="Enter current weight"
-                    type="number"
-                    value={set.weight.toString()}
-                    variant="underlined"
-                    className="w-full"
-                  />
+            <div className="flex flex-row w-full h-full justify-between">
+              <div className="flex flex-col w-auto h-full items-start justify-start">
+                <div className="flex flex-row gap-4 justify-between w-full">
+                  <h2 className="text-lg font-semibold flex items-center gap-2">
+                    <BackwardIcon className="w-5 h-5" />
+                    Previous
+                  </h2>
+                  <h2 className="text-lg font-semibold">Current</h2>
                 </div>
-              )) ?? null}
+
+                {latestExerciseRecord?.sets?.map((set, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-2 gap-4 items-center"
+                  >
+                    {/* Previous Section */}
+                    <div>
+                      <Accordion>
+                        <AccordionItem
+                          aria-label={`Set ${index + 1}`}
+                          title={`Set ${index + 1}: ${set.weight} kg`}
+                          subtitle="See details"
+                          className="w-full"
+                        >
+                          <div className="text-gray-300">
+                            <p>📊 {set.reps} reps</p>
+                            <p>⏳ {set.restTime} sec</p>
+                            <p>💓 {/* TODO: Add pulse data */}</p>
+                          </div>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+
+                    {/* Current Section */}
+                    <Input
+                      label={`Set ${index + 1}`}
+                      placeholder="Enter current weight"
+                      type="number"
+                      value={set.weight.toString()}
+                      variant="underlined"
+                      className="w-full"
+                    />
+                  </div>
+                )) ?? null}
+              </div>
+              <div className="flex flex-col items-end w-full h-full">
+                <Textarea
+                  isClearable
+                  className="max-w-lg"
+                  label="Notes"
+                  variant="bordered"
+                  value={notes}
+                  onChange={e => setNotes(e.target.value)}
+                  onClear={() => setNotes('')}
+                />
+              </div>
             </div>
           </div>
           <button className="text-white p-2" onClick={handleNextExercise}>
