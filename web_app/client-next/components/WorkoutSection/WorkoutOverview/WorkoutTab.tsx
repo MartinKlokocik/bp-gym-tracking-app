@@ -1,8 +1,19 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CalendarDay, PlannedExercise } from '../types'
-import { getCalendarDay, getLatestExerciseRecord } from '../utils'
+import {
+  CalendarDay,
+  PlannedExercise,
+  PlannedWorkout,
+  PlannedWorkoutDay,
+} from '../types'
+import {
+  getActiveWorkoutPlan,
+  getCalendarDay,
+  getLatestExerciseRecord,
+  getWorkoutDayById,
+  getWorkoutPlanById,
+} from '../utils'
 import {
   Input,
   Image,
@@ -12,9 +23,12 @@ import {
   Radio,
   Accordion,
   AccordionItem,
+  Select,
+  SelectItem,
 } from '@heroui/react'
 import { GymProgressChart } from './GymProgressChart'
 import { CheckIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
+import { dummyPlannedWorkouts } from '../DummyData'
 type WorkoutTabProps = {
   selectedDate: Date
 }
@@ -31,6 +45,13 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
       'Put your notes for this exercise here'
   )
   const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false)
+  const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<
+    PlannedWorkout | undefined
+  >(getActiveWorkoutPlan())
+
+  const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<
+    PlannedWorkoutDay | undefined
+  >(selectedWorkoutPlan?.days[0])
 
   useEffect(() => {
     const day = getCalendarDay(selectedDate)
@@ -85,8 +106,57 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
   return (
     <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-8">
       {!isDisplaying() ? (
-        <div>
-          <p>There is not workout record for this day.</p>
+        <div className="flex flex-col items-center justify-center w-full h-full gap-4">
+          <p>There are not workout records for this day.</p>
+          <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
+            <Select
+              label="Select a workout plan"
+              placeholder="Select a workout plan"
+              variant="bordered"
+              className="w-1/2"
+              selectedKeys={[selectedWorkoutPlan?.id || '']}
+              onChange={e => {
+                setSelectedWorkoutPlan(getWorkoutPlanById(e.target.value))
+                setSelectedWorkoutDay(getWorkoutDayById(e.target.value))
+              }}
+            >
+              {dummyPlannedWorkouts.map(plannedWorkout => (
+                <SelectItem key={plannedWorkout.id} value={plannedWorkout.id}>
+                  {plannedWorkout.name}
+                </SelectItem>
+              ))}
+            </Select>
+
+            {selectedWorkoutPlan && (
+              <Select
+                label="Select a workout day"
+                placeholder="Select a workout day"
+                variant="bordered"
+                className="w-1/2"
+                selectedKeys={[selectedWorkoutDay?.id || '']}
+                onChange={e =>
+                  setSelectedWorkoutDay(getWorkoutDayById(e.target.value))
+                }
+              >
+                {selectedWorkoutPlan.days.map(plannedWorkoutDay => (
+                  <SelectItem
+                    key={plannedWorkoutDay.id}
+                    value={plannedWorkoutDay.id}
+                  >
+                    {plannedWorkoutDay.name}
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+
+            {selectedWorkoutDay && (
+              <div className="flex flex-col gap-4 w-1/2 h-full items-end justify-center">
+                <Button color="primary" variant="solid" onPress={() => {}}>
+                  Add workout to this day
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <>
