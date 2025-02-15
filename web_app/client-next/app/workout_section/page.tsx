@@ -1,11 +1,23 @@
 'use client'
 
+import { CalendarBar } from '@/components/WorkoutSection/WorkoutOverview/CalendarBar'
+import { WorkoutTab } from '@/components/WorkoutSection/WorkoutOverview/WorkoutTab'
+import { PlanConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/PlanConfigurationModal'
+import { DayConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/DayConfigurationModal'
+import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
-import WorkoutOverviewComponent from '@/components/WorkoutSection/WorkoutOverview/WorkoutOverviewComponent'
-import PlanWorkoutComponent from '@/components/WorkoutSection/WorkoutPlanning/PlanWorkoutComponent'
-import { Button, ButtonGroup } from '@heroui/react'
 export default function Home() {
-  const [overview, setOverview] = useState(true)
+  const {
+    isOpen: isPlanConfigurationOpen,
+    onOpen: onPlanConfigurationOpen,
+    onOpenChange: onPlanConfigurationOpenChange,
+  } = useDisclosure()
+  const {
+    isOpen: isDayConfigurationOpen,
+    onOpen: onDayConfigurationOpen,
+    onOpenChange: onDayConfigurationOpenChange,
+  } = useDisclosure()
+  const [selectedDate, setSelectedDate] = useState(new Date())
 
   return (
     <>
@@ -13,27 +25,37 @@ export default function Home() {
         <ButtonGroup>
           <Button
             variant="bordered"
-            className={` ${
-              !overview ? 'bg-white text-black' : 'bg-black text-white'
-            }`}
-            onPress={() => setOverview(true)}
+            className="bg-white text-black"
+            onPress={onDayConfigurationOpen}
           >
-            My progress overview
+            Modify this day
           </Button>
           <Button
             variant="bordered"
-            className={` ${
-              overview ? 'bg-white text-black' : 'bg-black text-white'
-            }`}
-            onPress={() => setOverview(false)}
+            className="bg-black text-white"
+            onPress={onPlanConfigurationOpen}
           >
-            Plan editor
+            Workout plan configuration
           </Button>
         </ButtonGroup>
       </div>
-      <div>
-        {overview ? <WorkoutOverviewComponent /> : <PlanWorkoutComponent />}
+
+      <div className="flex flex-col h-full w-full items-center justify-center mt-5">
+        <CalendarBar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+        <WorkoutTab selectedDate={selectedDate} />
       </div>
+
+      <PlanConfigurationModal
+        isOpen={isPlanConfigurationOpen}
+        onOpenChange={onPlanConfigurationOpenChange}
+      />
+      <DayConfigurationModal
+        isOpen={isDayConfigurationOpen}
+        onOpenChange={onDayConfigurationOpenChange}
+      />
     </>
   )
 }
