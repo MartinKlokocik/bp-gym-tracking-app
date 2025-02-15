@@ -31,6 +31,7 @@ export type PlannedWorkout = {
   name: string
   days: Array<PlannedWorkoutDay>
   schema: string
+  isActive?: boolean
 }
 
 export type CalendarDay = {

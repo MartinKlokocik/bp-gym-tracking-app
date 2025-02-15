@@ -127,12 +127,14 @@ export const dummyPlannedWorkouts: PlannedWorkout[] = [
     name: 'Strength Training',
     days: [dummyPlannedWorkoutDays[0], dummyPlannedWorkoutDays[1]],
     schema: 'Train-Rest-Train',
+    isActive: true,
   },
   {
     id: 'pw2',
     name: 'Upper/Lower Split',
     days: [dummyPlannedWorkoutDays[1], dummyPlannedWorkoutDays[2]],
     schema: 'Upper-Lower-Rest',
+    isActive: false,
   },
 ]
 
