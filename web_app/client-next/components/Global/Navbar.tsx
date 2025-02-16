@@ -25,7 +25,7 @@ export const AcmeLogo = () => {
 
 export default function Navbar() {
   const pathname = usePathname()
-  const activeItem = pathname.split('/').pop()
+  const activeItem = pathname?.split('/').pop()
 
   return (
     <NavbarHeroui
