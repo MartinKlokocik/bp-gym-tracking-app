@@ -5,7 +5,6 @@ import {
   PlannedWorkout,
   CalendarDay,
   ExerciseRecord,
-  Set,
 } from './types'
 
 export const dummyExercises: Exercise[] = [
@@ -16,6 +15,7 @@ export const dummyExercises: Exercise[] = [
     muscleGroup: 'Chest',
     equipment: ['Barbell', 'Bench'],
     image: 'bench-press.png',
+    userId: '1',
   },
   {
     id: '2',
@@ -24,6 +24,7 @@ export const dummyExercises: Exercise[] = [
     muscleGroup: 'Legs',
     equipment: ['Barbell', 'Squat Rack'],
     image: 'squat.png',
+    userId: '1',
   },
   {
     id: '3',
@@ -33,6 +34,7 @@ export const dummyExercises: Exercise[] = [
     muscleGroup: 'Back',
     equipment: ['Barbell'],
     image: 'deadlift.png',
+    userId: '1',
   },
   {
     id: '4',
@@ -41,6 +43,7 @@ export const dummyExercises: Exercise[] = [
     muscleGroup: 'Back',
     equipment: ['Pull-up Bar'],
     image: 'pullups.png',
+    userId: '1',
   },
   {
     id: '5',
@@ -49,6 +52,7 @@ export const dummyExercises: Exercise[] = [
     muscleGroup: 'Shoulders',
     equipment: ['Dumbbells', 'Barbell'],
     image: 'shoulder-press.png',
+    userId: '1',
   },
   {
     id: '6',
@@ -57,6 +61,7 @@ export const dummyExercises: Exercise[] = [
     muscleGroup: 'Arms',
     equipment: ['Dumbbells'],
     image: 'bicep-curls.png',
+    userId: '1',
   },
 ]
 
@@ -70,6 +75,7 @@ export const dummyPlannedExercises: PlannedExercise[] = [
       { id: 's3', reps: 10, restTime: 60 },
     ],
     notes: 'Focus on slow, controlled reps.',
+    userId: '1',
   },
   {
     id: 'pe2',
@@ -80,6 +86,7 @@ export const dummyPlannedExercises: PlannedExercise[] = [
       { id: 's3', reps: 8, restTime: 90 },
     ],
     notes: 'Keep your back straight and go deep.',
+    userId: '1',
   },
   {
     id: 'pe3',
@@ -90,6 +97,7 @@ export const dummyPlannedExercises: PlannedExercise[] = [
       { id: 's3', reps: 5, restTime: 120 },
     ],
     notes: 'Maintain proper form to avoid back injury.',
+    userId: '1',
   },
   {
     id: 'pe4',
@@ -100,6 +108,7 @@ export const dummyPlannedExercises: PlannedExercise[] = [
       { id: 's3', reps: 8, restTime: 60 },
     ],
     notes: 'Full range of motion for best results.',
+    userId: '1',
   },
 ]
 
@@ -108,16 +117,19 @@ export const dummyPlannedWorkoutDays: PlannedWorkoutDay[] = [
     id: 'pwd1',
     name: 'Leg Day',
     exercises: [dummyPlannedExercises[1], dummyPlannedExercises[2]], // Squat & Deadlift
+    userId: '1',
   },
   {
     id: 'pwd2',
     name: 'Upper Body Strength',
     exercises: [dummyPlannedExercises[0], dummyPlannedExercises[4]], // Bench Press & Shoulder Press
+    userId: '1',
   },
   {
     id: 'pwd3',
     name: 'Pull Day',
     exercises: [dummyPlannedExercises[3], dummyPlannedExercises[5]], // Pull-ups & Bicep Curls
+    userId: '1',
   },
 ]
 
@@ -128,6 +140,7 @@ export const dummyPlannedWorkouts: PlannedWorkout[] = [
     days: [dummyPlannedWorkoutDays[0], dummyPlannedWorkoutDays[1]],
     schema: 'Train-Rest-Train',
     isActive: true,
+    userId: '1',
   },
   {
     id: 'pw2',
@@ -135,21 +148,28 @@ export const dummyPlannedWorkouts: PlannedWorkout[] = [
     days: [dummyPlannedWorkoutDays[1], dummyPlannedWorkoutDays[2]],
     schema: 'Upper-Lower-Rest',
     isActive: false,
+    userId: '1',
   },
 ]
 
 export const dummyCalendarDays: CalendarDay[] = [
   {
+    id: 'cd1',
     date: new Date('2025-02-11'),
     workout: dummyPlannedWorkoutDays[0], // Leg Day
+    userId: '1',
   },
   {
+    id: 'cd2',
     date: new Date('2025-02-12'),
     workout: dummyPlannedWorkoutDays[1], // Upper Body Strength
+    userId: '1',
   },
   {
+    id: 'cd3',
     date: new Date('2025-02-13'),
     workout: dummyPlannedWorkoutDays[2], // Pull Day
+    userId: '1',
   },
 ]
 

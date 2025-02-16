@@ -26,7 +26,7 @@ export default {
         email,
         password,
         name,
-      }: { email: string; password: string; name?: string }
+      }: { email: string; password: string; name: string }
     ) => {
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) throw new Error("Email already registered");

@@ -7,116 +7,130 @@ datasource db {
   url      = env("DATABASE_URL") // Replace with your database URL
 }
 
-model Calendars {
-  id       Int            @id @default(autoincrement())
-  userId   Int?
-  date     DateTime
-  planId   Int?
-  notes    String?
-  dayLogId Int?           @unique(map: "Calendar_DayLogId_Unique")
-  user     User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan     TrainingPlans? @relation(fields: [planId], references: [id], onDelete: SetNull)
-  dayLog   DayLogs?       @relation(fields: [dayLogId], references: [id]) // Opposite relation
-
-  @@unique([dayLogId], map: "Calendar_DayLogId_Unique_Index")
-}
-
-model DayLogs {
-  id             Int           @id @default(autoincrement())
-  userId         Int
-  steps          Int?
-  caloriesIntake Int?
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workoutLogs    WorkoutLogs[] // Relation with WorkoutLog
-  calendar       Calendars?    @relation // Relation with Calendar
-}
-
-model ExerciseFiles {
-  id         Int       @id @default(autoincrement())
-  exerciseId Int
-  filePath   String
-  exercise   Exercises @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-
-  @@unique([exerciseId], map: "ExerciseFile_ExerciseId_Unique")
-}
-
-model Exercises {
-  id                Int             @id @default(autoincrement())
-  name              String          @unique
-  description       String?
-  musclesTargeted   String?
-  equipmentRequired String?
-  isCustom          Boolean         @default(false)
-  createdAt         DateTime        @default(now())
-  planExercises     PlanExercises[]
-  workoutLogs       WorkoutLogs[]
-  exerciseFiles     ExerciseFiles[]
-}
-
-model PlanExercises {
-  id              Int            @id @default(autoincrement())
-  planId          Int?
-  exerciseId      Int?
-  sets            Int?
-  reps            Int?
-  weight          Float?
-  restTimeSeconds Int?
-  plan            TrainingPlans? @relation(fields: [planId], references: [id], onDelete: Cascade)
-  exercise        Exercises?     @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-}
-
-model TrainingPlans {
-  id            Int             @id @default(autoincrement())
-  userId        Int?
-  name          String
-  description   String?
-  isPublic      Boolean         @default(false)
-  createdAt     DateTime        @default(now())
-  user          User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  planExercises PlanExercises[]
-  calendars     Calendars[]
-}
-
-model UserProfiles {
-  id          Int       @id @default(autoincrement())
-  userId      Int       @unique
-  firstName   String?
-  lastName    String?
-  dateOfBirth DateTime?
-  gender      String?
-  heightCm    Int?
-  weightKg    Float?
-  avatarUrl   String?
-  createdAt   DateTime  @default(now())
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model WorkoutLogs {
-  id              Int        @id @default(autoincrement())
-  userId          Int?
-  exerciseId      Int?
-  dayLogId        Int        @unique(map: "WorkoutLog_DayLogId_Unique")
-  performedSets   Int?
-  performedReps   Int?
-  weight          Float?
-  durationSeconds Int?
-  performedAt     DateTime
-  heartRate       Int?
-  user            User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exercise        Exercises? @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  dayLog          DayLogs?   @relation(fields: [dayLogId], references: [id]) // Opposite relation
-}
-
-// Do not delete this but take a look at those relations 
 model User {
-  id            Int             @id @default(autoincrement())
-  email         String          @unique
-  password      String
-  name          String?
-  createdAt     DateTime        @default(now())
-  Calendars     Calendars[]
-  DayLogs       DayLogs[]
-  TrainingPlans TrainingPlans[]
-  UserProfiles  UserProfiles?
-  WorkoutLogs   WorkoutLogs[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  // Relations
+  exercises          Exercise[]
+  plannedExercises   PlannedExercise[]
+  plannedWorkoutDays PlannedWorkoutDay[]
+  plannedWorkouts    PlannedWorkout[]
+  calendarDays       CalendarDay[]
+  exerciseRecords    ExerciseRecord[]
+}
+
+model Exercise {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String
+  muscleGroup String
+  equipment   String[]
+  image       String?  @default("")
+  isPublic    Boolean  @default(false)
+  isDefault   Boolean  @default(false)
+
+  // Relations
+  user             User              @relation(fields: [userId], references: [id])
+  plannedExercises PlannedExercise[]
+  exerciseRecords  ExerciseRecord[]
+}
+
+model PlannedExercise {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  notes  String?
+
+  // Relation to the base exercise:
+  exerciseId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  // Planned sets for this exercise
+  plannedSets PlannedSet[]
+
+  // Relation to the workout day:
+  plannedWorkoutDayId Int
+  plannedWorkoutDay   PlannedWorkoutDay @relation(fields: [plannedWorkoutDayId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model PlannedSet {
+  id       Int @id @default(autoincrement())
+  reps     Int
+  restTime Int?
+
+  plannedExerciseId Int
+  plannedExercise   PlannedExercise @relation(fields: [plannedExerciseId], references: [id])
+}
+
+model PlannedWorkoutDay {
+  id               Int            @id @default(autoincrement())
+  userId           Int
+  name             String
+  plannedExercises PlannedExercise[]
+
+  // Relation to the overall workout plan:
+  plannedWorkoutId Int
+  plannedWorkout   PlannedWorkout @relation(fields: [plannedWorkoutId], references: [id])
+
+  // A workout day may appear on multiple calendar days
+  calendarDays CalendarDay[]
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model PlannedWorkout {
+  id       Int    @id @default(autoincrement())
+  userId   Int
+  name     String
+  schema   String
+  isActive Boolean @default(false)
+  isPublic Boolean @default(false)
+
+  // One workout plan consists of many days
+  days PlannedWorkoutDay[]
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model CalendarDay {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  date   DateTime
+
+  // A calendar day links to one planned workout day
+  plannedWorkoutDayId Int
+  plannedWorkoutDay   PlannedWorkoutDay @relation(fields: [plannedWorkoutDayId], references: [id])
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model ExerciseRecord {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  timestamp DateTime @default(now())
+
+  // Reference the exercise that was performed
+  exerciseId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+
+  // Record sets (which include weight)
+  recordSets RecordSet[]
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model RecordSet {
+  id       Int    @id @default(autoincrement())
+  reps     Int
+  restTime Int?
+  weight   Float // weight used for this set
+
+  exerciseRecordId Int
+  exerciseRecord   ExerciseRecord @relation(fields: [exerciseRecordId], references: [id])
 }

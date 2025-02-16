@@ -43,6 +43,7 @@ export const PlanCreatorModal = ({
       id: `day-${index + 1}`,
       name: `Workout ${index + 1}`,
       exercises: [],
+      userId: '1',
     }))
     setPlannedWorkoutDays(newDays)
     setSelectedDayId(newDays[0].id)

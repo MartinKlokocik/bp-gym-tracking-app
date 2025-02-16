@@ -35,7 +35,7 @@ export default function SignupPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: `
-          mutation Signup($email: String!, $password: String!, $name: String) {
+          mutation Signup($email: String!, $password: String!, $name: String!) {
             signup(email: $email, password: $password, name: $name) {
               id
               email
