@@ -14,7 +14,7 @@ import {
 } from '@heroui/react'
 import React, { useState } from 'react'
 import { dummyPlannedWorkouts } from '../DummyData'
-import { EditIcon, PlusIcon } from 'lucide-react'
+import { EditIcon, PlusIcon, Trash } from 'lucide-react'
 import { PlanCreatorModal } from './PlanCreatorModal'
 import { getActiveWorkoutPlan } from '../utils'
 
@@ -98,6 +98,15 @@ export const PlanConfigurationModal = ({
                       startContent={<PlusIcon size={14} />}
                     >
                       Create new plan
+                    </Button>
+                    <Button
+                      color="danger"
+                      size="md"
+                      variant="flat"
+                      onPress={() => {}}
+                      startContent={<Trash size={14} />}
+                    >
+                      Delete this plan
                     </Button>
                   </div>
                 </div>

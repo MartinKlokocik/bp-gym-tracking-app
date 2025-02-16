@@ -10,6 +10,7 @@ import {
   Input,
   Card,
   CardBody,
+  Checkbox,
 } from '@heroui/react'
 import { ChevronRight, Pencil } from 'lucide-react'
 import React, { useState } from 'react'
@@ -31,7 +32,7 @@ export const PlanCreatorModal = ({
     PlannedWorkoutDay[]
   >([])
   const [selectedDayId, setSelectedDayId] = useState<string | null>(null)
-
+  const [isPublic, setIsPublic] = useState(true)
   const selectedDay = plannedWorkoutDays.find(day => day.id === selectedDayId)
 
   const initializeWorkoutDays = () => {
@@ -110,7 +111,7 @@ export const PlanCreatorModal = ({
 
             <ModalBody>
               {step === 1 && (
-                <div className="space-y-6">
+                <div className="space-y-3">
                   <Input
                     label="Plan Name"
                     placeholder="Enter plan name"
@@ -127,6 +128,15 @@ export const PlanCreatorModal = ({
                     onChange={e => setNumberOfDays(e.target.value)}
                     variant="bordered"
                   />
+                  <Checkbox
+                    defaultSelected={true}
+                    color="primary"
+                    size="md"
+                    checked={isPublic}
+                    onChange={e => setIsPublic(e.target.checked)}
+                  >
+                    Do you want the plan to be public?
+                  </Checkbox>
                 </div>
               )}
 
