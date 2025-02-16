@@ -2,13 +2,13 @@ import { withAuth } from 'next-auth/middleware'
 
 export default withAuth({
   pages: {
-    signIn: '/login', // Path to your custom login page
+    signIn: '/auth/login', // Path to your custom login page
   },
   callbacks: {
     authorized: ({ req, token }) => {
       // Allow requests to /login and /signup without a token
       const { pathname } = req.nextUrl
-      if (pathname.startsWith('/login') || pathname.startsWith('/signup')) {
+      if (pathname.startsWith('/auth/login') || pathname.startsWith('/auth/signup')) {
         return true
       }
       // Otherwise, require the user to be authenticated

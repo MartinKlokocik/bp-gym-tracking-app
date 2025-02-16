@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
         },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const res = await fetch('http://localhost:4000/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

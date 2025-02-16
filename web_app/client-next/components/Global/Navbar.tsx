@@ -3,12 +3,19 @@
 import Link from 'next/link'
 import {
   Button,
+  DropdownItem,
+  DropdownTrigger,
+  Dropdown,
   NavbarBrand,
   NavbarContent,
   Navbar as NavbarHeroui,
   NavbarItem,
+  User,
+  DropdownMenu,
 } from '@heroui/react'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 
 export const AcmeLogo = () => {
   return (
@@ -26,6 +33,11 @@ export const AcmeLogo = () => {
 export default function Navbar() {
   const pathname = usePathname()
   const activeItem = pathname?.split('/').pop()
+  const { data: session, status } = useSession()
+
+  const handleLogout = () => {
+    signOut()
+  }
 
   return (
     <NavbarHeroui
@@ -52,37 +64,77 @@ export default function Navbar() {
         <AcmeLogo />
         <p className="font-bold text-inherit">ACME</p>
       </NavbarBrand>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem isActive={activeItem === 'dashboard'}>
-          <Link color="foreground" href="/dashboard">
-            Dashboard
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={activeItem === 'workout_section'}>
-          <Link aria-current="page" href="/workout_section">
-            Workouts section
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={activeItem === 'food_section'}>
-          <Link color="foreground" href="/food_section">
-            Food section
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive={activeItem === 'community_section'}>
-          <Link color="foreground" href="/community_section">
-            Community section
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+      {session && status === 'authenticated' && (
+        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+          <NavbarItem isActive={activeItem === 'dashboard'}>
+            <Link color="foreground" href="/dashboard">
+              Dashboard
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={activeItem === 'workout_section'}>
+            <Link aria-current="page" href="/workout_section">
+              Workouts section
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={activeItem === 'food_section'}>
+            <Link color="foreground" href="/food_section">
+              Food section
+            </Link>
+          </NavbarItem>
+          <NavbarItem isActive={activeItem === 'community_section'}>
+            <Link color="foreground" href="/community_section">
+              Community section
+            </Link>
+          </NavbarItem>
+        </NavbarContent>
+      )}
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
+        {!session ? (
+          <>
+            <NavbarItem className="hidden lg:flex">
+              <Link href="/auth/login">Login</Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                as={Link}
+                color="primary"
+                href="/auth/signup"
+                variant="flat"
+              >
+                Sign Up
+              </Button>
+            </NavbarItem>
+          </>
+        ) : (
+          <NavbarItem className="mt-2">
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <User
+                  as="button"
+                  avatarProps={{
+                    isBordered: true,
+                  }}
+                  className="transition-transform"
+                  description={session?.user?.email}
+                  name={session?.user?.name}
+                />
+              </DropdownTrigger>
+              <DropdownMenu aria-label="User Actions" variant="flat">
+                <DropdownItem key="profile">Profile</DropdownItem>
+                <DropdownItem key="settings">Settings</DropdownItem>
+                <DropdownItem
+                  key="logout"
+                  color="danger"
+                  onPress={handleLogout}
+                  as={Link}
+                  href="/auth/login"
+                >
+                  Log Out
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </NavbarItem>
+        )}
       </NavbarContent>
     </NavbarHeroui>
   )
