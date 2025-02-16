@@ -6,6 +6,7 @@ import { ApolloProvider } from '@apollo/client'
 import client from '@/lib/apollo'
 import Navbar from '@/components/Global/Navbar'
 import { HeroUIProvider } from '@heroui/react'
+import { SessionProvider } from 'next-auth/react'
 
 const geistSans = localFont({
   src: '../fonts/GeistVF.woff',
@@ -28,12 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark text-foreground bg-background h-full`}
       >
-        <ApolloProvider client={client}>
-          <HeroUIProvider>
-            <Navbar></Navbar>
-            <div className="h-full">{children}</div>
-          </HeroUIProvider>
-        </ApolloProvider>
+        <SessionProvider>
+          <ApolloProvider client={client}>
+            <HeroUIProvider>
+              <Navbar></Navbar>
+              <div className="h-full">{children}</div>
+            </HeroUIProvider>
+          </ApolloProvider>
+        </SessionProvider>
       </body>
     </html>
   )

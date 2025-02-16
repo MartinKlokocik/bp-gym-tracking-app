@@ -14,7 +14,7 @@ model Calendars {
   planId   Int?
   notes    String?
   dayLogId Int?           @unique(map: "Calendar_DayLogId_Unique")
-  user     Users?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan     TrainingPlans? @relation(fields: [planId], references: [id], onDelete: SetNull)
   dayLog   DayLogs?       @relation(fields: [dayLogId], references: [id]) // Opposite relation
 
@@ -26,7 +26,7 @@ model DayLogs {
   userId         Int
   steps          Int?
   caloriesIntake Int?
-  user           Users         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   workoutLogs    WorkoutLogs[] // Relation with WorkoutLog
   calendar       Calendars?    @relation // Relation with Calendar
 }
@@ -72,7 +72,7 @@ model TrainingPlans {
   description   String?
   isPublic      Boolean         @default(false)
   createdAt     DateTime        @default(now())
-  user          Users?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   planExercises PlanExercises[]
   calendars     Calendars[]
 }
@@ -88,20 +88,7 @@ model UserProfiles {
   weightKg    Float?
   avatarUrl   String?
   createdAt   DateTime  @default(now())
-  user        Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Users {
-  id            Int             @id @default(autoincrement())
-  username      String          @unique
-  email         String          @unique
-  passwordHash  String
-  createdAt     DateTime        @default(now())
-  trainingPlans TrainingPlans[]
-  userProfile   UserProfiles?
-  dayLogs       DayLogs[]
-  calendars     Calendars[]
-  workoutLogs   WorkoutLogs[]
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model WorkoutLogs {
@@ -115,7 +102,21 @@ model WorkoutLogs {
   durationSeconds Int?
   performedAt     DateTime
   heartRate       Int?
-  user            Users?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   exercise        Exercises? @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   dayLog          DayLogs?   @relation(fields: [dayLogId], references: [id]) // Opposite relation
+}
+
+// Do not delete this but take a look at those relations 
+model User {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  password      String
+  name          String?
+  createdAt     DateTime        @default(now())
+  Calendars     Calendars[]
+  DayLogs       DayLogs[]
+  TrainingPlans TrainingPlans[]
+  UserProfiles  UserProfiles?
+  WorkoutLogs   WorkoutLogs[]
 }

@@ -84,17 +84,6 @@ CREATE TABLE "UserProfiles" (
 );
 
 -- CreateTable
-CREATE TABLE "Users" (
-    "id" SERIAL NOT NULL,
-    "username" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "passwordHash" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "WorkoutLogs" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER,
@@ -108,6 +97,17 @@ CREATE TABLE "WorkoutLogs" (
     "heartRate" INTEGER,
 
     CONSTRAINT "WorkoutLogs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "name" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -126,16 +126,13 @@ CREATE UNIQUE INDEX "Exercises_name_key" ON "Exercises"("name");
 CREATE UNIQUE INDEX "UserProfiles_userId_key" ON "UserProfiles"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Users_username_key" ON "Users"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
-
--- CreateIndex
 CREATE UNIQUE INDEX "WorkoutLog_DayLogId_Unique" ON "WorkoutLogs"("dayLogId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
 -- AddForeignKey
-ALTER TABLE "Calendars" ADD CONSTRAINT "Calendars_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Calendars" ADD CONSTRAINT "Calendars_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Calendars" ADD CONSTRAINT "Calendars_planId_fkey" FOREIGN KEY ("planId") REFERENCES "TrainingPlans"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -144,7 +141,7 @@ ALTER TABLE "Calendars" ADD CONSTRAINT "Calendars_planId_fkey" FOREIGN KEY ("pla
 ALTER TABLE "Calendars" ADD CONSTRAINT "Calendars_dayLogId_fkey" FOREIGN KEY ("dayLogId") REFERENCES "DayLogs"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DayLogs" ADD CONSTRAINT "DayLogs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "DayLogs" ADD CONSTRAINT "DayLogs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ExerciseFiles" ADD CONSTRAINT "ExerciseFiles_exerciseId_fkey" FOREIGN KEY ("exerciseId") REFERENCES "Exercises"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -156,13 +153,13 @@ ALTER TABLE "PlanExercises" ADD CONSTRAINT "PlanExercises_planId_fkey" FOREIGN K
 ALTER TABLE "PlanExercises" ADD CONSTRAINT "PlanExercises_exerciseId_fkey" FOREIGN KEY ("exerciseId") REFERENCES "Exercises"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TrainingPlans" ADD CONSTRAINT "TrainingPlans_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "TrainingPlans" ADD CONSTRAINT "TrainingPlans_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserProfiles" ADD CONSTRAINT "UserProfiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "UserProfiles" ADD CONSTRAINT "UserProfiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "WorkoutLogs" ADD CONSTRAINT "WorkoutLogs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "WorkoutLogs" ADD CONSTRAINT "WorkoutLogs_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "WorkoutLogs" ADD CONSTRAINT "WorkoutLogs_exerciseId_fkey" FOREIGN KEY ("exerciseId") REFERENCES "Exercises"("id") ON DELETE CASCADE ON UPDATE CASCADE;
