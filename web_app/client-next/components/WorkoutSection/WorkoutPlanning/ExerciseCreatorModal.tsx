@@ -58,7 +58,7 @@ export const ExerciseCreatorModal = ({
     console.log('Form Submitted:', formData)
 
     let equipmentArray: string[] = []
-    if (formData.equipment) {
+    if (typeof formData.equipment === 'string') {
       equipmentArray = formData.equipment?.split(',').map(item => item.trim())
     } else {
       equipmentArray = []

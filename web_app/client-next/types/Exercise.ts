@@ -19,7 +19,7 @@ export const exerciseSchema = z.object({
   description: z.string().nonempty('Description is required'),
   type: z.string().nonempty('Type is required'),
   muscleGroup: z.string().nonempty('Muscle Group is required'),
-  equipment: z.string().optional(),
+  equipment: z.union([z.array(z.string()), z.string()]).optional(),
   image: z.string().optional(),
   isPublic: z.boolean(),
   isDefault: z.boolean().optional(),
