@@ -126,8 +126,6 @@ export default function Navbar() {
                   key="logout"
                   color="danger"
                   onPress={handleLogout}
-                  as={Link}
-                  href="/auth/login"
                 >
                   Log Out
                 </DropdownItem>
