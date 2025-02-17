@@ -10,10 +10,17 @@ import {
   Input,
   Select,
   SelectItem,
+  Checkbox,
+  Textarea,
 } from '@heroui/react'
 import { Dumbbell, Camera, Clock } from 'lucide-react'
-import React, { useState } from 'react'
-import { muscleGroups } from '../DummyData'
+import { equipment, muscleGroups } from '../DummyData'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useSession } from 'next-auth/react'
+import { useMutation } from '@apollo/client'
+import { CREATE_EXERCISE } from '@/graphql/ExercisesConsts'
+import { exerciseSchema, CreateExerciseFormData } from '@/types/Exercise'
 
 type ExerciseCreatorModalProps = {
   isOpen: boolean
@@ -24,7 +31,50 @@ export const ExerciseCreatorModal = ({
   isOpen,
   onOpenChange,
 }: ExerciseCreatorModalProps) => {
-  const [exerciseType, setExerciseType] = useState('strength')
+  const { data: session } = useSession()
+  const [createExercise, { loading }] = useMutation(CREATE_EXERCISE)
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<CreateExerciseFormData>({
+    resolver: zodResolver(exerciseSchema),
+    defaultValues: {
+      userId: session?.user?.id?.toString() || '1',
+      isDefault: session?.user?.id === '1' ? true : false,
+      isPublic: session?.user?.id === '1' ? true : false,
+      type: 'strength',
+    },
+  })
+
+  const onSubmit = async (formData: CreateExerciseFormData) => {
+    console.log('Form Submitted:', formData)
+
+    let equipmentArray: string[] = []
+    if (formData.equipment) {
+      equipmentArray = formData.equipment?.split(',').map(item => item.trim())
+    } else {
+      equipmentArray = []
+    }
+
+    try {
+      await createExercise({
+        variables: {
+          ...formData,
+          equipment: equipmentArray,
+        },
+      })
+
+      reset()
+      onOpenChange(false)
+    } catch (err) {
+      console.error('Error creating exercise:', err)
+    }
+  }
 
   return (
     <>
@@ -32,11 +82,12 @@ export const ExerciseCreatorModal = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         size="4xl"
+        className="h-auto overflow-y-auto"
         scrollBehavior="inside"
       >
         <ModalContent>
           {onClose => (
-            <>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <ModalHeader className="flex flex-col gap-1">
                 Create New Exercise
               </ModalHeader>
@@ -53,23 +104,25 @@ export const ExerciseCreatorModal = ({
                       <div className="flex gap-2">
                         <Button
                           color={
-                            exerciseType === 'strength' ? 'primary' : 'default'
+                            watch('type') === 'strength' ? 'primary' : 'default'
                           }
                           variant={
-                            exerciseType === 'strength' ? 'solid' : 'flat'
+                            watch('type') === 'strength' ? 'solid' : 'flat'
                           }
                           startContent={<Dumbbell size={18} />}
-                          onPress={() => setExerciseType('strength')}
+                          onPress={() => setValue('type', 'strength')}
                         >
                           Strength
                         </Button>
                         <Button
                           color={
-                            exerciseType === 'cardio' ? 'primary' : 'default'
+                            watch('type') === 'cardio' ? 'primary' : 'default'
                           }
-                          variant={exerciseType === 'cardio' ? 'solid' : 'flat'}
+                          variant={
+                            watch('type') === 'cardio' ? 'solid' : 'flat'
+                          }
                           startContent={<Clock size={18} />}
-                          onPress={() => setExerciseType('cardio')}
+                          onPress={() => setValue('type', 'cardio')}
                         >
                           Cardio
                         </Button>
@@ -80,46 +133,28 @@ export const ExerciseCreatorModal = ({
                       label="Exercise Name"
                       placeholder="e.g., Barbell Squat"
                       variant="bordered"
+                      {...register('name')}
+                      errorMessage={errors.name?.message}
+                      isInvalid={!!errors.name}
                     />
 
-                    <Select
-                      label="Muscle Group"
-                      placeholder="Select a muscle group"
-                      variant="bordered"
-                    >
-                      {muscleGroups.map(group => (
-                        <SelectItem key={group.value} value={group.value}>
-                          {group.label}
-                        </SelectItem>
-                      ))}
-                    </Select>
+                    {/* Description */}
+                    <Textarea
+                      className="w-full"
+                      label="Description"
+                      placeholder="Enter your description"
+                      {...register('description')}
+                      errorMessage={errors.description?.message}
+                      isInvalid={!!errors.description}
+                    />
 
-                    {/* Set Configuration */}
-                    <div className="space-y-4">
-                      <p className="text-medium font-medium">
-                        Default Set Configuration
-                      </p>
-                      <div className="grid grid-cols-2 gap-4">
-                        <Input
-                          type="number"
-                          label="Sets"
-                          placeholder="3"
-                          variant="bordered"
-                        />
-                        <Input
-                          type="number"
-                          label="Reps"
-                          placeholder="12"
-                          variant="bordered"
-                        />
-                        <Input
-                          type="number"
-                          label="Rest (seconds)"
-                          placeholder="60"
-                          variant="bordered"
-                        />
-                      </div>
-                    </div>
+                    <Checkbox
+                      color="primary"
+                      size="md"
+                      {...register('isPublic')}
+                    >
+                      Do you want this exercise to be public?
+                    </Checkbox>
                   </div>
 
                   {/* Right Column */}
@@ -147,14 +182,37 @@ export const ExerciseCreatorModal = ({
                       </div>
                     </div>
 
-                    {/* Notes */}
-                    <div className="space-y-2">
-                      <p className="text-medium font-medium">Notes</p>
-                      <textarea
-                        className="w-full h-32 rounded-lg bg-default-100 border-2 border-default-200 p-3 text-sm"
-                        placeholder="Add form tips, variations, or other notes..."
-                      />
-                    </div>
+                    <Select
+                      {...register('muscleGroup')}
+                      errorMessage={errors.muscleGroup?.message}
+                      isInvalid={!!errors.muscleGroup}
+                      label="Muscle Group"
+                      placeholder="Select a muscle group"
+                      variant="bordered"
+                    >
+                      {muscleGroups.map(group => (
+                        <SelectItem key={group.value} value={group.value}>
+                          {group.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+
+                    <Select
+                      {...register('equipment')}
+                      label="Equipment"
+                      placeholder="Select equipment"
+                      variant="bordered"
+                      selectionMode="multiple"
+                    >
+                      {equipment.map(equipment => (
+                        <SelectItem
+                          key={equipment.value}
+                          value={equipment.value}
+                        >
+                          {equipment.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
                   </div>
                 </div>
               </ModalBody>
@@ -163,11 +221,11 @@ export const ExerciseCreatorModal = ({
                 <Button color="danger" variant="flat" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={onClose}>
-                  Create Exercise
+                <Button type="submit" color="primary">
+                  {loading ? 'Creating...' : 'Create Exercise'}
                 </Button>
               </ModalFooter>
-            </>
+            </form>
           )}
         </ModalContent>
       </Modal>

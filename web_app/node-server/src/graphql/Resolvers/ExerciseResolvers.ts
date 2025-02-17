@@ -13,8 +13,9 @@ const exerciseResolvers = {
         userId,
         name,
         description,
+        type,
         muscleGroup,
-        equipment,
+        equipment,  
         image,
         isPublic,
         isDefault,
@@ -22,8 +23,9 @@ const exerciseResolvers = {
         userId: number | string;
         name: string;
         description: string;
+        type: string;
         muscleGroup: string;
-        equipment: string[];
+        equipment?: string[];
         image?: string;
         isPublic?: boolean;
         isDefault?: boolean;
@@ -32,11 +34,15 @@ const exerciseResolvers = {
       const numericUserId =
         typeof userId === "string" ? parseInt(userId, 10) : userId;
 
+      console.log("userId", numericUserId);
+      console.log("typeof numericUserId", typeof numericUserId);
+
       return await prisma.exercise.create({
         data: {
           userId: numericUserId,
           name,
           description,
+          type,
           muscleGroup,
           equipment,
           image,

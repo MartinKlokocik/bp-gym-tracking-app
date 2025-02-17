@@ -17,6 +17,7 @@ import { dummyPlannedWorkouts } from '../DummyData'
 import { EditIcon, PlusIcon, Trash } from 'lucide-react'
 import { PlanCreatorModal } from './PlanCreatorModal'
 import { getActiveWorkoutPlan } from '../utils'
+import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 
 type PlanConfigurationModalProps = {
   isOpen: boolean
@@ -31,6 +32,11 @@ export const PlanConfigurationModal = ({
     isOpen: isPlanCreatorModalOpen,
     onOpen: onPlanCreatorModalOpen,
     onOpenChange: onPlanCreatorModalOpenChange,
+  } = useDisclosure()
+  const {
+    isOpen: isExerciseCreatorModalOpen,
+    onOpen: onExerciseCreatorModalOpen,
+    onOpenChange: onExerciseCreatorModalOpenChange,
   } = useDisclosure()
   const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState(
     getActiveWorkoutPlan()?.id || ''
@@ -79,35 +85,50 @@ export const PlanConfigurationModal = ({
                     </Link>
                   </div>
 
-                  <div className="flex flex-row justify-start gap-3">
-                    <Button
-                      color="primary"
-                      size="md"
-                      variant="flat"
-                      onPress={() => {}}
-                      startContent={<EditIcon size={14} />}
-                    >
-                      Edit this plan
-                    </Button>
+                  <div className="flex flex-col gap-4 w-full">
+                    <div className="flex flex-row justify-start gap-3 w-full flex-wrap">
+                      <Button
+                        color="primary"
+                        size="md"
+                        variant="flat"
+                        onPress={() => {}}
+                        startContent={<EditIcon size={14} />}
+                      >
+                        Edit this plan
+                      </Button>
 
-                    <Button
-                      color="primary"
-                      size="md"
-                      variant="flat"
-                      onPress={onPlanCreatorModalOpen}
-                      startContent={<PlusIcon size={14} />}
-                    >
-                      Create new plan
-                    </Button>
-                    <Button
-                      color="danger"
-                      size="md"
-                      variant="flat"
-                      onPress={() => {}}
-                      startContent={<Trash size={14} />}
-                    >
-                      Delete this plan
-                    </Button>
+                      <Button
+                        color="danger"
+                        size="md"
+                        variant="flat"
+                        onPress={() => {}}
+                        startContent={<Trash size={14} />}
+                      >
+                        Delete this plan
+                      </Button>
+                    </div>
+
+                    <div className="flex flex-row justify-start gap-3 w-full flex-wrap">
+                      <Button
+                        color="primary"
+                        size="md"
+                        variant="flat"
+                        onPress={onPlanCreatorModalOpen}
+                        startContent={<PlusIcon size={14} />}
+                      >
+                        Create new plan
+                      </Button>
+
+                      <Button
+                        color="primary"
+                        size="md"
+                        variant="flat"
+                        onPress={onExerciseCreatorModalOpen}
+                        startContent={<PlusIcon size={14} />}
+                      >
+                        Create new exercise
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </ModalBody>
@@ -128,6 +149,11 @@ export const PlanConfigurationModal = ({
       <PlanCreatorModal
         isOpen={isPlanCreatorModalOpen}
         onOpenChange={onPlanCreatorModalOpenChange}
+      />
+
+      <ExerciseCreatorModal
+        isOpen={isExerciseCreatorModalOpen}
+        onOpenChange={onExerciseCreatorModalOpenChange}
       />
     </>
   )

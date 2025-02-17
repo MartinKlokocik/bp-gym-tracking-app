@@ -1,15 +1,19 @@
 import { gql } from "@apollo/client";
 
 // Querries
-export const GET_EXERCISES = gql`
+export const GET_ALL_EXERCISES = gql`
   query {
-    Exercises {
+    getAllExercises {
       id
+      userId
       name
       description
-      musclesTargeted
-      equipmentRequired
-      isCustom
+      type
+      muscleGroup
+      equipment
+      image
+      isPublic
+      isDefault
     }
   }
 `;
@@ -17,24 +21,18 @@ export const GET_EXERCISES = gql`
 
 // Mutations
 export const CREATE_EXERCISE = gql`
-  mutation CreateExercise($name: String!, $description: String!, $musclesTargeted: String!, $equipmentRequired: String!) {
-    createExercise(name: $name, description: $description, musclesTargeted: $musclesTargeted, equipmentRequired: $equipmentRequired) {
+  mutation CreateExercise($name: String!, $userId: String!, $description: String!, $type: String!, $muscleGroup: String!, $equipment: [String]!, $image: String, $isPublic: Boolean!, $isDefault: Boolean!) {
+    createExercise(name: $name, userId: $userId, description: $description, type: $type, muscleGroup: $muscleGroup, equipment: $equipment, image: $image, isPublic: $isPublic, isDefault: $isDefault) {
       id
+      userId
       name
       description
-      musclesTargeted
-      equipmentRequired
-      isCustom
+      type
+      muscleGroup
+      equipment
+      image
+      isPublic
+      isDefault
     }
   }
 `;
-
-
-// Interfaces
-export interface Exercise {
-    id: string;
-    name: string;
-    description: string;
-    musclesTargeted: string;
-    equipmentRequired: string;
-  }

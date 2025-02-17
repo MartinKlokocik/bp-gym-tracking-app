@@ -15,9 +15,10 @@ CREATE TABLE "Exercise" (
     "userId" INTEGER NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
     "muscleGroup" TEXT NOT NULL,
-    "equipment" TEXT[],
-    "image" TEXT,
+    "equipment" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "image" TEXT DEFAULT '',
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "isDefault" BOOLEAN NOT NULL DEFAULT false,
 

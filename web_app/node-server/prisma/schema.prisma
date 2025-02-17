@@ -28,8 +28,9 @@ model Exercise {
   userId      Int
   name        String
   description String
+  type        String
   muscleGroup String
-  equipment   String[]
+  equipment   String[] @default([])
   image       String?  @default("")
   isPublic    Boolean  @default(false)
   isDefault   Boolean  @default(false)

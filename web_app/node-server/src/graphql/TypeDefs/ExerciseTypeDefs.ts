@@ -5,10 +5,11 @@ const exercisesTypeDefs = `
     name: String!
     description: String!
     muscleGroup: String!
-    equipment: [String!]!
+    equipment: [String]!
     image: String
     isPublic: Boolean!
     isDefault: Boolean!
+    type: String!
   }
 
   type Query {
@@ -16,7 +17,7 @@ const exercisesTypeDefs = `
   }
 
   type Mutation {
-    createExercise(userId: ID!, name: String!, description: String!, muscleGroup: String!, equipment: [String!]!, image: String, isPublic: Boolean!, isDefault: Boolean!): Exercise!
+    createExercise(userId: String!, name: String!, description: String!, muscleGroup: String!, equipment: [String]!, image: String, isPublic: Boolean!, isDefault: Boolean!, type: String!): Exercise!
   }
 `;
 
