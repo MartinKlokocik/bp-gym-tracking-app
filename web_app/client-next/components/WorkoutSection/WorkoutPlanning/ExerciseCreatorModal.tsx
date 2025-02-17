@@ -47,7 +47,7 @@ export const ExerciseCreatorModal = ({
   } = useForm<CreateExerciseFormData>({
     resolver: zodResolver(exerciseSchema),
     defaultValues: {
-      userId: session?.user?.id?.toString() || '1',
+      userId: session?.user?.id,
       isDefault: session?.user?.id === '1' ? true : false,
       isPublic: session?.user?.id === '1' ? true : false,
       type: 'strength',
