@@ -21,6 +21,8 @@ import { useSession } from 'next-auth/react'
 import { useMutation } from '@apollo/client'
 import { CREATE_EXERCISE } from '@/graphql/ExercisesConsts'
 import { exerciseSchema, CreateExerciseFormData } from '@/types/Exercise'
+import { toast } from 'react-toastify'
+import { useEffect } from 'react'
 
 type ExerciseCreatorModalProps = {
   isOpen: boolean
@@ -32,7 +34,8 @@ export const ExerciseCreatorModal = ({
   onOpenChange,
 }: ExerciseCreatorModalProps) => {
   const { data: session } = useSession()
-  const [createExercise, { loading }] = useMutation(CREATE_EXERCISE)
+  const [createExercise, { data, loading, error }] =
+    useMutation(CREATE_EXERCISE)
 
   const {
     register,
@@ -75,6 +78,18 @@ export const ExerciseCreatorModal = ({
       console.error('Error creating exercise:', err)
     }
   }
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message)
+    }
+  }, [error])
+
+  useEffect(() => {
+    if (data) {
+      toast.success('Exercise created successfully!')
+    }
+  }, [data])
 
   return (
     <>
@@ -142,6 +157,7 @@ export const ExerciseCreatorModal = ({
                     <Textarea
                       className="w-full"
                       label="Description"
+                      variant="bordered"
                       placeholder="Enter your description"
                       {...register('description')}
                       errorMessage={errors.description?.message}
