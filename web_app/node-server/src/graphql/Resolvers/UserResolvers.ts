@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const prisma = new PrismaClient();
 
 interface DecodedUser {
-  userId: number;
+  userId: string;
   email: string;
 }
 

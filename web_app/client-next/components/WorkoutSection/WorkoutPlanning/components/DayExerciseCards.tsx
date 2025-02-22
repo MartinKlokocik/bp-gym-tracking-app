@@ -1,4 +1,4 @@
-import { Button, Select, SelectItem } from '@heroui/react'
+import { Button, Select, SelectItem, Spinner } from '@heroui/react'
 import { Card } from '@heroui/react'
 import {
   DragDropContext,
@@ -8,283 +8,223 @@ import {
   DroppableProvided,
   DropResult,
 } from '@hello-pangea/dnd'
-import { PlannedExercise, PlannedWorkoutDay, Set } from '../../types'
 import { GripVertical, Dumbbell, X } from 'lucide-react'
 import { Chip, Input } from '@heroui/react'
-import { dummyExercises } from '../../DummyData'
-import { getExerciseById } from '../../utils'
+import { GET_ALL_EXERCISES, GET_EXERCISE_BY_ID } from '@/graphql/ExerciseConsts'
+import { useLazyQuery, useQuery } from '@apollo/client'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
+import { GetAllExercisesQuery } from '@/graphql/types'
+import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
+import { UseFormReturn } from 'react-hook-form'
+import {
+  PlannedExercise as PlannedExerciseType,
+  PlannedSet as PlannedSetType,
+} from '@/types/WorkoutPlanning'
+import { ExerciseWithId as ExerciseTypeWithId } from '@/types/Exercise'
+import { useSession } from 'next-auth/react'
 
 type DayExerciseCardsProps = {
-  selectedDay: PlannedWorkoutDay
-  setPlannedWorkoutDays?: React.Dispatch<
-    React.SetStateAction<PlannedWorkoutDay[]>
-  >
-  setSelectedWorkoutDay?: React.Dispatch<
-    React.SetStateAction<PlannedWorkoutDay | undefined>
-  >
+  selectedDayIndex: number
+  form: UseFormReturn<CreateWorkoutPlanFormData>
+  type: 'createPlanForm' | 'editPlanForm'
 }
 
 export const DayExerciseCards = ({
-  selectedDay,
-  setPlannedWorkoutDays,
-  setSelectedWorkoutDay,
+  selectedDayIndex,
+  form,
+  type,
 }: DayExerciseCardsProps) => {
+  const { setValue, watch } = form
+  const { data: session } = useSession()
+  const {
+    data: allExercises,
+    loading: exercisesLoading,
+    error: exercisesError,
+  } = useQuery<GetAllExercisesQuery>(GET_ALL_EXERCISES)
+
+  const [getExerciseById, { error: exerciseError }] =
+    useLazyQuery(GET_EXERCISE_BY_ID)
+
+  useEffect(() => {
+    if (exercisesError) {
+      toast.error(exercisesError.message)
+    }
+  }, [exercisesError])
+
   // Handle drag and drop reordering
   const onDragEnd = (result: DropResult) => {
-    if (!result.destination || !selectedDay) return
+    if (!result.destination || !watch('days')[selectedDayIndex]) return
 
-    const items = Array.from(selectedDay.exercises)
+    const items = Array.from(watch('days')[selectedDayIndex].plannedExercises)
     const [reorderedItem] = items.splice(result.source.index, 1)
     items.splice(result.destination.index, 0, reorderedItem)
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day =>
-          day.id === selectedDay.id ? { ...day, exercises: items } : day
-        )
-      )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay({ ...selectedDay, exercises: items })
+    if (type === 'createPlanForm') {
+      setValue(`days.${selectedDayIndex}.plannedExercises`, items)
     }
   }
 
-  const addExerciseToDay = (dayId: string, exerciseId: string) => {
-    const exercise = getExerciseById(exerciseId)
+  const addExerciseToDay = (exercise: ExerciseTypeWithId) => {
     if (!exercise) return
-    const newExercise: PlannedExercise = {
-      id: dayId + '-' + exerciseId + '-' + Date.now(),
+
+    const newPlannedExercise: PlannedExerciseType = {
+      userId: session?.user?.id.toString() || '',
+      exerciseId: exercise.id,
       exercise: exercise,
-      sets: [
+      plannedSets: [
         {
-          id: `set-${Date.now()}`,
-          reps: 12,
+          reps: 10,
           restTime: 60,
         },
       ],
       notes: '',
     }
 
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day => {
-          if (day.id === dayId) {
-            return {
-              ...day,
-              exercises: [...day.exercises, newExercise],
-            }
-          }
-          return day
-        })
-      )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay(prevDay => {
-        if (!prevDay) return prevDay
-        return {
-          ...prevDay,
-          exercises: [...prevDay.exercises, newExercise],
-        }
-      })
+    if (type === 'createPlanForm') {
+      const existingExercises =
+        watch(`days.${selectedDayIndex}.plannedExercises`) || []
+      const updatedExercises = [...existingExercises, newPlannedExercise]
+      setValue(`days.${selectedDayIndex}.plannedExercises`, updatedExercises)
     }
   }
 
-  const addSetToExercise = (dayId: string, exerciseId: string) => {
-    const newSet: Set = {
-      id: `set-${Date.now()}`,
-      reps: 12,
+  const addSetToExercise = (plannedExerciseIndex: number) => {
+    const newSet: PlannedSetType = {
+      reps: 10,
       restTime: 60,
     }
 
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day => {
-          if (day.id === dayId) {
-            return {
-              ...day,
-              exercises: day.exercises.map(exercise => {
-                if (exercise.id === exerciseId) {
-                  return { ...exercise, sets: [...exercise.sets, newSet] }
-                }
-                return exercise
-              }),
-            }
-          }
-          return day
-        })
+    if (type === 'createPlanForm') {
+      const existingPlannedExercises = watch(
+        `days.${selectedDayIndex}.plannedExercises`
       )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay(prevDay => {
-        if (!prevDay) return prevDay
-        return {
-          ...prevDay,
-          exercises: prevDay.exercises.map(exercise =>
-            exercise.id === exerciseId
-              ? { ...exercise, sets: [...exercise.sets, newSet] }
-              : exercise
-          ),
-        }
-      })
+
+      const updatedPlannedExercises = [...existingPlannedExercises]
+      const plannedExerciseToUpdate = {
+        ...updatedPlannedExercises[plannedExerciseIndex],
+      }
+
+      plannedExerciseToUpdate.plannedSets = [
+        ...plannedExerciseToUpdate.plannedSets,
+        newSet,
+      ]
+      updatedPlannedExercises[plannedExerciseIndex] = plannedExerciseToUpdate
+
+      setValue(
+        `days.${selectedDayIndex}.plannedExercises`,
+        updatedPlannedExercises
+      )
     }
   }
 
-  const removeExerciseFromDay = (dayId: string, exerciseId: string) => {
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day => {
-          if (day.id === dayId) {
-            return {
-              ...day,
-              exercises: day.exercises.filter(
-                exercise => exercise.id !== exerciseId
-              ),
-            }
-          }
-          return day
-        })
+  const removeExerciseFromDay = (plannedExerciseIndex: number) => {
+    if (type === 'createPlanForm') {
+      const existingExercises = watch(
+        `days.${selectedDayIndex}.plannedExercises`
       )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay(prevDay => {
-        if (!prevDay) return prevDay
-        return {
-          ...prevDay,
-          exercises: prevDay.exercises.filter(
-            exercise => exercise.id !== exerciseId
-          ),
-        }
-      })
+
+      const updatedExercises = existingExercises.filter(
+        (_, i) => i !== plannedExerciseIndex
+      )
+
+      setValue(`days.${selectedDayIndex}.plannedExercises`, updatedExercises)
     }
   }
 
   const removeSetFromExercise = (
-    dayId: string,
-    exerciseId: string,
-    setId: string
+    plannedExerciseIndex: number,
+    setIndex: number
   ) => {
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day => {
-          if (day.id === dayId) {
-            return {
-              ...day,
-              exercises: day.exercises.map(exercise => {
-                if (exercise.id === exerciseId) {
-                  return {
-                    ...exercise,
-                    sets: exercise.sets.filter(set => set.id !== setId),
-                  }
-                }
-                return exercise
-              }),
-            }
-          }
-          return day
-        })
+    if (type === 'createPlanForm') {
+      const existingExercises = watch(
+        `days.${selectedDayIndex}.plannedExercises`
       )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay(prevDay => {
-        if (!prevDay) return prevDay
-        return {
-          ...prevDay,
-          exercises: prevDay.exercises.map(exercise =>
-            exercise.id === exerciseId
-              ? {
-                ...exercise,
-                sets: exercise.sets.filter(set => set.id !== setId),
-              }
-            : exercise
-          ),
-        }
-      })
+
+      const updatedExercises = [...existingExercises]
+      const exerciseToUpdate = { ...updatedExercises[plannedExerciseIndex] }
+
+      exerciseToUpdate.plannedSets = exerciseToUpdate.plannedSets.filter(
+        (_, idx) => idx !== setIndex
+      )
+
+      updatedExercises[plannedExerciseIndex] = exerciseToUpdate
+
+      setValue(`days.${selectedDayIndex}.plannedExercises`, updatedExercises)
     }
   }
 
-  const updateExerciseNotes = (
-    dayId: string,
-    exerciseId: string,
-    notes: string
-  ) => {
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day => {
-          if (day.id === dayId) {
-            return {
-              ...day,
-              exercises: day.exercises.map(exercise =>
-                exercise.id === exerciseId ? { ...exercise, notes } : exercise
-              ),
-            }
-          }
-          return day
-        })
+  const updateExerciseNotes = (plannedExerciseIndex: number, notes: string) => {
+    if (type === 'createPlanForm') {
+      const existingPlannedExercises = watch(
+        `days.${selectedDayIndex}.plannedExercises`
       )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay(prevDay => {
-        if (!prevDay) return prevDay
-        return {
-          ...prevDay,
-          exercises: prevDay.exercises.map(exercise =>
-            exercise.id === exerciseId ? { ...exercise, notes } : exercise
-          ),
-        }
-      })
+      const updatedPlannedExercises = [...existingPlannedExercises]
+      const exerciseToUpdate = {
+        ...updatedPlannedExercises[plannedExerciseIndex],
+      }
+      exerciseToUpdate.notes = notes
+      updatedPlannedExercises[plannedExerciseIndex] = exerciseToUpdate
+      setValue(
+        `days.${selectedDayIndex}.plannedExercises`,
+        updatedPlannedExercises
+      )
     }
   }
 
   const updateSetDetails = (
-    dayId: string,
-    exerciseId: string,
-    setId: string,
-    field: keyof Set,
+    plannedExerciseIndex: number,
+    plannedSetIndex: number,
+    field: keyof PlannedSetType,
     value: number | string
   ) => {
-    if (setPlannedWorkoutDays) {
-      setPlannedWorkoutDays(days =>
-        days.map(day => {
-          if (day.id === dayId) {
-            return {
-              ...day,
-              exercises: day.exercises.map(exercise => {
-                if (exercise.id === exerciseId) {
-                  return {
-                    ...exercise,
-                    sets: exercise.sets.map(set =>
-                      set.id === setId ? { ...set, [field]: value } : set
-                    ),
-                  }
-                }
-                return exercise
-              }),
-            }
-          }
-          return day
-        })
+    if (type === 'createPlanForm') {
+      const existingPlannedExercises = watch(
+        `days.${selectedDayIndex}.plannedExercises`
       )
-    } else if (setSelectedWorkoutDay) {
-      setSelectedWorkoutDay(prevDay => {
-        if (!prevDay) return prevDay
-        return {
-          ...prevDay,
-          exercises: prevDay.exercises.map(exercise =>
-            exercise.id === exerciseId
-            ? {
-                ...exercise,
-                sets: exercise.sets.map(set =>
-                  set.id === setId ? { ...set, [field]: value } : set
-                ),
-              }
-            : exercise
-          ),
-        }
+      const updatedPlannedExercises = [...existingPlannedExercises]
+      const plannedExerciseToUpdate = {
+        ...updatedPlannedExercises[plannedExerciseIndex],
+      }
+      plannedExerciseToUpdate.plannedSets[plannedSetIndex][field] = parseInt(
+        value as string
+      )
+      updatedPlannedExercises[plannedExerciseIndex] = plannedExerciseToUpdate
+      setValue(
+        `days.${selectedDayIndex}.plannedExercises`,
+        updatedPlannedExercises
+      )
+    }
+  }
+  const handleAddExercise = async (exerciseId: string) => {
+    try {
+      const { data } = await getExerciseById({
+        variables: {
+          id: exerciseId,
+        },
       })
+
+      if (exerciseError) {
+        toast.error(exerciseError.message)
+        return
+      }
+
+      if (data?.getExerciseById) {
+        addExerciseToDay(data.getExerciseById)
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error('Something went wrong fetching exercise data.')
     }
   }
 
   const renderExerciseCard = (
-    plannedExercise: PlannedExercise,
-    index: number
+    plannedExercise: PlannedExerciseType,
+    plannedExerciseIndex: number
   ) => (
     <Draggable
-      key={plannedExercise.id}
-      draggableId={plannedExercise.id}
-      index={index}
+      key={plannedExerciseIndex}
+      draggableId={plannedExerciseIndex.toString()}
+      index={plannedExerciseIndex}
     >
       {(provided: DraggableProvided) => (
         <Card
@@ -306,9 +246,7 @@ export const DayExerciseCards = ({
                   size="sm"
                   color="primary"
                   variant="flat"
-                  onPress={() =>
-                    addSetToExercise(selectedDay!.id, plannedExercise.id)
-                  }
+                  onPress={() => addSetToExercise(plannedExerciseIndex)}
                 >
                   Add Set
                 </Button>
@@ -317,9 +255,7 @@ export const DayExerciseCards = ({
                   color="danger"
                   variant="flat"
                   isIconOnly
-                  onPress={() =>
-                    removeExerciseFromDay(selectedDay!.id, plannedExercise.id)
-                  }
+                  onPress={() => removeExerciseFromDay(plannedExerciseIndex)}
                 >
                   <X size={16} />
                 </Button>
@@ -331,30 +267,34 @@ export const DayExerciseCards = ({
               placeholder="Add notes for this exercise..."
               value={plannedExercise.notes || ''}
               onChange={e =>
-                updateExerciseNotes(
-                  selectedDay!.id,
-                  plannedExercise.id,
-                  e.target.value
-                )
+                updateExerciseNotes(plannedExerciseIndex, e.target.value)
               }
             />
 
             <div className="flex flex-wrap gap-3">
-              {plannedExercise.sets.map((set, idx) => (
-                <div key={set.id} className="flex flex-wrap items-center gap-2">
+              {watch(
+                `days.${selectedDayIndex}.plannedExercises.${plannedExerciseIndex}.plannedSets`
+              ).map((set, setIndex) => (
+                <div
+                  key={setIndex}
+                  className="flex flex-wrap items-center gap-2"
+                >
                   <Chip size="sm" variant="flat">
-                    Set {idx + 1}
+                    Set {setIndex + 1}
                   </Chip>
                   <Input
                     type="number"
                     size="sm"
                     className="w-20"
-                    value={set.reps.toString()}
+                    value={
+                      watch(
+                        `days.${selectedDayIndex}.plannedExercises.${plannedExerciseIndex}.plannedSets.${setIndex}.reps`
+                      )?.toString() || ''
+                    }
                     onChange={e =>
                       updateSetDetails(
-                        selectedDay!.id,
-                        plannedExercise.id,
-                        set.id,
+                        plannedExerciseIndex,
+                        setIndex,
                         'reps',
                         parseInt(e.target.value) || 0
                       )
@@ -369,12 +309,15 @@ export const DayExerciseCards = ({
                     type="number"
                     size="sm"
                     className="w-20"
-                    value={set.restTime?.toString() || '60'}
+                    value={
+                      watch(
+                        `days.${selectedDayIndex}.plannedExercises.${plannedExerciseIndex}.plannedSets.${setIndex}.restTime`
+                      )?.toString() || ''
+                    }
                     onChange={e =>
                       updateSetDetails(
-                        selectedDay!.id,
-                        plannedExercise.id,
-                        set.id,
+                        plannedExerciseIndex,
+                        setIndex,
                         'restTime',
                         parseInt(e.target.value) || 60
                       )
@@ -385,18 +328,14 @@ export const DayExerciseCards = ({
                       </div>
                     }
                   />
-                  {plannedExercise.sets.length > 1 && (
+                  {plannedExercise.plannedSets.length > 1 && (
                     <Button
                       size="sm"
                       isIconOnly
                       color="danger"
                       variant="light"
                       onPress={() =>
-                        removeSetFromExercise(
-                          selectedDay!.id,
-                          plannedExercise.id,
-                          set.id
-                        )
+                        removeSetFromExercise(plannedExerciseIndex, setIndex)
                       }
                     >
                       <X size={14} />
@@ -416,40 +355,42 @@ export const DayExerciseCards = ({
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <p className="text-medium font-medium">
-            Exercises for {selectedDay.name}
+            Exercises for {watch(`days.${selectedDayIndex}.name`)}
           </p>
           <Select
-            key={selectedDay.id}
+            key={selectedDayIndex}
             placeholder="Add Exercise"
             className="max-w-xs"
             aria-label="Select an exercise to add"
             onChange={e => {
-              const exercise = dummyExercises.find(
-                ex => ex.id === e.target.value
-              )
-              if (exercise && selectedDay) {
-                addExerciseToDay(selectedDay.id, exercise.id)
-              }
+              handleAddExercise(e.target.value)
             }}
           >
-            {dummyExercises.map(exercise => (
-              <SelectItem key={exercise.id} value={exercise.id}>
-                {exercise.name}
+            {exercisesLoading ? (
+              <SelectItem key="loading">
+                <Spinner />
               </SelectItem>
-            ))}
+            ) : (
+              allExercises?.getAllExercises?.map(exercise => (
+                <SelectItem key={exercise.id} value={exercise.id}>
+                  {exercise.name}
+                </SelectItem>
+              )) || []
+            )}
           </Select>
         </div>
 
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable
-            droppableId={selectedDay.id}
+            droppableId={selectedDayIndex.toString()}
             isDropDisabled={false}
             isCombineEnabled={false}
             ignoreContainerClipping={false}
           >
             {(provided: DroppableProvided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
-                {selectedDay.exercises.length === 0 ? (
+                {watch(`days.${selectedDayIndex}.plannedExercises`).length ===
+                0 ? (
                   <div className="text-center p-8 border-2 border-dashed rounded-lg">
                     <p className="text-default-500">No exercises added yet</p>
                     <p className="text-sm text-default-400">
@@ -457,8 +398,9 @@ export const DayExerciseCards = ({
                     </p>
                   </div>
                 ) : (
-                  selectedDay.exercises.map((exercise, index) =>
-                    renderExerciseCard(exercise, index)
+                  watch(`days.${selectedDayIndex}.plannedExercises`).map(
+                    (plannedExercise, index) =>
+                      renderExerciseCard(plannedExercise, index)
                   )
                 )}
                 {provided.placeholder}

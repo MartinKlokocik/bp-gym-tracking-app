@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
@@ -11,8 +11,7 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Exercise" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "type" TEXT NOT NULL,
@@ -21,80 +20,81 @@ CREATE TABLE "Exercise" (
     "image" TEXT DEFAULT '',
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
     "isDefault" BOOLEAN NOT NULL DEFAULT false,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Exercise_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "PlannedExercise" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
     "notes" TEXT,
-    "exerciseId" INTEGER NOT NULL,
-    "plannedWorkoutDayId" INTEGER NOT NULL,
+    "exerciseId" TEXT NOT NULL,
+    "plannedWorkoutDayId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "PlannedExercise_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "PlannedSet" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "reps" INTEGER NOT NULL,
     "restTime" INTEGER,
-    "plannedExerciseId" INTEGER NOT NULL,
+    "plannedExerciseId" TEXT NOT NULL,
 
     CONSTRAINT "PlannedSet_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "PlannedWorkoutDay" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "plannedWorkoutId" INTEGER NOT NULL,
+    "plannedWorkoutId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "PlannedWorkoutDay_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "PlannedWorkout" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "schema" TEXT NOT NULL,
+    "schema" TEXT NOT NULL DEFAULT '',
     "isActive" BOOLEAN NOT NULL DEFAULT false,
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "PlannedWorkout_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "CalendarDay" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "plannedWorkoutDayId" INTEGER NOT NULL,
+    "plannedWorkoutDayId" TEXT NOT NULL,
 
     CONSTRAINT "CalendarDay_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ExerciseRecord" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "exerciseId" INTEGER NOT NULL,
+    "exerciseId" TEXT NOT NULL,
 
     CONSTRAINT "ExerciseRecord_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "RecordSet" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "reps" INTEGER NOT NULL,
     "restTime" INTEGER,
     "weight" DOUBLE PRECISION NOT NULL,
-    "exerciseRecordId" INTEGER NOT NULL,
+    "exerciseRecordId" TEXT NOT NULL,
 
     CONSTRAINT "RecordSet_pkey" PRIMARY KEY ("id")
 );

@@ -18,6 +18,7 @@ import { EditIcon, PlusIcon, Trash } from 'lucide-react'
 import { PlanCreatorModal } from './PlanCreatorModal'
 import { getActiveWorkoutPlan } from '../utils'
 import { ExerciseCreatorModal } from './ExerciseCreatorModal'
+import { useSession } from 'next-auth/react'
 
 type PlanConfigurationModalProps = {
   isOpen: boolean
@@ -28,6 +29,8 @@ export const PlanConfigurationModal = ({
   isOpen,
   onOpenChange,
 }: PlanConfigurationModalProps) => {
+  const { data: session } = useSession()
+
   const {
     isOpen: isPlanCreatorModalOpen,
     onOpen: onPlanCreatorModalOpen,
@@ -41,6 +44,10 @@ export const PlanConfigurationModal = ({
   const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState(
     getActiveWorkoutPlan()?.id || ''
   )
+
+  if (!session) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -149,6 +156,7 @@ export const PlanConfigurationModal = ({
       <PlanCreatorModal
         isOpen={isPlanCreatorModalOpen}
         onOpenChange={onPlanCreatorModalOpenChange}
+        user={session?.user}
       />
 
       <ExerciseCreatorModal

@@ -25,4 +25,9 @@ export const exerciseSchema = z.object({
   isDefault: z.boolean().optional(),
 })
 
+export const exerciseSchemaWithId = exerciseSchema.extend({
+  id: z.string(),
+})
+
 export type CreateExerciseFormData = z.infer<typeof exerciseSchema>
+export type ExerciseWithId = z.infer<typeof exerciseSchemaWithId>

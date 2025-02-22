@@ -5,6 +5,8 @@ const prisma = new PrismaClient();
 const exerciseResolvers = {
   Query: {
     getAllExercises: async () => await prisma.exercise.findMany(),
+    getExerciseById: async (_: unknown, { id }: { id: string }) =>
+      await prisma.exercise.findUnique({ where: { id: id } }),
   },
   Mutation: {
     createExercise: async (
@@ -15,12 +17,12 @@ const exerciseResolvers = {
         description,
         type,
         muscleGroup,
-        equipment,  
+        equipment,
         image,
         isPublic,
         isDefault,
       }: {
-        userId: number | string;
+        userId: string;
         name: string;
         description: string;
         type: string;
@@ -31,15 +33,9 @@ const exerciseResolvers = {
         isDefault?: boolean;
       }
     ) => {
-      const numericUserId =
-        typeof userId === "string" ? parseInt(userId, 10) : userId;
-
-      console.log("userId", numericUserId);
-      console.log("typeof numericUserId", typeof numericUserId);
-
       return await prisma.exercise.create({
         data: {
-          userId: numericUserId,
+          userId,
           name,
           description,
           type,

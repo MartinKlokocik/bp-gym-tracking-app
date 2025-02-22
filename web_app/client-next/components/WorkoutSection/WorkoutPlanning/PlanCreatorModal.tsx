@@ -13,64 +13,144 @@ import {
   Checkbox,
 } from '@heroui/react'
 import { ChevronRight, Pencil } from 'lucide-react'
-import React, { useState } from 'react'
-import { PlannedWorkoutDay } from '../types'
+import React, { useEffect, useState } from 'react'
 import { DayExerciseCards } from './components/DayExerciseCards'
+import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { plannedWorkoutSchema } from '@/types/WorkoutPlanning'
+import { useForm } from 'react-hook-form'
+import { User } from 'next-auth'
+import { useMutation } from '@apollo/client'
+import { CREATE_PLANNED_WORKOUT } from '@/graphql/PlannedWorkoutConsts'
+import { toast } from 'react-toastify'
+
 type PlanCreatorModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  user: User
 }
 
 export const PlanCreatorModal = ({
   isOpen,
   onOpenChange,
+  user,
 }: PlanCreatorModalProps) => {
+  const [
+    createPlannedWorkout,
+    {
+      data: createPlannedWorkoutData,
+      loading: createPlannedWorkoutLoading,
+      error: createPlannedWorkoutError,
+    },
+  ] = useMutation(CREATE_PLANNED_WORKOUT)
+
   const [step, setStep] = useState(1)
-  const [plannedWorkoutDayName, setPlannedWorkoutDayName] = useState('')
-  const [numberOfDays, setNumberOfDays] = useState('')
-  const [plannedWorkoutDays, setPlannedWorkoutDays] = useState<
-    PlannedWorkoutDay[]
-  >([])
-  const [selectedDayId, setSelectedDayId] = useState<string | null>(null)
-  const [isPublic, setIsPublic] = useState(true)
-  const selectedDay = plannedWorkoutDays.find(day => day.id === selectedDayId)
+  const [numberOfDays, setNumberOfDays] = useState<string>('1')
+  const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0)
+
+  const formMethods = useForm<CreateWorkoutPlanFormData>({
+    resolver: zodResolver(plannedWorkoutSchema),
+    defaultValues: {
+      userId: user?.id.toString(),
+      isPublic: user?.id.toString() === '1' ? true : false,
+      isActive: false,
+      schema: '',
+      days: [
+        {
+          userId: user?.id.toString(),
+          plannedExercises: [
+            {
+              userId: user?.id.toString(),
+              plannedSets: [{ reps: 8, restTime: 60 }],
+            },
+          ],
+        },
+      ],
+    },
+  })
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+    reset,
+  } = formMethods
+
+  useEffect(() => {
+    if (errors) {
+      console.log('form errors: ', errors)
+    }
+  }, [errors])
+
+  const onSubmit = async (formData: CreateWorkoutPlanFormData) => {
+    console.log('Form submitted:', formData)
+
+    try {
+      await createPlannedWorkout({
+        variables: {
+          input: {
+            ...formData,
+            days: formData.days.map(day => ({
+              ...day,
+              plannedExercises: day.plannedExercises.map(
+                ({ exercise, ...rest }) => ({
+                  ...rest,
+                  exerciseId: exercise.id,
+                })
+              ),
+            })),
+          },
+        },
+      })
+
+      onOpenChange(false)
+      reset()
+    } catch (err) {
+      console.error('Error creating workout plan:', err)
+    }
+  }
+
+  useEffect(() => {
+    if (createPlannedWorkoutError) {
+      toast.error(createPlannedWorkoutError.message)
+    }
+  }, [createPlannedWorkoutError])
+
+  useEffect(() => {
+    if (createPlannedWorkoutData) {
+      toast.success('Workout plan created successfully!')
+    }
+  }, [createPlannedWorkoutData])
 
   const initializeWorkoutDays = () => {
     const days = parseInt(numberOfDays)
     if (isNaN(days) || days < 1) return
 
     const newDays = Array.from({ length: days }, (_, index) => ({
-      id: `day-${index + 1}`,
       name: `Workout ${index + 1}`,
-      exercises: [],
-      userId: '1',
+      plannedExercises: [],
+      userId: user?.id.toString() || '',
     }))
-    setPlannedWorkoutDays(newDays)
-    setSelectedDayId(newDays[0].id)
-  }
-
-  // Handle day name update
-  const updateDayName = (dayId: string, newName: string) => {
-    setPlannedWorkoutDays(days =>
-      days.map(day => (day.id === dayId ? { ...day, name: newName } : day))
-    )
+    setValue('days', newDays)
   }
 
   const renderPreview = () => (
     <div className="space-y-6">
-      <h3 className="text-xl font-bold">{plannedWorkoutDayName}</h3>
-      {plannedWorkoutDays.map(day => (
-        <Card key={day.id} className="p-4 bg-default-100">
+      <h3 className="text-xl font-bold">{watch('name')}</h3>
+      {watch('days').map((day, index) => (
+        <Card key={index} className="p-4 bg-default-100">
           <h4 className="text-lg font-semibold mb-4">{day.name}</h4>
-          {day.exercises.map(plannedExercise => (
-            <div key={plannedExercise.id} className="mb-4">
-              <p className="font-medium">{plannedExercise.exercise.name}</p>
+          {day.plannedExercises.map((plannedExercise, index) => (
+            <div key={index} className="mb-4">
+              <p className="font-medium">{plannedExercise.exercise?.name}</p>
               <div className="ml-4">
-                {plannedExercise.sets.map((set, idx) => (
-                  <p key={set.id} className="text-sm text-default-600">
-                    Set {idx + 1}: {set.reps} reps{' '}
-                    {set.restTime !== undefined
-                      ? ` - Rest: ${set.restTime}s`
+                {plannedExercise.plannedSets.map((plannedSet, index) => (
+                  <p key={index} className="text-sm text-default-600">
+                    Set {index + 1}: {plannedSet.reps} reps{' '}
+                    {plannedSet.restTime !== undefined
+                      ? ` - Rest: ${plannedSet.restTime}s`
                       : ''}
                   </p>
                 ))}
@@ -91,166 +171,173 @@ export const PlanCreatorModal = ({
     <Modal
       isOpen={isOpen}
       onOpenChange={open => {
-        if (!open) {
-          setPlannedWorkoutDayName('')
-          setNumberOfDays('')
-          setPlannedWorkoutDays([])
-          setSelectedDayId(null)
-          setStep(1)
-        }
         onOpenChange(open)
       }}
       size={step === 1 ? 'md' : '4xl'}
       scrollBehavior="inside"
     >
-      <ModalContent>
-        {onClose => (
-          <>
-            <ModalHeader className="flex flex-col gap-1">
-              Create Workout Plan - Step {step} of 3
-            </ModalHeader>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ModalContent>
+          {onClose => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Create Workout Plan - Step {step} of 3
+              </ModalHeader>
 
-            <ModalBody>
-              {step === 1 && (
-                <div className="space-y-3">
-                  <Input
-                    label="Plan Name"
-                    placeholder="Enter plan name"
-                    value={plannedWorkoutDayName}
-                    onChange={e => setPlannedWorkoutDayName(e.target.value)}
-                    variant="bordered"
-                  />
-                  <Input
-                    type="number"
-                    label="Number of Workout Days"
-                    placeholder="Enter number of days"
-                    min={1}
-                    value={numberOfDays}
-                    onChange={e => setNumberOfDays(e.target.value)}
-                    variant="bordered"
-                  />
-                  <Checkbox
-                    defaultSelected={true}
-                    color="primary"
-                    size="md"
-                    checked={isPublic}
-                    onChange={e => setIsPublic(e.target.checked)}
-                  >
-                    Do you want the plan to be public?
-                  </Checkbox>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-6 w-full">
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-4 w-4/5">
-                      <p className="text-medium font-medium">Workout Days</p>
-                      {plannedWorkoutDays.map(day => (
-                        <Card
-                          key={day.id}
-                          className={
-                            selectedDayId === day.id
-                              ? 'border-2 border-primary'
-                              : ''
-                          }
-                        >
-                          <CardBody className="p-3">
-                            <div className="flex justify-between items-center">
-                              <Input
-                                size="sm"
-                                value={day.name}
-                                onChange={e =>
-                                  updateDayName(day.id, e.target.value)
-                                }
-                                onClick={e => {
-                                  e.stopPropagation()
-                                }}
-                                endContent={
-                                  <Pencil className="text-default-400 w-5" />
-                                }
-                              />
-                              <Button
-                                isIconOnly
-                                variant="light"
-                                className="ml-1"
-                                onPress={() => setSelectedDayId(day.id)}
-                              >
-                                <ChevronRight className="text-default-600" />
-                              </Button>
-                            </div>
-                          </CardBody>
-                        </Card>
-                      ))}
-                    </div>
-
-                    {selectedDay && (
-                      <DayExerciseCards
-                        selectedDay={selectedDay}
-                        setPlannedWorkoutDays={setPlannedWorkoutDays}
-                      />
-                    )}
+              <ModalBody>
+                {step === 1 && (
+                  <div className="space-y-3">
+                    <Input
+                      label="Plan Name"
+                      placeholder="Enter plan name"
+                      variant="bordered"
+                      required
+                      {...register('name')}
+                      errorMessage={errors.name?.message}
+                      isInvalid={!!errors.name}
+                    />
+                    <Input
+                      type="number"
+                      label="Number of Workout Days"
+                      placeholder="Enter number of days"
+                      min={1}
+                      required
+                      value={numberOfDays}
+                      onChange={e => setNumberOfDays(e.target.value)}
+                      variant="bordered"
+                    />
+                    <Checkbox
+                      defaultSelected={true}
+                      color="primary"
+                      size="md"
+                      {...register('isPublic')}
+                    >
+                      Do you want the plan to be public?
+                    </Checkbox>
                   </div>
-                </div>
-              )}
+                )}
 
-              {step === 3 && renderPreview()}
-            </ModalBody>
+                {step === 2 && (
+                  <div className="space-y-6 w-full">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="space-y-4 w-4/5">
+                        <p className="text-medium font-medium">Workout Days</p>
+                        {watch('days').map((day, index) => (
+                          <Card
+                            key={index}
+                            className={
+                              selectedDayIndex === index
+                                ? 'border-2 border-primary'
+                                : ''
+                            }
+                          >
+                            <CardBody className="p-3">
+                              <div className="flex justify-between items-center">
+                                <Input
+                                  size="sm"
+                                  {...register(`days.${index}.name`)}
+                                  errorMessage={
+                                    errors.days?.[index]?.name?.message
+                                  }
+                                  isInvalid={!!errors.days?.[index]?.name}
+                                  variant="bordered"
+                                  onClick={e => {
+                                    e.stopPropagation()
+                                  }}
+                                  endContent={
+                                    <Pencil className="text-default-400 w-5" />
+                                  }
+                                />
+                                <Button
+                                  isIconOnly
+                                  variant="light"
+                                  className="ml-1"
+                                  onPress={() => setSelectedDayIndex(index)}
+                                >
+                                  <ChevronRight className="text-default-600" />
+                                </Button>
+                              </div>
+                            </CardBody>
+                          </Card>
+                        ))}
+                      </div>
 
-            <ModalFooter>
-              <Button color="danger" variant="flat" onPress={onClose}>
-                Cancel
-              </Button>
-              {step === 1 ? (
-                <Button
-                  color="primary"
-                  onPress={() => {
-                    if (plannedWorkoutDayName && numberOfDays) {
-                      initializeWorkoutDays()
-                      setStep(2)
-                    }
-                  }}
-                  isDisabled={!plannedWorkoutDayName || !numberOfDays}
-                >
-                  Next
+                      {watch('days')[selectedDayIndex] && (
+                        <DayExerciseCards
+                          selectedDayIndex={selectedDayIndex}
+                          type="createPlanForm"
+                          form={formMethods}
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {step === 3 && renderPreview()}
+              </ModalBody>
+
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onClose}>
+                  Cancel
                 </Button>
-              ) : step === 2 ? (
-                <div className="flex gap-2">
-                  <Button
-                    color="default"
-                    variant="flat"
-                    onPress={() => setStep(1)}
-                  >
-                    Back
-                  </Button>
+                {step === 1 ? (
                   <Button
                     color="primary"
-                    onPress={() => setStep(3)}
-                    isDisabled={plannedWorkoutDays.some(
-                      day => day.exercises.length === 0
-                    )}
+                    onPress={() => {
+                      if (watch('name') && numberOfDays) {
+                        initializeWorkoutDays()
+                        setStep(2)
+                      }
+                    }}
+                    isDisabled={!watch('name') || !numberOfDays}
                   >
-                    Preview
+                    Next
                   </Button>
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <Button
-                    color="default"
-                    variant="flat"
-                    onPress={() => setStep(2)}
-                  >
-                    Back
-                  </Button>
-                  <Button color="primary" onPress={onClose}>
-                    Create Plan
-                  </Button>
-                </div>
-              )}
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
+                ) : step === 2 ? (
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      color="default"
+                      variant="flat"
+                      onPress={() => setStep(1)}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="button"
+                      color="primary"
+                      onClick={e => {
+                        setStep(3)
+                        e.preventDefault()
+                      }}
+                      isDisabled={watch('days').some(
+                        day => day.plannedExercises.length === 0
+                      )}
+                    >
+                      Preview
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button
+                      color="default"
+                      variant="flat"
+                      onPress={() => setStep(2)}
+                    >
+                      Back
+                    </Button>
+                    <Button color="primary" type="submit">
+                      {createPlannedWorkoutLoading
+                        ? 'Creating...'
+                        : 'Create Plan'}
+                    </Button>
+                  </div>
+                )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </form>
     </Modal>
   )
 }

@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
   password  String
@@ -24,8 +24,7 @@ model User {
 }
 
 model Exercise {
-  id          Int      @id @default(autoincrement())
-  userId      Int
+  id          String   @id @default(uuid())
   name        String
   description String
   type        String
@@ -37,87 +36,84 @@ model Exercise {
 
   // Relations
   user             User              @relation(fields: [userId], references: [id])
+  userId      String
   plannedExercises PlannedExercise[]
   exerciseRecords  ExerciseRecord[]
 }
 
 model PlannedExercise {
-  id     Int  @id @default(autoincrement())
-  userId Int
+  id     String  @id @default(uuid())
   notes  String?
 
-  // Relation to the base exercise:
-  exerciseId Int
-  exercise   Exercise @relation(fields: [exerciseId], references: [id])
-
-  // Planned sets for this exercise
+  // Relations
   plannedSets PlannedSet[]
 
-  // Relation to the workout day:
-  plannedWorkoutDayId Int
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String
   plannedWorkoutDay   PlannedWorkoutDay @relation(fields: [plannedWorkoutDayId], references: [id])
+  plannedWorkoutDayId String
 
   user User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model PlannedSet {
-  id       Int @id @default(autoincrement())
+  id       String @id @default(uuid())
   reps     Int
   restTime Int?
 
-  plannedExerciseId Int
   plannedExercise   PlannedExercise @relation(fields: [plannedExerciseId], references: [id])
+  plannedExerciseId String
 }
 
 model PlannedWorkoutDay {
-  id               Int            @id @default(autoincrement())
-  userId           Int
+  id               String            @id @default(uuid())
   name             String
+
+  // Relations
+  calendarDays   CalendarDay[]
   plannedExercises PlannedExercise[]
 
-  // Relation to the overall workout plan:
-  plannedWorkoutId Int
   plannedWorkout   PlannedWorkout @relation(fields: [plannedWorkoutId], references: [id])
-
-  // A workout day may appear on multiple calendar days
-  calendarDays CalendarDay[]
-
-  user User @relation(fields: [userId], references: [id])
+  plannedWorkoutId String
+  user           User           @relation(fields: [userId], references: [id])
+  userId         String
 }
 
+
 model PlannedWorkout {
-  id       Int    @id @default(autoincrement())
-  userId   Int
+  id       String   @id @default(uuid())
   name     String
-  schema   String
+  schema   String  @default("")
   isActive Boolean @default(false)
   isPublic Boolean @default(false)
 
-  // One workout plan consists of many days
+  // Relations
   days PlannedWorkoutDay[]
 
   user User @relation(fields: [userId], references: [id])
+  userId   String
 }
 
 model CalendarDay {
-  id     Int      @id @default(autoincrement())
-  userId Int
+  id     String   @id @default(uuid())
+  userId String
   date   DateTime
 
   // A calendar day links to one planned workout day
-  plannedWorkoutDayId Int
+  plannedWorkoutDayId String
   plannedWorkoutDay   PlannedWorkoutDay @relation(fields: [plannedWorkoutDayId], references: [id])
 
   user User @relation(fields: [userId], references: [id])
 }
 
 model ExerciseRecord {
-  id        Int      @id @default(autoincrement())
-  userId    Int
+  id        String   @id @default(uuid())
+  userId    String
   timestamp DateTime @default(now())
 
   // Reference the exercise that was performed
-  exerciseId Int
+  exerciseId String
   exercise   Exercise @relation(fields: [exerciseId], references: [id])
 
   // Record sets (which include weight)
@@ -127,11 +123,11 @@ model ExerciseRecord {
 }
 
 model RecordSet {
-  id       Int    @id @default(autoincrement())
+  id       String   @id @default(uuid())
   reps     Int
   restTime Int?
   weight   Float // weight used for this set
 
-  exerciseRecordId Int
+  exerciseRecordId String
   exerciseRecord   ExerciseRecord @relation(fields: [exerciseRecordId], references: [id])
 }

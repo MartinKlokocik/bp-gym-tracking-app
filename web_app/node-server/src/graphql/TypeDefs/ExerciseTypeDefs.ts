@@ -1,7 +1,7 @@
 const exercisesTypeDefs = `
   type Exercise {
-    id: ID!
-    userId: ID!
+    id: String!
+    userId: String!
     name: String!
     description: String!
     muscleGroup: String!
@@ -14,6 +14,7 @@ const exercisesTypeDefs = `
 
   type Query {
     getAllExercises: [Exercise!]!
+    getExerciseById(id: String!): Exercise!
   }
 
   type Mutation {
