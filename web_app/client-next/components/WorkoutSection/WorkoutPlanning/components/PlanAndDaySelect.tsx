@@ -3,7 +3,7 @@ import { Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { PlannedWorkout, PlannedWorkoutDay } from '../../types'
+import { PlannedWorkout } from '../../types'
 import { getActiveWorkoutPlan } from '../../utils'
 
 import {
@@ -11,11 +11,14 @@ import {
   GET_PLANNED_WORKOUT_BY_ID,
 } from '@/graphql/PlannedWorkoutConsts'
 import { GET_WORKOUT_DAY_BY_ID } from '@/graphql/WorkoutDayConsts'
-
+import {
+  PlannedWorkoutDayWithId,
+  PlannedWorkoutWithId,
+} from '@/types/CalendarDay'
 type PlanAndDaySelectProps = {
-  selectedWorkoutDay: PlannedWorkoutDay | undefined
+  selectedWorkoutDay: PlannedWorkoutDayWithId | undefined
   setSelectedWorkoutDay: React.Dispatch<
-    React.SetStateAction<PlannedWorkoutDay | undefined>
+    React.SetStateAction<PlannedWorkoutDayWithId | undefined>
   >
 }
 export const PlanAndDaySelect = ({
@@ -35,7 +38,7 @@ export const PlanAndDaySelect = ({
   )
 
   const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<
-    PlannedWorkout | undefined
+    PlannedWorkoutWithId | undefined
   >()
 
   useEffect(() => {

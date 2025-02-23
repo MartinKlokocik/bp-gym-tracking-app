@@ -40,7 +40,7 @@ export const GymProgressChart = ({ exercise }: GymProgressChartProps) => {
   return (
     <div className="w-full mx-auto">
       <h2 className="text-white text-2xl font-bold mb-4">
-        Bench Press Progress
+        {exercise?.name} Progress
       </h2>
 
       {/* Metric Selection Buttons */}

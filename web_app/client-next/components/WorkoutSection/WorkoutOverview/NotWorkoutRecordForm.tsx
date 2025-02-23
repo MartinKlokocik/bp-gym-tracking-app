@@ -6,11 +6,10 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { PlannedWorkoutDay } from '../types'
 import { PlanAndDaySelect } from '../WorkoutPlanning/components/PlanAndDaySelect'
 
 import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
-import { calendarDaySchema } from '@/types/CalendarDay'
+import { calendarDaySchema, PlannedWorkoutDayWithId } from '@/types/CalendarDay'
 import { CalendarDay } from '@/types/CalendarDay'
 
 type NotWorkoutRecordFormProps = {
@@ -34,7 +33,7 @@ export const NotWorkoutRecordForm = ({
   ] = useMutation(CREATE_CALENDAR_DAY)
 
   const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<
-    PlannedWorkoutDay | undefined
+    PlannedWorkoutDayWithId | undefined
   >()
 
   const formMethods = useForm<CalendarDay>({
@@ -42,7 +41,6 @@ export const NotWorkoutRecordForm = ({
     defaultValues: {
       userId: user.id,
       date: selectedDate.toISOString(),
-      plannedWorkoutDayId: '',
     },
   })
 
@@ -73,7 +71,7 @@ export const NotWorkoutRecordForm = ({
 
   useEffect(() => {
     if (selectedWorkoutDay) {
-      setValue('plannedWorkoutDayId', selectedWorkoutDay.id)
+      setValue('plannedWorkoutDay', selectedWorkoutDay)
     }
   }, [selectedWorkoutDay, setValue])
 
@@ -84,7 +82,25 @@ export const NotWorkoutRecordForm = ({
       await createCalendarDay({
         variables: {
           input: {
-            ...formData,
+            userId: formData.userId,
+            date: formData.date,
+            plannedWorkoutDay: {
+              id: formData.plannedWorkoutDay.id,
+              userId: formData.plannedWorkoutDay.userId,
+              name: formData.plannedWorkoutDay.name,
+              plannedExercises: formData.plannedWorkoutDay.plannedExercises.map(
+                plannedExercise => ({
+                  id: plannedExercise.id,
+                  userId: plannedExercise.userId,
+                  exerciseId: plannedExercise.exercise.id,
+                  plannedSets: plannedExercise.plannedSets.map(set => ({
+                    id: set.id,
+                    reps: set.reps,
+                    restTime: set.restTime ?? null,
+                  })),
+                })
+              ),
+            },
           },
         },
       })

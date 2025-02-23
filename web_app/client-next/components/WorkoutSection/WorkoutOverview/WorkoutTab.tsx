@@ -178,8 +178,10 @@ export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
                 <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
                   <div className="flex flex-col gap-4 w-[40%]">
                     <h2 className="text-2xl font-semibold">
-                      Exercise number {exerciseIndex + 1}:{' '}
-                      {selectedPlannedExercise?.exercise.name}
+                      Exercise ({exerciseIndex + 1}/
+                      {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
+                        .plannedExercises?.length ?? 0}
+                      ): {selectedPlannedExercise?.exercise.name}
                     </h2>
                     <Image
                       src={`/assets/DummyPictures/${selectedPlannedExercise?.exercise.image}`}

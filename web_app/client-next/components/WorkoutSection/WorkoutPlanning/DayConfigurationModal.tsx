@@ -16,12 +16,14 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { PlannedWorkoutDay } from '../types'
-
 import { PlanAndDaySelect } from './components/PlanAndDaySelect'
 
 import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
-import { CalendarDay, calendarDaySchema } from '@/types/CalendarDay'
+import {
+  CalendarDay,
+  calendarDaySchema,
+  PlannedWorkoutDayWithId,
+} from '@/types/CalendarDay'
 
 type DayConfigurationModalProps = {
   isOpen: boolean
@@ -50,7 +52,6 @@ export const DayConfigurationModal = ({
     defaultValues: {
       userId: user.id,
       date: selectedDate.toISOString(),
-      plannedWorkoutDayId: '',
     },
   })
 
@@ -62,7 +63,7 @@ export const DayConfigurationModal = ({
   } = formMethods
 
   const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<
-    PlannedWorkoutDay | undefined
+    PlannedWorkoutDayWithId | undefined
   >()
 
   const onSubmit = async (formData: CalendarDay) => {
@@ -105,7 +106,7 @@ export const DayConfigurationModal = ({
 
   useEffect(() => {
     if (selectedWorkoutDay) {
-      setValue('plannedWorkoutDayId', selectedWorkoutDay.id)
+      setValue('plannedWorkoutDay', selectedWorkoutDay)
     }
   }, [selectedWorkoutDay, setValue])
 

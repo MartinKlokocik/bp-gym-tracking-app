@@ -42,10 +42,28 @@ const CalendarDayTypeDefs = `
     plannedWorkoutDay: PlannedWorkoutDay!
   }
 
+  input PlannedSetInput {
+    id: String!
+    reps: Int!
+    restTime: Int
+  }
+
+  input PlannedExerciseInput {
+    id: String!
+    userId: String!
+    exerciseId: String!
+    plannedSets: [PlannedSetInput!]!
+  }
+
+  input PlannedWorkoutDayInput {
+    id: String!
+    plannedExercises: [PlannedExerciseInput!]!
+  }
+
   input CalendarDayInput {
     userId: String!
     date: String!
-    plannedWorkoutDayId: String!
+    plannedWorkoutDay: PlannedWorkoutDayInput!
   }
 
   type Query {

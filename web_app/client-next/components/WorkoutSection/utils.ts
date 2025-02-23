@@ -11,9 +11,10 @@ import {
   CalendarDay,
   Exercise,
   ExerciseRecord,
-  PlannedWorkout,
   PlannedWorkoutDay,
 } from './types'
+
+import { PlannedWorkoutWithId } from '@/types/CalendarDay'
 
 export const getCalendarDay = (date: Date) => {
   return dummyCalendarDays.find(calendarDay =>
@@ -53,7 +54,7 @@ export const getExerciseById = (exerciseId: string) => {
   return dummyExercises.find(exercise => exercise.id === exerciseId)
 }
 
-export const getActiveWorkoutPlan = (workoutPlans: PlannedWorkout[]) => {
+export const getActiveWorkoutPlan = (workoutPlans: PlannedWorkoutWithId[]) => {
   return workoutPlans?.find(workout => workout.isActive)
 }
 

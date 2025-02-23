@@ -11,9 +11,11 @@ export const GET_ALL_PLANNED_WORKOUTS = gql`
       isPublic
       days {
         id
+        userId
         name
         plannedExercises {
           id
+          userId
           exercise {
             id
             userId
@@ -48,9 +50,11 @@ export const GET_PLANNED_WORKOUT_BY_ID = gql`
       isActive
       isPublic
       days {
+        userId
         id
         name
         plannedExercises {
+          userId
           id
           notes
           exercise {
