@@ -1,14 +1,16 @@
+import { useLazyQuery, useQuery } from '@apollo/client'
+import { Select, SelectItem } from '@heroui/react'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
+
+import { PlannedWorkout, PlannedWorkoutDay } from '../../types'
+import { getActiveWorkoutPlan } from '../../utils'
+
 import {
   GET_ALL_PLANNED_WORKOUTS,
   GET_PLANNED_WORKOUT_BY_ID,
 } from '@/graphql/PlannedWorkoutConsts'
 import { GET_WORKOUT_DAY_BY_ID } from '@/graphql/WorkoutDayConsts'
-import { useLazyQuery, useQuery } from '@apollo/client'
-import { PlannedWorkout, PlannedWorkoutDay } from '../../types'
-import { getActiveWorkoutPlan } from '../../utils'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import { Select, SelectItem } from '@heroui/react'
 
 type PlanAndDaySelectProps = {
   selectedWorkoutDay: PlannedWorkoutDay | undefined
@@ -44,7 +46,7 @@ export const PlanAndDaySelect = ({
       setSelectedWorkoutPlan(activeWorkoutPlan)
       setSelectedWorkoutDay(activeWorkoutPlan?.days[0])
     }
-  }, [allPlannedWorkoutsData])
+  }, [allPlannedWorkoutsData, setSelectedWorkoutDay])
 
   useEffect(() => {
     if (allPlannedWorkoutsError) {

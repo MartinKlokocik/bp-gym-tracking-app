@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import {
   Button,
   DropdownItem,
@@ -13,6 +12,7 @@ import {
   User,
   DropdownMenu,
 } from '@heroui/react'
+import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { signOut } from 'next-auth/react'

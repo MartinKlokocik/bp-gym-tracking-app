@@ -1,12 +1,13 @@
 'use client'
 
+import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
+import { useSession } from 'next-auth/react'
+import { useState } from 'react'
+
 import { CalendarBar } from '@/components/WorkoutSection/WorkoutOverview/CalendarBar'
 import { WorkoutTab } from '@/components/WorkoutSection/WorkoutOverview/WorkoutTab'
-import { PlanConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/PlanConfigurationModal'
 import { DayConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/DayConfigurationModal'
-import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
-import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { PlanConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/PlanConfigurationModal'
 export default function Home() {
   const { data: session } = useSession()
 

@@ -1,6 +1,21 @@
 'use client'
 
+import {
+  Input,
+  Image,
+  Button,
+  Textarea,
+  RadioGroup,
+  Radio,
+  Accordion,
+  AccordionItem,
+  Select,
+  SelectItem,
+} from '@heroui/react'
+import { CheckIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
 import { useEffect, useState } from 'react'
+
+import { dummyPlannedWorkouts } from '../DummyData'
 import {
   CalendarDay,
   PlannedExercise,
@@ -14,21 +29,9 @@ import {
   getWorkoutDayById,
   getWorkoutPlanById,
 } from '../utils'
-import {
-  Input,
-  Image,
-  Button,
-  Textarea,
-  RadioGroup,
-  Radio,
-  Accordion,
-  AccordionItem,
-  Select,
-  SelectItem,
-} from '@heroui/react'
+
 import { GymProgressChart } from './GymProgressChart'
-import { CheckIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
-import { dummyPlannedWorkouts } from '../DummyData'
+
 type WorkoutTabProps = {
   selectedDate: Date
 }

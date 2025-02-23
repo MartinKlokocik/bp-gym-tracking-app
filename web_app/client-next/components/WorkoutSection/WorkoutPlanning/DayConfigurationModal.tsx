@@ -1,5 +1,6 @@
 'use client'
 
+import { useMutation } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -8,17 +9,19 @@ import {
   ModalFooter,
   Button,
 } from '@heroui/react'
-import React, { useEffect, useState } from 'react'
-import { PlannedWorkoutDay } from '../types'
-import { Trash2 } from 'lucide-react'
-import { useMutation } from '@apollo/client'
-import { toast } from 'react-toastify'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarDay, calendarDaySchema } from '@/types/CalendarDay'
+import { Trash2 } from 'lucide-react'
 import { User } from 'next-auth'
-import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+
+import { PlannedWorkoutDay } from '../types'
+
 import { PlanAndDaySelect } from './components/PlanAndDaySelect'
+
+import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
+import { CalendarDay, calendarDaySchema } from '@/types/CalendarDay'
 
 type DayConfigurationModalProps = {
   isOpen: boolean
@@ -104,7 +107,7 @@ export const DayConfigurationModal = ({
     if (selectedWorkoutDay) {
       setValue('plannedWorkoutDayId', selectedWorkoutDay.id)
     }
-  }, [selectedWorkoutDay])
+  }, [selectedWorkoutDay, setValue])
 
   return (
     <>

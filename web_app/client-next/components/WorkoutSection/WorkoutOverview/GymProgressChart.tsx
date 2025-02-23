@@ -1,3 +1,4 @@
+import { Button, ButtonGroup } from '@heroui/react'
 import React, { useState } from 'react'
 import {
   LineChart,
@@ -8,7 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts'
-import { Button, ButtonGroup } from '@heroui/react'
+
 import { ExerciseRecord, Exercise } from '../types'
 import { getExerciseRecords } from '../utils'
 

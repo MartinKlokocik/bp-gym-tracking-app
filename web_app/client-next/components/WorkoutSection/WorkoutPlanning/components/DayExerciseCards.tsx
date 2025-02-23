@@ -1,5 +1,4 @@
-import { Button, Select, SelectItem, Spinner } from '@heroui/react'
-import { Card } from '@heroui/react'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import {
   DragDropContext,
   Draggable,
@@ -8,21 +7,23 @@ import {
   DroppableProvided,
   DropResult,
 } from '@hello-pangea/dnd'
-import { GripVertical, Dumbbell, X } from 'lucide-react'
+import { Button, Select, SelectItem, Spinner } from '@heroui/react'
+import { Card } from '@heroui/react'
 import { Chip, Input } from '@heroui/react'
-import { GET_ALL_EXERCISES, GET_EXERCISE_BY_ID } from '@/graphql/ExerciseConsts'
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { GripVertical, Dumbbell, X } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
-import { toast } from 'react-toastify'
-import { GetAllExercisesQuery } from '@/graphql/types'
-import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
 import { UseFormReturn } from 'react-hook-form'
+import { toast } from 'react-toastify'
+
+import { GET_ALL_EXERCISES, GET_EXERCISE_BY_ID } from '@/graphql/ExerciseConsts'
+import { GetAllExercisesQuery } from '@/graphql/types'
+import { ExerciseWithId as ExerciseTypeWithId } from '@/types/Exercise'
+import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
 import {
   PlannedExercise as PlannedExerciseType,
   PlannedSet as PlannedSetType,
 } from '@/types/WorkoutPlanning'
-import { ExerciseWithId as ExerciseTypeWithId } from '@/types/Exercise'
-import { useSession } from 'next-auth/react'
 
 type DayExerciseCardsProps = {
   selectedDayIndex: number

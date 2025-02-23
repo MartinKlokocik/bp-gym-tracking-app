@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -12,16 +13,18 @@ import {
   Link,
   useDisclosure,
 } from '@heroui/react'
-import React, { useEffect, useState } from 'react'
 import { EditIcon, PlusIcon, Trash } from 'lucide-react'
-import { PlanCreatorModal } from './PlanCreatorModal'
-import { getActiveWorkoutPlan } from '../utils'
-import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 import { User } from 'next-auth'
-import { useQuery } from '@apollo/client'
-import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+
 import { PlannedWorkout } from '../types'
+import { getActiveWorkoutPlan } from '../utils'
+
+import { ExerciseCreatorModal } from './ExerciseCreatorModal'
+import { PlanCreatorModal } from './PlanCreatorModal'
+
+import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
 
 type PlanConfigurationModalProps = {
   isOpen: boolean

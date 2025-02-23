@@ -1,5 +1,6 @@
 'use client'
 
+import { useMutation } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -12,17 +13,18 @@ import {
   CardBody,
   Checkbox,
 } from '@heroui/react'
-import { ChevronRight, Pencil } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { DayExerciseCards } from './components/DayExerciseCards'
-import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { plannedWorkoutSchema } from '@/types/WorkoutPlanning'
-import { useForm } from 'react-hook-form'
+import { ChevronRight, Pencil } from 'lucide-react'
 import { User } from 'next-auth'
-import { useMutation } from '@apollo/client'
-import { CREATE_PLANNED_WORKOUT } from '@/graphql/PlannedWorkoutConsts'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+
+import { DayExerciseCards } from './components/DayExerciseCards'
+
+import { CREATE_PLANNED_WORKOUT } from '@/graphql/PlannedWorkoutConsts'
+import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
+import { plannedWorkoutSchema } from '@/types/WorkoutPlanning'
 
 type PlanCreatorModalProps = {
   isOpen: boolean

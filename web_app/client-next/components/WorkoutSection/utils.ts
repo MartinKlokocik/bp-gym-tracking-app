@@ -1,3 +1,12 @@
+import { isSameDay } from 'date-fns'
+
+import {
+  dummyCalendarDays,
+  dummyExerciseRecords,
+  dummyExercises,
+  dummyPlannedWorkoutDays,
+  dummyPlannedWorkouts,
+} from './DummyData'
 import {
   CalendarDay,
   Exercise,
@@ -5,8 +14,6 @@ import {
   PlannedWorkout,
   PlannedWorkoutDay,
 } from './types'
-import { dummyCalendarDays, dummyExerciseRecords, dummyExercises, dummyPlannedWorkoutDays, dummyPlannedWorkouts } from './DummyData'
-import { isSameDay } from 'date-fns'
 
 export const getCalendarDay = (date: Date) => {
   return dummyCalendarDays.find(calendarDay =>

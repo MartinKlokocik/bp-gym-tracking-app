@@ -2,11 +2,12 @@
 
 import '../styles/globals.css'
 import { ApolloProvider } from '@apollo/client'
-import client from '@/lib/apollo'
-import Navbar from '@/components/Global/Navbar'
 import { HeroUIProvider } from '@heroui/react'
 import { SessionProvider } from 'next-auth/react'
 import { ToastContainer, Bounce } from 'react-toastify'
+
+import Navbar from '@/components/Global/Navbar'
+import client from '@/lib/apollo'
 
 export default function RootLayout({
   children,

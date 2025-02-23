@@ -2,9 +2,9 @@
 
 import { Button, Checkbox, Input } from '@heroui/react'
 import { Eye, EyeOff, LogIn } from 'lucide-react'
-import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 export default function LoginPage() {

@@ -1,7 +1,7 @@
 'use client'
 import { addDays, format, subDays } from 'date-fns'
-import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 
 type CalendarBarProps = {
   selectedDate: Date

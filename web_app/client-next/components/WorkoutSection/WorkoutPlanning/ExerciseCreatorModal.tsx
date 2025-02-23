@@ -1,5 +1,6 @@
 'use client'
 
+import { useMutation } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -13,16 +14,17 @@ import {
   Checkbox,
   Textarea,
 } from '@heroui/react'
-import { Dumbbell, Camera, Clock } from 'lucide-react'
-import { equipment, muscleGroups } from '../DummyData'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Dumbbell, Camera, Clock } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import { useMutation } from '@apollo/client'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+
+import { equipment, muscleGroups } from '../DummyData'
+
 import { CREATE_EXERCISE } from '@/graphql/ExerciseConsts'
 import { exerciseSchema, CreateExerciseFormData } from '@/types/Exercise'
-import { toast } from 'react-toastify'
-import { useEffect } from 'react'
 
 type ExerciseCreatorModalProps = {
   isOpen: boolean

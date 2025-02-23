@@ -2,10 +2,10 @@
 
 import { Button, Input } from '@heroui/react'
 import { Eye, EyeOff, UserPlus } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 
 export default function SignupPage() {
   const { status } = useSession()
