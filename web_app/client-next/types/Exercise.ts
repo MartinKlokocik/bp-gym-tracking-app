@@ -1,18 +1,5 @@
 import { z } from 'zod'
 
-export type Exercise = {
-  id: string
-  userId: string
-  name: string
-  description: string
-  type: string
-  muscleGroup: string
-  equipment: string[]
-  image?: string
-  isPublic: boolean
-  isDefault: boolean
-}
-
 export const exerciseSchema = z.object({
   userId: z.string().nonempty('User ID is required'),
   name: z.string().nonempty('Name is required'),
@@ -29,5 +16,5 @@ export const exerciseSchemaWithId = exerciseSchema.extend({
   id: z.string(),
 })
 
-export type CreateExerciseFormData = z.infer<typeof exerciseSchema>
-export type ExerciseWithId = z.infer<typeof exerciseSchemaWithId>
+export type ExerciseWithoutIdsType = z.infer<typeof exerciseSchema>
+export type ExerciseWithIdsType = z.infer<typeof exerciseSchemaWithId>

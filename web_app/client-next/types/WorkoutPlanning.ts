@@ -32,6 +32,55 @@ export const plannedWorkoutSchema = z.object({
   isPublic: z.boolean(),
 })
 
-export type CreateWorkoutPlanFormData = z.infer<typeof plannedWorkoutSchema>
-export type PlannedExercise = z.infer<typeof plannedExerciseSchema>
-export type PlannedSet = z.infer<typeof plannedSetSchema>
+// With IDs
+export const plannedSetSchemaWithId = z.object({
+  id: z.string(),
+  reps: z
+    .number({ invalid_type_error: 'Reps must be a number' })
+    .min(1, 'Reps must be at least 1'),
+  restTime: z.number().optional(),
+})
+
+export const plannedExerciseSchemaWithId = z.object({
+  id: z.string(),
+  userId: z.string(),
+  notes: z.string().optional(),
+  exercise: exerciseSchemaWithId,
+  plannedSets: z
+    .array(plannedSetSchemaWithId)
+    .min(1, 'At least one set is required'),
+})
+
+export const plannedWorkoutDaySchemaWithId = z.object({
+  id: z.string(),
+  name: z.string().nonempty('Workout day name is required'),
+  userId: z.string(),
+  plannedExercises: z.array(plannedExerciseSchemaWithId).default([]),
+})
+
+export const plannedWorkoutSchemaWithId = z.object({
+  userId: z.string(),
+  id: z.string(),
+  name: z.string().nonempty('Plan name is required'),
+  days: z
+    .array(plannedWorkoutDaySchemaWithId)
+    .min(1, 'At least one day is required'),
+  schema: z.string().optional(),
+  isActive: z.boolean(),
+  isPublic: z.boolean(),
+})
+
+export type PlannedWorkoutWithIdsType = z.infer<
+  typeof plannedWorkoutSchemaWithId
+>
+export type PlannedWorkoutDayWithIdType = z.infer<
+  typeof plannedWorkoutDaySchemaWithId
+>
+export type PlannedWorkoutWithoutIdsType = z.infer<typeof plannedWorkoutSchema>
+export type PlannedExerciseWithIdsType = z.infer<
+  typeof plannedExerciseSchemaWithId
+>
+export type PlannedExerciseWithoutIdsType = z.infer<
+  typeof plannedExerciseSchema
+>
+export type PlannedSetWithoutIdsType = z.infer<typeof plannedSetSchema>

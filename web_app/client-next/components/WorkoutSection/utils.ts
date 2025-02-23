@@ -1,67 +1,36 @@
-import { isSameDay } from 'date-fns'
+import { ExerciseRecord } from './types'
 
-import {
-  dummyCalendarDays,
-  dummyExerciseRecords,
-  dummyExercises,
-  dummyPlannedWorkoutDays,
-  dummyPlannedWorkouts,
-} from './DummyData'
-import {
-  CalendarDay,
-  Exercise,
-  ExerciseRecord,
-  PlannedWorkoutDay,
-} from './types'
-
-import { PlannedWorkoutWithId } from '@/types/CalendarDay'
-
-export const getCalendarDay = (date: Date) => {
-  return dummyCalendarDays.find(calendarDay =>
-    isSameDay(calendarDay.date, date)
-  )
-}
-
-export const getPlannedWorkoutDay = (calendarDay: CalendarDay) => {
-  return calendarDay.workout
-}
-
-export const getPlannedExercise = (plannedWorkoutDay: PlannedWorkoutDay) => {
-  return plannedWorkoutDay.exercises
-}
+import { ExerciseWithIdsType } from '@/types/Exercise'
+import { PlannedWorkoutWithIdsType } from '@/types/WorkoutPlanning'
 
 export const getLatestExerciseRecord = (
-  exercise: Exercise | null,
-  exerciseRecords: ExerciseRecord[] = dummyExerciseRecords
+  exercise: ExerciseWithIdsType | null
 ): ExerciseRecord | null => {
-  if (!exercise) return null
-
-  const filteredRecords = exerciseRecords
-    .filter(record => record.exercise.id === exercise.id)
-    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-
-  return filteredRecords.length > 0 ? filteredRecords[0] : null
+  return null
 }
 
-export const getExerciseRecords = (exercise: Exercise | undefined) => {
+export const getExerciseRecords = (
+  exercise: ExerciseWithIdsType | undefined
+) => {
   if (!exercise) return []
-  return dummyExerciseRecords.filter(
-    record => record.exercise.id === exercise.id
-  )
+
+  return [
+    {
+      id: 'er4',
+      userId: 'user1',
+      timestamp: new Date('2024-05-08T09:00:00Z'),
+      exercise: exercise,
+      sets: [
+        { id: 's1', reps: 12, restTime: 60, weight: 0 },
+        { id: 's2', reps: 10, restTime: 60, weight: 0 },
+        { id: 's3', reps: 8, restTime: 90, weight: 0 },
+      ],
+    },
+  ]
 }
 
-export const getExerciseById = (exerciseId: string) => {
-  return dummyExercises.find(exercise => exercise.id === exerciseId)
-}
-
-export const getActiveWorkoutPlan = (workoutPlans: PlannedWorkoutWithId[]) => {
+export const getActiveWorkoutPlan = (
+  workoutPlans: PlannedWorkoutWithIdsType[]
+) => {
   return workoutPlans?.find(workout => workout.isActive)
-}
-
-export const getWorkoutPlanById = (workoutPlanId: string) => {
-  return dummyPlannedWorkouts.find(workout => workout.id === workoutPlanId)
-}
-
-export const getWorkoutDayById = (workoutDayId: string) => {
-  return dummyPlannedWorkoutDays.find(day => day.id === workoutDayId)
 }

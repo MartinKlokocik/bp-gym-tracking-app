@@ -18,13 +18,13 @@ import { User } from 'next-auth'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { PlannedWorkout } from '../types'
 import { getActiveWorkoutPlan } from '../utils'
 
 import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 import { PlanCreatorModal } from './PlanCreatorModal'
 
 import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
+import { PlannedWorkoutWithIdsType } from '@/types/WorkoutPlanning'
 
 type PlanConfigurationModalProps = {
   isOpen: boolean
@@ -106,7 +106,7 @@ export const PlanConfigurationModal = ({
                         <SelectItem>Loading...</SelectItem>
                       ) : (
                         allPlannedWorkoutsData?.getAllPlannedWorkouts.map(
-                          (plannedWorkout: PlannedWorkout) => (
+                          (plannedWorkout: PlannedWorkoutWithIdsType) => (
                             <SelectItem
                               key={plannedWorkout.id}
                               value={plannedWorkout.id}

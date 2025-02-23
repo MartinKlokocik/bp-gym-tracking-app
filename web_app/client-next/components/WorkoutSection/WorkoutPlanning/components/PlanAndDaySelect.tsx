@@ -3,7 +3,6 @@ import { Select, SelectItem } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { PlannedWorkout } from '../../types'
 import { getActiveWorkoutPlan } from '../../utils'
 
 import {
@@ -12,13 +11,13 @@ import {
 } from '@/graphql/PlannedWorkoutConsts'
 import { GET_WORKOUT_DAY_BY_ID } from '@/graphql/WorkoutDayConsts'
 import {
-  PlannedWorkoutDayWithId,
-  PlannedWorkoutWithId,
-} from '@/types/CalendarDay'
+  PlannedWorkoutDayWithIdType,
+  PlannedWorkoutWithIdsType,
+} from '@/types/WorkoutPlanning'
 type PlanAndDaySelectProps = {
-  selectedWorkoutDay: PlannedWorkoutDayWithId | undefined
+  selectedWorkoutDay: PlannedWorkoutDayWithIdType | undefined
   setSelectedWorkoutDay: React.Dispatch<
-    React.SetStateAction<PlannedWorkoutDayWithId | undefined>
+    React.SetStateAction<PlannedWorkoutDayWithIdType | undefined>
   >
 }
 export const PlanAndDaySelect = ({
@@ -38,7 +37,7 @@ export const PlanAndDaySelect = ({
   )
 
   const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<
-    PlannedWorkoutWithId | undefined
+    PlannedWorkoutWithIdsType | undefined
   >()
 
   useEffect(() => {
@@ -117,7 +116,7 @@ export const PlanAndDaySelect = ({
           <SelectItem>Loading...</SelectItem>
         ) : (
           allPlannedWorkoutsData?.getAllPlannedWorkouts.map(
-            (plannedWorkout: PlannedWorkout) => (
+            (plannedWorkout: PlannedWorkoutWithIdsType) => (
               <SelectItem key={plannedWorkout.id} value={plannedWorkout.id}>
                 {plannedWorkout.name}
               </SelectItem>
@@ -134,11 +133,16 @@ export const PlanAndDaySelect = ({
           selectedKeys={[selectedWorkoutDay?.id || '']}
           onChange={e => handleWorkoutDayChange(e.target.value)}
         >
-          {selectedWorkoutPlan.days.map(plannedWorkoutDay => (
-            <SelectItem key={plannedWorkoutDay.id} value={plannedWorkoutDay.id}>
-              {plannedWorkoutDay.name}
-            </SelectItem>
-          ))}
+          {selectedWorkoutPlan.days.map(
+            (plannedWorkoutDay: PlannedWorkoutDayWithIdType) => (
+              <SelectItem
+                key={plannedWorkoutDay.id}
+                value={plannedWorkoutDay.id}
+              >
+                {plannedWorkoutDay.name}
+              </SelectItem>
+            )
+          )}
         </Select>
       )}
     </>

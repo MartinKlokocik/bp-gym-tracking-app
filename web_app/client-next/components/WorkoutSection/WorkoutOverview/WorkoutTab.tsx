@@ -14,13 +14,13 @@ import { User } from 'next-auth'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { PlannedExercise } from '../types'
 import { getLatestExerciseRecord } from '../utils'
 
 import { GymProgressChart } from './GymProgressChart'
 import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
 
 import { GET_CALENDAR_DAY_BY_DATE } from '@/graphql/CalendarConsts'
+import { PlannedExerciseWithIdsType } from '@/types/WorkoutPlanning'
 type WorkoutTabProps = {
   selectedDate: Date
   user: User
@@ -37,7 +37,7 @@ export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
 
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [selectedPlannedExercise, setselectedPlannedExercise] =
-    useState<PlannedExercise | null>(
+    useState<PlannedExerciseWithIdsType | null>(
       calendarDayData?.getCalendarDayByDate?.plannedWorkoutDay
         .plannedExercises[0] ?? null
     )

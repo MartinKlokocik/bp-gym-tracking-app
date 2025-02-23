@@ -10,11 +10,12 @@ import {
   CartesianGrid,
 } from 'recharts'
 
-import { ExerciseRecord, Exercise } from '../types'
+import { ExerciseRecord } from '../types'
 import { getExerciseRecords } from '../utils'
 
+import { ExerciseWithIdsType } from '@/types/Exercise'
 type GymProgressChartProps = {
-  exercise: Exercise | undefined
+  exercise: ExerciseWithIdsType | undefined
 }
 
 // TODO: CHECK IF THIS IS CORRECT

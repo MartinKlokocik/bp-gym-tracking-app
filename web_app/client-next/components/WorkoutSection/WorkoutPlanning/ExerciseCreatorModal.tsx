@@ -24,7 +24,7 @@ import { toast } from 'react-toastify'
 import { equipment, muscleGroups } from '../DummyData'
 
 import { CREATE_EXERCISE } from '@/graphql/ExerciseConsts'
-import { exerciseSchema, CreateExerciseFormData } from '@/types/Exercise'
+import { exerciseSchema, ExerciseWithoutIdsType } from '@/types/Exercise'
 
 type ExerciseCreatorModalProps = {
   isOpen: boolean
@@ -46,7 +46,7 @@ export const ExerciseCreatorModal = ({
     watch,
     reset,
     formState: { errors },
-  } = useForm<CreateExerciseFormData>({
+  } = useForm<ExerciseWithoutIdsType>({
     resolver: zodResolver(exerciseSchema),
     defaultValues: {
       userId: session?.user?.id,
@@ -56,7 +56,7 @@ export const ExerciseCreatorModal = ({
     },
   })
 
-  const onSubmit = async (formData: CreateExerciseFormData) => {
+  const onSubmit = async (formData: ExerciseWithoutIdsType) => {
     console.log('Form Submitted:', formData)
 
     let equipmentArray: string[] = []

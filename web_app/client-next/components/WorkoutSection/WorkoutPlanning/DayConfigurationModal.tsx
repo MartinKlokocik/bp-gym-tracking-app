@@ -19,12 +19,8 @@ import { toast } from 'react-toastify'
 import { PlanAndDaySelect } from './components/PlanAndDaySelect'
 
 import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
-import {
-  CalendarDay,
-  calendarDaySchema,
-  PlannedWorkoutDayWithId,
-} from '@/types/CalendarDay'
-
+import { CalendarDayWithIdsType, calendarDaySchema } from '@/types/CalendarDay'
+import { PlannedWorkoutDayWithIdType } from '@/types/WorkoutPlanning'
 type DayConfigurationModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
@@ -47,7 +43,7 @@ export const DayConfigurationModal = ({
     },
   ] = useMutation(CREATE_CALENDAR_DAY)
 
-  const formMethods = useForm<CalendarDay>({
+  const formMethods = useForm<CalendarDayWithIdsType>({
     resolver: zodResolver(calendarDaySchema),
     defaultValues: {
       userId: user.id,
@@ -63,10 +59,10 @@ export const DayConfigurationModal = ({
   } = formMethods
 
   const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<
-    PlannedWorkoutDayWithId | undefined
+    PlannedWorkoutDayWithIdType | undefined
   >()
 
-  const onSubmit = async (formData: CalendarDay) => {
+  const onSubmit = async (formData: CalendarDayWithIdsType) => {
     console.log(formData)
 
     try {

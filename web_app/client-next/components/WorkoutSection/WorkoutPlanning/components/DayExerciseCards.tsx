@@ -18,16 +18,16 @@ import { toast } from 'react-toastify'
 
 import { GET_ALL_EXERCISES, GET_EXERCISE_BY_ID } from '@/graphql/ExerciseConsts'
 import { GetAllExercisesQuery } from '@/graphql/types'
-import { ExerciseWithId as ExerciseTypeWithId } from '@/types/Exercise'
-import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
+import { ExerciseWithIdsType } from '@/types/Exercise'
+import { PlannedWorkoutWithoutIdsType } from '@/types/WorkoutPlanning'
 import {
-  PlannedExercise as PlannedExerciseType,
-  PlannedSet as PlannedSetType,
+  PlannedExerciseWithoutIdsType,
+  PlannedSetWithoutIdsType,
 } from '@/types/WorkoutPlanning'
 
 type DayExerciseCardsProps = {
   selectedDayIndex: number
-  form: UseFormReturn<CreateWorkoutPlanFormData>
+  form: UseFormReturn<PlannedWorkoutWithoutIdsType>
   type: 'createPlanForm' | 'editPlanForm'
 }
 
@@ -65,10 +65,10 @@ export const DayExerciseCards = ({
     }
   }
 
-  const addExerciseToDay = (exercise: ExerciseTypeWithId) => {
+  const addExerciseToDay = (exercise: ExerciseWithIdsType) => {
     if (!exercise) return
 
-    const newPlannedExercise: PlannedExerciseType = {
+    const newPlannedExercise: PlannedExerciseWithoutIdsType = {
       userId: session?.user?.id.toString() || '',
       exerciseId: exercise.id,
       exercise: exercise,
@@ -90,7 +90,7 @@ export const DayExerciseCards = ({
   }
 
   const addSetToExercise = (plannedExerciseIndex: number) => {
-    const newSet: PlannedSetType = {
+    const newSet: PlannedSetWithoutIdsType = {
       reps: 10,
       restTime: 60,
     }
@@ -175,7 +175,7 @@ export const DayExerciseCards = ({
   const updateSetDetails = (
     plannedExerciseIndex: number,
     plannedSetIndex: number,
-    field: keyof PlannedSetType,
+    field: keyof PlannedSetWithoutIdsType,
     value: number | string
   ) => {
     if (type === 'createPlanForm') {
@@ -219,7 +219,7 @@ export const DayExerciseCards = ({
   }
 
   const renderExerciseCard = (
-    plannedExercise: PlannedExerciseType,
+    plannedExercise: PlannedExerciseWithoutIdsType,
     plannedExerciseIndex: number
   ) => (
     <Draggable
