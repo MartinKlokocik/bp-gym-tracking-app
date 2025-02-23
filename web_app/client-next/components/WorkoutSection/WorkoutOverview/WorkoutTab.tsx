@@ -1,82 +1,116 @@
 'use client'
 
+import { useQuery } from '@apollo/client'
 import {
   Input,
   Image,
-  Button,
   Textarea,
-  RadioGroup,
-  Radio,
   Accordion,
   AccordionItem,
+  Checkbox,
 } from '@heroui/react'
-import { CheckIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
+import { ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
 import { User } from 'next-auth'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
-import { CalendarDay, PlannedExercise } from '../types'
-import { getCalendarDay, getLatestExerciseRecord } from '../utils'
+import { PlannedExercise } from '../types'
+import { getLatestExerciseRecord } from '../utils'
 
 import { GymProgressChart } from './GymProgressChart'
 import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
+
+import { GET_CALENDAR_DAY_BY_DATE } from '@/graphql/CalendarConsts'
 type WorkoutTabProps = {
   selectedDate: Date
   user: User
 }
 export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
-  const [calendarDay, setCalendarDay] = useState<CalendarDay | undefined>(
-    getCalendarDay(selectedDate)
-  )
+  const {
+    data: calendarDayData,
+    error: calendarDayError,
+    loading: calendarDayLoading,
+    refetch: refetchCalendarDay,
+  } = useQuery(GET_CALENDAR_DAY_BY_DATE, {
+    variables: { date: selectedDate.toISOString() },
+  })
+
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [selectedPlannedExercise, setselectedPlannedExercise] =
-    useState<PlannedExercise | null>(calendarDay?.workout.exercises[0] ?? null)
+    useState<PlannedExercise | null>(
+      calendarDayData?.getCalendarDayByDate?.plannedWorkoutDay
+        .plannedExercises[0] ?? null
+    )
   const [notes, setNotes] = useState(
     selectedPlannedExercise?.notes?.trim() ||
       'Put your notes for this exercise here'
   )
-  const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false)
+  const [isCompleted, setIsCompleted] = useState<boolean>(false)
+  const [isSkipped, setIsSkipped] = useState<boolean>(false)
 
-  useEffect(() => {
-    const day = getCalendarDay(selectedDate)
-    if (day) {
-      setCalendarDay(day)
-      setselectedPlannedExercise(day.workout.exercises[0] ?? null)
+  const refetchDayFunction = useCallback(async () => {
+    const { data } = await refetchCalendarDay()
+
+    if (data && data.getCalendarDayByDate) {
+      setselectedPlannedExercise(
+        data.getCalendarDayByDate.plannedWorkoutDay.plannedExercises[0] ?? null
+      )
     } else {
-      setCalendarDay(undefined)
       setselectedPlannedExercise(null)
     }
-  }, [calendarDay?.workout, calendarDay?.workout.exercises, selectedDate])
+  }, [refetchCalendarDay])
+
+  useEffect(() => {
+    refetchDayFunction()
+  }, [calendarDayData, refetchCalendarDay, selectedDate, refetchDayFunction])
+
+  useEffect(() => {
+    if (calendarDayError) {
+      toast.error(calendarDayError.message)
+    }
+  }, [calendarDayError])
 
   const handlePrevExercise = () => {
     if (exerciseIndex > 0) {
       const newIndex = exerciseIndex - 1
       setExerciseIndex(newIndex)
       setselectedPlannedExercise(
-        calendarDay?.workout.exercises[newIndex] ?? null
+        calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
+          .plannedExercises[newIndex] ?? null
       )
     }
   }
   const handleNextExercise = () => {
     if (
-      calendarDay?.workout.exercises &&
-      exerciseIndex < calendarDay.workout.exercises.length - 1
+      calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
+        .plannedExercises &&
+      exerciseIndex <
+        calendarDayData?.getCalendarDayByDate.plannedWorkoutDay.plannedExercises
+          .length -
+          1
     ) {
       const newIndex = exerciseIndex + 1
       setExerciseIndex(newIndex)
       setselectedPlannedExercise(
-        calendarDay?.workout.exercises[newIndex] ?? null
+        calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
+          .plannedExercises[newIndex] ?? null
       )
     }
   }
 
   const isDisplaying = () => {
-    if (!calendarDay) {
+    if (!calendarDayData) {
       return false
     }
-    if (!calendarDay?.workout.exercises) {
+    if (
+      !calendarDayData?.getCalendarDayByDate?.plannedWorkoutDay.plannedExercises
+    ) {
       return false
     }
-    if (calendarDay?.workout.exercises?.length === 0) {
+    if (
+      calendarDayData?.getCalendarDayByDate.plannedWorkoutDay.plannedExercises
+        .length === 0
+    ) {
       return false
     }
     return true
@@ -88,148 +122,186 @@ export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
 
   return (
     <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-8">
-      {!isDisplaying() ? (
-        <NotWorkoutRecordForm user={user} selectedDate={selectedDate} />
+      {calendarDayLoading ? (
+        <div>Loading...</div>
       ) : (
         <>
-          <button
-            className="text-white p-2"
-            onClick={handlePrevExercise}
-            disabled={exerciseIndex == 0}
-          >
-            <ChevronLeft
-              className={`text-white ${
-                exerciseIndex == 0 ? 'disabled-white-button' : ''
-              }`}
-              size={80}
+          {!isDisplaying() ? (
+            <NotWorkoutRecordForm
+              refetchDayFunction={refetchDayFunction}
+              user={user}
+              selectedDate={selectedDate}
             />
-          </button>
-          <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5 gap-4">
-            <div className="flex w-full justify-end gap-10">
-              <RadioGroup orientation="horizontal">
-                <Radio
-                  value="0"
-                  defaultChecked
-                  color="warning"
-                  description="This exercise is not completed today yet"
-                >
-                  Not marked
-                </Radio>
-                <Radio
-                  value="1"
-                  color="success"
-                  description="This exercise is completed today"
-                >
-                  Completed
-                </Radio>
-                <Radio
-                  value="2"
-                  color="danger"
-                  description="Skipping this exercise for today"
-                >
-                  Failed
-                </Radio>
-              </RadioGroup>
-              <Button
-                variant={isWorkoutCompleted ? 'solid' : 'bordered'}
-                color="primary"
-                startContent={<CheckIcon />}
-                onPress={() => setIsWorkoutCompleted(!isWorkoutCompleted)}
+          ) : (
+            <>
+              <button
+                className="text-white p-2"
+                onClick={handlePrevExercise}
+                disabled={exerciseIndex == 0}
               >
-                {isWorkoutCompleted
-                  ? 'Unmark workout as completed'
-                  : 'Mark workout as completed'}
-              </Button>
-            </div>
-            <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
-              <div className="flex flex-col gap-4 w-[40%]">
-                <h2 className="text-2xl font-semibold">
-                  Exercise number {exerciseIndex + 1}:{' '}
-                  {selectedPlannedExercise?.exercise.name}
-                </h2>
-                <Image
-                  src={`/assets/DummyPictures/${selectedPlannedExercise?.exercise.image}`}
-                  alt={selectedPlannedExercise?.exercise.name}
-                  width={500}
-                  height={400}
+                <ChevronLeft
+                  className={`text-white ${
+                    exerciseIndex == 0 ? 'disabled-white-button' : ''
+                  }`}
+                  size={80}
                 />
-              </div>
-              <div className="flex flex-col items-start w-[60%]">
-                <GymProgressChart
-                  exercise={selectedPlannedExercise?.exercise}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-row w-full h-full justify-between">
-              <div className="flex flex-col w-auto h-full items-start justify-start">
-                <div className="flex flex-row gap-4 justify-between w-full">
-                  <h2 className="text-lg font-semibold flex items-center gap-2">
-                    <StepBack size={20} />
-                    Previous
-                  </h2>
-                  <h2 className="text-lg font-semibold">Current</h2>
+              </button>
+              <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5 gap-4">
+                <div className="flex w-full justify-end gap-10">
+                  <div className="flex flex-row gap-4">
+                    <Checkbox
+                      value="1"
+                      color="success"
+                      size="lg"
+                      isSelected={isCompleted}
+                      onChange={() => {
+                        setIsCompleted(prev => !prev)
+                        setIsSkipped(false)
+                      }}
+                    >
+                      Completed
+                    </Checkbox>
+                    <Checkbox
+                      value="-1"
+                      color="danger"
+                      size="lg"
+                      isSelected={isSkipped}
+                      onChange={() => {
+                        setIsSkipped(prev => !prev)
+                        setIsCompleted(false)
+                      }}
+                    >
+                      Skipped
+                    </Checkbox>
+                  </div>
                 </div>
-
-                {latestExerciseRecord?.sets?.map((set, index) => (
-                  <div
-                    key={index}
-                    className="grid grid-cols-2 gap-4 items-center"
-                  >
-                    {/* Previous Section */}
-                    <div>
-                      <Accordion>
-                        <AccordionItem
-                          aria-label={`Set ${index + 1}`}
-                          title={`Set ${index + 1}: ${set.weight} kg`}
-                          subtitle="See details"
-                          className="w-full"
-                        >
-                          <div className="text-gray-300">
-                            <p>📊 {set.reps} reps</p>
-                            <p>⏳ {set.restTime} sec</p>
-                            <p>💓 {/* TODO: Add pulse data */}</p>
-                          </div>
-                        </AccordionItem>
-                      </Accordion>
-                    </div>
-
-                    {/* Current Section */}
-                    <Input
-                      label={`Set ${index + 1}`}
-                      placeholder="Enter current weight"
-                      type="number"
-                      value={set.weight.toString()}
-                      variant="underlined"
-                      className="w-full"
+                <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
+                  <div className="flex flex-col gap-4 w-[40%]">
+                    <h2 className="text-2xl font-semibold">
+                      Exercise number {exerciseIndex + 1}:{' '}
+                      {selectedPlannedExercise?.exercise.name}
+                    </h2>
+                    <Image
+                      src={`/assets/DummyPictures/${selectedPlannedExercise?.exercise.image}`}
+                      alt={selectedPlannedExercise?.exercise.name}
+                      width={500}
+                      height={400}
+                      fallbackSrc="https://placehold.co/500x400"
                     />
                   </div>
-                )) ?? null}
+                  <div className="flex flex-col items-start w-[60%]">
+                    <GymProgressChart
+                      exercise={selectedPlannedExercise?.exercise}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-row w-full h-full justify-between">
+                  <div className="flex flex-col w-auto h-full items-start justify-start">
+                    <div className="flex flex-row gap-4 justify-between w-full">
+                      {latestExerciseRecord && (
+                        <h2 className="text-lg font-semibold flex items-center gap-2">
+                          <StepBack size={20} />
+                          Previous
+                        </h2>
+                      )}
+                      <h2 className="text-lg font-semibold">Current</h2>
+                    </div>
+
+                    {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay.plannedExercises[
+                      exerciseIndex
+                    ]?.plannedSets?.map(
+                      (
+                        set: { reps: number; restTime: number },
+                        index: number
+                      ) => {
+                        const setData = latestExerciseRecord?.sets[index]
+                        return (
+                          <div
+                            key={index}
+                            className="grid grid-cols-2 gap-4 items-center"
+                          >
+                            {/* Previous Section */}
+                            {latestExerciseRecord && (
+                              <div>
+                                <Accordion>
+                                  <AccordionItem
+                                    aria-label={`Set ${index + 1}`}
+                                    title={`Set ${index + 1}: ${setData?.weight} kg`}
+                                    subtitle="See details"
+                                    className="w-full"
+                                  >
+                                    <div className="text-gray-300">
+                                      <p>📊 {setData?.reps} reps</p>
+                                      <p>⏳ {setData?.restTime} sec</p>
+                                      <p>💓 {/* TODO: Add pulse data */}</p>
+                                    </div>
+                                  </AccordionItem>
+                                </Accordion>
+                              </div>
+                            )}
+
+                            {/* Current Section */}
+                            <div className="w-full mb-2">
+                              <Input
+                                label={`Set ${index + 1}`}
+                                placeholder="Current weight"
+                                type="number"
+                                value={setData?.weight.toString()}
+                                variant="underlined"
+                                className="w-full"
+                              />
+                              <Input
+                                label={`Set ${index + 1}`}
+                                placeholder="Current reps"
+                                type="number"
+                                value={setData?.reps.toString()}
+                                variant="underlined"
+                                className="w-full"
+                              />
+                            </div>
+                          </div>
+                        )
+                      }
+                    ) ?? null}
+                  </div>
+                  <div className="flex flex-col items-end w-full h-full">
+                    <Textarea
+                      isClearable
+                      className="max-w-lg mb-4"
+                      label="Notes for this training"
+                      variant="bordered"
+                      value={notes}
+                      onChange={e => setNotes(e.target.value)}
+                      onClear={() => setNotes('')}
+                    />
+                    <Textarea
+                      isClearable
+                      className="max-w-lg"
+                      label="Notes for this exercise"
+                      variant="bordered"
+                      value={selectedPlannedExercise?.notes}
+                      onChange={e => setNotes(e.target.value)}
+                      onClear={() => setNotes('')}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col items-end w-full h-full">
-                <Textarea
-                  isClearable
-                  className="max-w-lg"
-                  label="Notes"
-                  variant="bordered"
-                  value={notes}
-                  onChange={e => setNotes(e.target.value)}
-                  onClear={() => setNotes('')}
+              <button className="text-white p-2" onClick={handleNextExercise}>
+                <ChevronRight
+                  className={`text-white ${
+                    exerciseIndex ==
+                    (calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
+                      .plannedExercises?.length ?? 0) -
+                      1
+                      ? 'disabled-white-button'
+                      : ''
+                  }`}
+                  size={80}
                 />
-              </div>
-            </div>
-          </div>
-          <button className="text-white p-2" onClick={handleNextExercise}>
-            <ChevronRight
-              className={`text-white ${
-                exerciseIndex ==
-                (calendarDay?.workout.exercises?.length ?? 0) - 1
-                  ? 'disabled-white-button'
-                  : ''
-              }`}
-              size={80}
-            />
-          </button>
+              </button>
+            </>
+          )}
         </>
       )}
     </div>

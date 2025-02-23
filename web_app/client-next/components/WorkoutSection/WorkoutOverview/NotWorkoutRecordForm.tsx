@@ -16,11 +16,13 @@ import { CalendarDay } from '@/types/CalendarDay'
 type NotWorkoutRecordFormProps = {
   user: User
   selectedDate: Date
+  refetchDayFunction: () => Promise<void>
 }
 
 export const NotWorkoutRecordForm = ({
   user,
   selectedDate,
+  refetchDayFunction,
 }: NotWorkoutRecordFormProps) => {
   const [
     createCalendarDay,
@@ -88,6 +90,7 @@ export const NotWorkoutRecordForm = ({
       })
 
       reset()
+      refetchDayFunction()
     } catch (err) {
       console.error('Error with assigning workout day to calendar day: ', err)
       toast.error('Error with assigning workout day to calendar day.')
