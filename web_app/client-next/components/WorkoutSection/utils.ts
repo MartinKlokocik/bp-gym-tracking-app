@@ -2,6 +2,7 @@ import {
   CalendarDay,
   Exercise,
   ExerciseRecord,
+  PlannedWorkout,
   PlannedWorkoutDay,
 } from './types'
 import { dummyCalendarDays, dummyExerciseRecords, dummyExercises, dummyPlannedWorkoutDays, dummyPlannedWorkouts } from './DummyData'
@@ -45,8 +46,8 @@ export const getExerciseById = (exerciseId: string) => {
   return dummyExercises.find(exercise => exercise.id === exerciseId)
 }
 
-export const getActiveWorkoutPlan = () => {
-  return dummyPlannedWorkouts.find(workout => workout.isActive)
+export const getActiveWorkoutPlan = (workoutPlans: PlannedWorkout[]) => {
+  return workoutPlans?.find(workout => workout.isActive)
 }
 
 export const getWorkoutPlanById = (workoutPlanId: string) => {

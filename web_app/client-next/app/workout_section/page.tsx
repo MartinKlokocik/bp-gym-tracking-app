@@ -6,7 +6,10 @@ import { PlanConfigurationModal } from '@/components/WorkoutSection/WorkoutPlann
 import { DayConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/DayConfigurationModal'
 import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 export default function Home() {
+  const { data: session } = useSession()
+
   const {
     isOpen: isPlanConfigurationOpen,
     onOpen: onPlanConfigurationOpen,
@@ -18,6 +21,10 @@ export default function Home() {
     onOpenChange: onDayConfigurationOpenChange,
   } = useDisclosure()
   const [selectedDate, setSelectedDate] = useState(new Date())
+
+  if (!session) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -49,10 +56,13 @@ export default function Home() {
       </div>
 
       <PlanConfigurationModal
+        user={session.user}
         isOpen={isPlanConfigurationOpen}
         onOpenChange={onPlanConfigurationOpenChange}
       />
       <DayConfigurationModal
+        user={session.user}
+        selectedDate={selectedDate}
         isOpen={isDayConfigurationOpen}
         onOpenChange={onDayConfigurationOpenChange}
       />

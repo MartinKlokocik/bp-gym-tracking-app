@@ -1,0 +1,345 @@
+// exercises
+mutation {
+  exercise2: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Barbell Squat"
+    description: "A fundamental lower-body exercise that targets the quads, hamstrings, and glutes."
+    muscleGroup: "Legs"
+    equipment: ["Barbell", "Squat Rack"]
+    image: "barbell-squat.png"
+    isPublic: true
+    isDefault: true
+    type: "strength"
+  ) {
+    id
+    name
+  }
+  exercise3: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Deadlift"
+    description: "A compound exercise that strengthens the lower back, glutes, and hamstrings."
+    muscleGroup: "Back"
+    equipment: ["Barbell"]
+    image: "deadlift.png"
+    isPublic: true
+    isDefault: true
+    type: "strength"
+  ) {
+    id
+    name
+  }
+  exercise4: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Overhead Press"
+    description: "Targets the shoulders and triceps by pressing a barbell overhead."
+    muscleGroup: "Shoulders"
+    equipment: ["Barbell"]
+    image: "overhead-press.png"
+    isPublic: true
+    isDefault: true
+    type: "strength"
+  ) {
+    id
+    name
+  }
+  exercise5: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Lat Pulldown"
+    description: "An isolation exercise for the upper back and lats using a cable machine."
+    muscleGroup: "Back"
+    equipment: ["Cable Machine"]
+    image: "lat-pulldown.png"
+    isPublic: true
+    isDefault: true
+    type: "strength"
+  ) {
+    id
+    name
+  }
+  exercise6: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Treadmill Run"
+    description: "A cardio exercise focused on endurance and fat burning on a treadmill."
+    muscleGroup: "Legs"
+    equipment: []
+    image: "treadmill-run.png"
+    isPublic: true
+    isDefault: true
+    type: "cardio"
+  ) {
+    id
+    name
+  }
+  exercise7: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Rowing Machine"
+    description: "A full-body cardio workout using a rowing machine."
+    muscleGroup: "Full Body"
+    equipment: ["Rowing Machine"]
+    image: "rowing-machine.png"
+    isPublic: true
+    isDefault: true
+    type: "cardio"
+  ) {
+    id
+    name
+  }
+  exercise8: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Elliptical Trainer"
+    description: "A low-impact cardio exercise using an elliptical machine."
+    muscleGroup: "Full Body"
+    equipment: ["Elliptical"]
+    image: "elliptical-trainer.png"
+    isPublic: true
+    isDefault: true
+    type: "cardio"
+  ) {
+    id
+    name
+  }
+  exercise9: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Cable Crunch"
+    description: "A core exercise targeting the abs using a cable machine."
+    muscleGroup: "Abs"
+    equipment: ["Cable Machine"]
+    image: "cable-crunch.png"
+    isPublic: true
+    isDefault: true
+    type: "strength"
+  ) {
+    id
+    name
+  }
+  exercise10: createExercise(
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Leg Extension"
+    description: "An isolation exercise for the quadriceps using a leg extension machine."
+    muscleGroup: "Legs"
+    equipment: ["Leg Extension Machine"]
+    image: "leg-extension.png"
+    isPublic: true
+    isDefault: true
+    type: "strength"
+  ) {
+    id
+    name
+  }
+}
+
+// planned workouts
+mutation {
+  createPlannedWorkout(input: {
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Strength & Hypertrophy Plan"
+    isActive: true
+    isPublic: true
+    days: [
+      {
+        userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Leg Day"
+        plannedExercises: [
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "bfce4435-e546-4610-9fd6-972d9d3fec3c"
+            notes: "Focus on depth and controlled movement."
+            plannedSets: [
+              { reps: 5, restTime: 120 }
+              { reps: 5, restTime: 120 }
+              { reps: 5, restTime: 120 }
+            ]
+          },
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "17814a56-c0d8-40b7-b7fc-d69ad87cdf73"
+            notes: "Hold for 1s at the top."
+            plannedSets: [
+              { reps: 12, restTime: 60 }
+              { reps: 10, restTime: 60 }
+            ]
+          },
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "cd713fed-9d1a-4faf-abb6-4a23b396ed09"
+            notes: "Steady pace for endurance."
+            plannedSets: [
+              { reps: 15, restTime: 45 }
+              { reps: 15, restTime: 45 }
+            ]
+          }
+        ]
+      },
+      {
+        userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Upper Body Strength"
+        plannedExercises: [
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "d3f8ff53-9b8e-4204-b2e5-596cd3973345"
+            notes: "Keep core engaged."
+            plannedSets: [
+              { reps: 5, restTime: 90 }
+              { reps: 5, restTime: 90 }
+              { reps: 5, restTime: 90 }
+            ]
+          },
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "2d1add6a-3f27-406e-a13f-5f186173f86a"
+            notes: "Focus on back contraction."
+            plannedSets: [
+              { reps: 10, restTime: 60 }
+              { reps: 8, restTime: 60 }
+            ]
+          }
+        ]
+      },
+      {
+        userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Cardio & Core"
+        plannedExercises: [
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "eb545c8f-942b-4eae-9bf5-7d24727e9e8f"
+            notes: "Increase incline every 5 min."
+            plannedSets: [
+              { reps: 20, restTime: 30 }
+            ]
+          },
+          {
+            userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "2f26c432-0bd0-47ff-8542-5a958f0bc20d"
+            notes: "Controlled movement."
+            plannedSets: [
+              { reps: 12, restTime: 30 }
+              { reps: 10, restTime: 30 }
+            ]
+          }
+        ]
+      }
+    ]
+  }) {
+    id
+    name
+    isActive
+    isPublic
+  }
+}
+
+mutation {
+  createPlannedWorkout(input: {
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Full Body Athletic Plan"
+    isActive: false
+    isPublic: true
+    days: [
+      {
+        userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Power & Explosiveness"
+        plannedExercises: [
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "bfce4435-e546-4610-9fd6-972d9d3fec3c"
+            notes: "Explosive movement up."
+            plannedSets: [
+              { reps: 3, restTime: 150 }
+              { reps: 3, restTime: 150 }
+            ]
+          },
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "402799f4-c4cf-4809-a5cd-bfb470ad2eed"
+            notes: "Grip tight, controlled movement."
+            plannedSets: [
+              { reps: 4, restTime: 120 }
+              { reps: 4, restTime: 120 }
+            ]
+          }
+        ]
+      },
+      {
+        userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Endurance & Core"
+        plannedExercises: [
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "6046cc81-3978-4bdc-a580-5f1c6bf78fde"
+            notes: "Maintain steady pace."
+            plannedSets: [
+              { reps: 20, restTime: 30 }
+            ]
+          },
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "2f26c432-0bd0-47ff-8542-5a958f0bc20d"
+            notes: "Use slow, controlled reps."
+            plannedSets: [
+              { reps: 15, restTime: 45 }
+            ]
+          }
+        ]
+      }
+    ]
+  }) {
+    id
+    name
+    isActive
+    isPublic
+  }
+}
+
+
+mutation {
+  createPlannedWorkout(input: {
+    userId: "69492bc4-f818-4cc8-889e-1b7077f320fa"
+    name: "Hypertrophy & Definition Plan"
+    isActive: false
+    isPublic: true
+    days: [
+      {
+        userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Chest & Shoulders"
+        plannedExercises: [
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "d3f8ff53-9b8e-4204-b2e5-596cd3973345"
+            notes: "Controlled eccentric."
+            plannedSets: [
+              { reps: 10, restTime: 45 }
+              { reps: 8, restTime: 45 }
+            ]
+          }
+        ]
+      },
+      {
+        userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+        name: "Leg Day Focus"
+        plannedExercises: [
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "bfce4435-e546-4610-9fd6-972d9d3fec3c"
+            notes: "Go deep in each rep."
+            plannedSets: [
+              { reps: 8, restTime: 60 }
+            ]
+          },
+          {
+            userId:"69492bc4-f818-4cc8-889e-1b7077f320fa"
+            exerciseId: "17814a56-c0d8-40b7-b7fc-d69ad87cdf73"
+            notes: "Use slow, controlled reps."
+            plannedSets: [
+              { reps: 12, restTime: 60 }
+            ]
+          }
+        ]
+      }
+    ]
+  }) {
+    id
+    name
+    isActive
+    isPublic
+  }
+}
+

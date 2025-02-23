@@ -7,35 +7,104 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Select,
-  SelectItem,
 } from '@heroui/react'
-import React, { useState } from 'react'
-import { dummyPlannedWorkouts } from '../DummyData'
-import {
-  getActiveWorkoutPlan,
-  getWorkoutDayById,
-  getWorkoutPlanById,
-} from '../utils'
-import { PlannedWorkout, PlannedWorkoutDay } from '../types'
-import { DayExerciseCards } from './components/DayExerciseCards'
+import React, { useEffect, useState } from 'react'
+import { PlannedWorkoutDay } from '../types'
 import { Trash2 } from 'lucide-react'
+import { useMutation } from '@apollo/client'
+import { toast } from 'react-toastify'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { CalendarDay, calendarDaySchema } from '@/types/CalendarDay'
+import { User } from 'next-auth'
+import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
+import { PlanAndDaySelect } from './components/PlanAndDaySelect'
+
 type DayConfigurationModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  user: User
+  selectedDate: Date
 }
 
 export const DayConfigurationModal = ({
   isOpen,
   onOpenChange,
+  user,
+  selectedDate,
 }: DayConfigurationModalProps) => {
-  const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<
-    PlannedWorkout | undefined
-  >(getActiveWorkoutPlan())
+  const [
+    createCalendarDay,
+    {
+      data: createCalendarDayData,
+      loading: createCalendarDayLoading,
+      error: createCalendarDayError,
+    },
+  ] = useMutation(CREATE_CALENDAR_DAY)
+
+  const formMethods = useForm<CalendarDay>({
+    resolver: zodResolver(calendarDaySchema),
+    defaultValues: {
+      userId: user.id,
+      date: selectedDate.toISOString(),
+      plannedWorkoutDayId: '',
+    },
+  })
+
+  const {
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = formMethods
 
   const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<
     PlannedWorkoutDay | undefined
-  >(selectedWorkoutPlan?.days[0])
+  >()
+
+  const onSubmit = async (formData: CalendarDay) => {
+    console.log(formData)
+
+    try {
+      await createCalendarDay({
+        variables: {
+          input: {
+            ...formData,
+          },
+        },
+      })
+
+      onOpenChange(false)
+      reset()
+    } catch (err) {
+      console.error('Error with assigning workout day to calendar day: ', err)
+      toast.error('Error with assigning workout day to calendar day.')
+    }
+  }
+
+  useEffect(() => {
+    if (createCalendarDayData) {
+      toast.success('Workout day assigned to calendar day successfully!')
+    }
+  }, [createCalendarDayData])
+
+  useEffect(() => {
+    if (createCalendarDayError) {
+      toast.error('Error with assigning workout day to calendar day.')
+    }
+  }, [createCalendarDayError])
+
+  useEffect(() => {
+    if (errors) {
+      console.log('Form errors: ', errors)
+    }
+  }, [errors])
+
+  useEffect(() => {
+    if (selectedWorkoutDay) {
+      setValue('plannedWorkoutDayId', selectedWorkoutDay.id)
+    }
+  }, [selectedWorkoutDay])
 
   return (
     <>
@@ -47,64 +116,25 @@ export const DayConfigurationModal = ({
       >
         <ModalContent>
           {onClose => (
-            <>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <ModalHeader>Plan Editor</ModalHeader>
 
               <ModalBody>
                 <div className="flex flex-col gap-7">
                   <div className="flex flex-row gap-1">
-                    <Select
-                      label="Select a workout plan"
-                      placeholder="Select a workout plan"
-                      variant="bordered"
-                      selectedKeys={[selectedWorkoutPlan?.id || '']}
-                      onChange={e => {
-                        setSelectedWorkoutPlan(
-                          getWorkoutPlanById(e.target.value)
-                        )
-                        setSelectedWorkoutDay(getWorkoutDayById(e.target.value))
-                      }}
-                    >
-                      {dummyPlannedWorkouts.map(plannedWorkout => (
-                        <SelectItem
-                          key={plannedWorkout.id}
-                          value={plannedWorkout.id}
-                        >
-                          {plannedWorkout.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-
-                    {selectedWorkoutPlan && (
-                      <Select
-                        label="Select a workout day"
-                        placeholder="Select a workout day"
-                        variant="bordered"
-                        selectedKeys={[selectedWorkoutDay?.id || '']}
-                        onChange={e =>
-                          setSelectedWorkoutDay(
-                            getWorkoutDayById(e.target.value)
-                          )
-                        }
-                      >
-                        {selectedWorkoutPlan.days.map(plannedWorkoutDay => (
-                          <SelectItem
-                            key={plannedWorkoutDay.id}
-                            value={plannedWorkoutDay.id}
-                          >
-                            {plannedWorkoutDay.name}
-                          </SelectItem>
-                        ))}
-                      </Select>
-                    )}
+                    <PlanAndDaySelect
+                      selectedWorkoutDay={selectedWorkoutDay}
+                      setSelectedWorkoutDay={setSelectedWorkoutDay}
+                    />
                   </div>
 
                   {selectedWorkoutDay && (
                     <div className="flex flex-col gap-3">
-                      <DayExerciseCards
+                      {/* TODO: Add the day exercise cards */}
+                      {/* <DayExerciseCards
                         selectedDay={selectedWorkoutDay}
                         setSelectedWorkoutDay={setSelectedWorkoutDay}
-                      />
+                      /> */}
 
                       <Button
                         color="danger"
@@ -119,14 +149,21 @@ export const DayConfigurationModal = ({
               </ModalBody>
 
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={() => {
+                    reset()
+                    onClose()
+                  }}
+                >
                   Cancel
                 </Button>
-                <Button color="primary" onPress={onClose}>
-                  Add to this day
+                <Button color="primary" type="submit">
+                  {createCalendarDayLoading ? 'Adding...' : 'Add to this day'}
                 </Button>
               </ModalFooter>
-            </>
+            </form>
           )}
         </ModalContent>
       </Modal>

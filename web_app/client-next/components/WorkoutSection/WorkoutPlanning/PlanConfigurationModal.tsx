@@ -12,24 +12,33 @@ import {
   Link,
   useDisclosure,
 } from '@heroui/react'
-import React, { useState } from 'react'
-import { dummyPlannedWorkouts } from '../DummyData'
+import React, { useEffect, useState } from 'react'
 import { EditIcon, PlusIcon, Trash } from 'lucide-react'
 import { PlanCreatorModal } from './PlanCreatorModal'
 import { getActiveWorkoutPlan } from '../utils'
 import { ExerciseCreatorModal } from './ExerciseCreatorModal'
-import { useSession } from 'next-auth/react'
+import { User } from 'next-auth'
+import { useQuery } from '@apollo/client'
+import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
+import { toast } from 'react-toastify'
+import { PlannedWorkout } from '../types'
 
 type PlanConfigurationModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  user: User
 }
 
 export const PlanConfigurationModal = ({
   isOpen,
   onOpenChange,
+  user,
 }: PlanConfigurationModalProps) => {
-  const { data: session } = useSession()
+  const {
+    data: allPlannedWorkoutsData,
+    loading: allPlannedWorkoutsLoading,
+    error: allPlannedWorkoutsError,
+  } = useQuery(GET_ALL_PLANNED_WORKOUTS)
 
   const {
     isOpen: isPlanCreatorModalOpen,
@@ -41,13 +50,27 @@ export const PlanConfigurationModal = ({
     onOpen: onExerciseCreatorModalOpen,
     onOpenChange: onExerciseCreatorModalOpenChange,
   } = useDisclosure()
-  const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState(
-    getActiveWorkoutPlan()?.id || ''
-  )
 
-  if (!session) {
-    return <div>Loading...</div>
-  }
+  const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<string>('')
+
+  useEffect(() => {
+    if (allPlannedWorkoutsError) {
+      console.error(
+        'Error fetching planned workouts: ',
+        allPlannedWorkoutsError
+      )
+      toast.error('Error fetching planned workouts.')
+    }
+  }, [allPlannedWorkoutsError])
+
+  useEffect(() => {
+    if (allPlannedWorkoutsData) {
+      setSelectedWorkoutPlan(
+        getActiveWorkoutPlan(allPlannedWorkoutsData.getAllPlannedWorkouts)
+          ?.id || ''
+      )
+    }
+  }, [allPlannedWorkoutsData])
 
   return (
     <>
@@ -71,17 +94,25 @@ export const PlanConfigurationModal = ({
                       label="Select a workout plan"
                       placeholder="Select a workout plan"
                       variant="bordered"
-                      selectedKeys={[selectedWorkoutPlan]}
-                      onChange={e => setSelectedWorkoutPlan(e.target.value)}
+                      selectedKeys={[selectedWorkoutPlan || '']}
+                      onChange={e => {
+                        setSelectedWorkoutPlan(e.target.value)
+                      }}
                     >
-                      {dummyPlannedWorkouts.map(plannedWorkout => (
-                        <SelectItem
-                          key={plannedWorkout.id}
-                          value={plannedWorkout.id}
-                        >
-                          {plannedWorkout.name}
-                        </SelectItem>
-                      ))}
+                      {allPlannedWorkoutsLoading ? (
+                        <SelectItem>Loading...</SelectItem>
+                      ) : (
+                        allPlannedWorkoutsData?.getAllPlannedWorkouts.map(
+                          (plannedWorkout: PlannedWorkout) => (
+                            <SelectItem
+                              key={plannedWorkout.id}
+                              value={plannedWorkout.id}
+                            >
+                              {plannedWorkout.name}
+                            </SelectItem>
+                          )
+                        )
+                      )}
                     </Select>
 
                     <Link
@@ -156,7 +187,7 @@ export const PlanConfigurationModal = ({
       <PlanCreatorModal
         isOpen={isPlanCreatorModalOpen}
         onOpenChange={onPlanCreatorModalOpenChange}
-        user={session?.user}
+        user={user}
       />
 
       <ExerciseCreatorModal

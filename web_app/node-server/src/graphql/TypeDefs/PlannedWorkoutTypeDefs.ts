@@ -86,6 +86,7 @@ input CreatePlannedWorkoutInput {
 
 type Query {
   getAllPlannedWorkouts: [PlannedWorkout!]!
+  getWorkoutPlanById(id: String!): PlannedWorkout!
 }
 
 type Mutation {

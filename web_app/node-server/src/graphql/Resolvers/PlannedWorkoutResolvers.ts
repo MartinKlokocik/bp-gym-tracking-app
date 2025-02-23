@@ -20,6 +20,23 @@ const resolvers = {
         },
       });
     },
+    getWorkoutPlanById: async (_: unknown, { id }: { id: string }) => {
+      return await prisma.plannedWorkout.findUnique({
+        where: { id },
+        include: {
+          days: {
+            include: {
+              plannedExercises: {
+                include: {
+                  plannedSets: true,
+                  exercise: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    },
   },
 
   Mutation: {

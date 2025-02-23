@@ -97,37 +97,35 @@ model PlannedWorkout {
 
 model CalendarDay {
   id     String   @id @default(uuid())
-  userId String
-  date   DateTime
+  date   String
 
-  // A calendar day links to one planned workout day
-  plannedWorkoutDayId String
+  // Relations
   plannedWorkoutDay   PlannedWorkoutDay @relation(fields: [plannedWorkoutDayId], references: [id])
-
+  plannedWorkoutDayId String
   user User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model ExerciseRecord {
   id        String   @id @default(uuid())
-  userId    String
   timestamp DateTime @default(now())
 
-  // Reference the exercise that was performed
-  exerciseId String
-  exercise   Exercise @relation(fields: [exerciseId], references: [id])
-
-  // Record sets (which include weight)
+  // Relations
   recordSets RecordSet[]
 
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId String
   user User @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 model RecordSet {
   id       String   @id @default(uuid())
   reps     Int
   restTime Int?
-  weight   Float // weight used for this set
+  weight   Float
 
-  exerciseRecordId String
+  // Relations
   exerciseRecord   ExerciseRecord @relation(fields: [exerciseRecordId], references: [id])
+  exerciseRecordId String
 }
