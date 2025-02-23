@@ -121,7 +121,7 @@ export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
   )
 
   return (
-    <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-8">
+    <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-5">
       {calendarDayLoading ? (
         <div>Loading...</div>
       ) : (

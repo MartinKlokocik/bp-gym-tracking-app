@@ -29,30 +29,31 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex w-full items-center justify-center mt-5">
-        <ButtonGroup>
-          <Button
-            variant="bordered"
-            className="bg-white text-black"
-            onPress={onDayConfigurationOpen}
-          >
-            Modify this day
-          </Button>
-          <Button
-            variant="bordered"
-            className="bg-black text-white"
-            onPress={onPlanConfigurationOpen}
-          >
-            Workout plan configuration
-          </Button>
-        </ButtonGroup>
-      </div>
-
       <div className="flex flex-col h-full w-full items-center justify-center mt-5">
         <CalendarBar
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />
+
+        <div className="flex w-full items-center justify-center">
+          <ButtonGroup>
+            <Button
+              variant="bordered"
+              className="bg-white text-black"
+              onPress={onDayConfigurationOpen}
+            >
+              Modify this day
+            </Button>
+            <Button
+              variant="bordered"
+              className="bg-black text-white"
+              onPress={onPlanConfigurationOpen}
+            >
+              Workout plan configuration
+            </Button>
+          </ButtonGroup>
+        </div>
+
         <WorkoutTab user={session.user} selectedDate={selectedDate} />
       </div>
 
