@@ -1,5 +1,6 @@
 'use client'
 
+import { useMutation } from '@apollo/client'
 import {
   Input,
   Image,
@@ -9,37 +10,43 @@ import {
   Radio,
   Accordion,
   AccordionItem,
-  Select,
-  SelectItem,
 } from '@heroui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
+import { User } from 'next-auth'
 import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
-import { dummyPlannedWorkouts } from '../DummyData'
-import {
-  CalendarDay,
-  PlannedExercise,
-  PlannedWorkout,
-  PlannedWorkoutDay,
-} from '../types'
-import {
-  getActiveWorkoutPlan,
-  getCalendarDay,
-  getLatestExerciseRecord,
-  getWorkoutDayById,
-  getWorkoutPlanById,
-} from '../utils'
+import { CalendarDay, PlannedExercise, PlannedWorkoutDay } from '../types'
+import { getCalendarDay, getLatestExerciseRecord } from '../utils'
+import { PlanAndDaySelect } from '../WorkoutPlanning/components/PlanAndDaySelect'
 
 import { GymProgressChart } from './GymProgressChart'
 
+import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
+import {
+  calendarDaySchema,
+  CalendarDay as CalendarDayForm,
+} from '@/types/CalendarDay'
+
 type WorkoutTabProps = {
   selectedDate: Date
+  user: User
 }
-export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
+export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
+  const [
+    createCalendarDay,
+    {
+      data: createCalendarDayData,
+      loading: createCalendarDayLoading,
+      error: createCalendarDayError,
+    },
+  ] = useMutation(CREATE_CALENDAR_DAY)
+
   const [calendarDay, setCalendarDay] = useState<CalendarDay | undefined>(
     getCalendarDay(selectedDate)
   )
-
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [selectedPlannedExercise, setselectedPlannedExercise] =
     useState<PlannedExercise | null>(calendarDay?.workout.exercises[0] ?? null)
@@ -48,13 +55,69 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
       'Put your notes for this exercise here'
   )
   const [isWorkoutCompleted, setIsWorkoutCompleted] = useState<boolean>(false)
-  const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<
-    PlannedWorkout | undefined
-  >(getActiveWorkoutPlan())
 
   const [selectedWorkoutDay, setSelectedWorkoutDay] = useState<
     PlannedWorkoutDay | undefined
-  >(selectedWorkoutPlan?.days[0])
+  >()
+
+  const formMethods = useForm<CalendarDayForm>({
+    resolver: zodResolver(calendarDaySchema),
+    defaultValues: {
+      userId: user.id,
+      date: selectedDate.toISOString(),
+      plannedWorkoutDayId: '',
+    },
+  })
+
+  const {
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = formMethods
+
+  const onSubmit = async (formData: CalendarDayForm) => {
+    console.log(formData)
+
+    try {
+      await createCalendarDay({
+        variables: {
+          input: {
+            ...formData,
+          },
+        },
+      })
+
+      reset()
+    } catch (err) {
+      console.error('Error with assigning workout day to calendar day: ', err)
+      toast.error('Error with assigning workout day to calendar day.')
+    }
+  }
+
+  useEffect(() => {
+    if (createCalendarDayData) {
+      toast.success('Workout day assigned to calendar day successfully!')
+    }
+  }, [createCalendarDayData])
+
+  useEffect(() => {
+    if (createCalendarDayError) {
+      toast.error('Error with assigning workout day to calendar day.')
+    }
+  }, [createCalendarDayError])
+
+  useEffect(() => {
+    if (errors) {
+      console.log('Form errors: ', errors)
+    }
+  }, [errors])
+
+  useEffect(() => {
+    if (selectedWorkoutDay) {
+      setValue('plannedWorkoutDayId', selectedWorkoutDay.id)
+    }
+  }, [selectedWorkoutDay, setValue])
 
   useEffect(() => {
     const day = getCalendarDay(selectedDate)
@@ -111,55 +174,25 @@ export const WorkoutTab = ({ selectedDate }: WorkoutTabProps) => {
       {!isDisplaying() ? (
         <div className="flex flex-col items-center justify-center w-full h-full gap-4">
           <p>There are not workout records for this day.</p>
-          <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
-            <Select
-              label="Select a workout plan"
-              placeholder="Select a workout plan"
-              variant="bordered"
-              className="w-1/2"
-              selectedKeys={[selectedWorkoutPlan?.id || '']}
-              onChange={e => {
-                setSelectedWorkoutPlan(getWorkoutPlanById(e.target.value))
-                setSelectedWorkoutDay(getWorkoutDayById(e.target.value))
-              }}
-            >
-              {dummyPlannedWorkouts.map(plannedWorkout => (
-                <SelectItem key={plannedWorkout.id} value={plannedWorkout.id}>
-                  {plannedWorkout.name}
-                </SelectItem>
-              ))}
-            </Select>
-
-            {selectedWorkoutPlan && (
-              <Select
-                label="Select a workout day"
-                placeholder="Select a workout day"
-                variant="bordered"
-                className="w-1/2"
-                selectedKeys={[selectedWorkoutDay?.id || '']}
-                onChange={e =>
-                  setSelectedWorkoutDay(getWorkoutDayById(e.target.value))
-                }
-              >
-                {selectedWorkoutPlan.days.map(plannedWorkoutDay => (
-                  <SelectItem
-                    key={plannedWorkoutDay.id}
-                    value={plannedWorkoutDay.id}
-                  >
-                    {plannedWorkoutDay.name}
-                  </SelectItem>
-                ))}
-              </Select>
-            )}
+          <form
+            className="flex flex-col gap-4 w-1/2 h-full items-center justify-center"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <PlanAndDaySelect
+              selectedWorkoutDay={selectedWorkoutDay}
+              setSelectedWorkoutDay={setSelectedWorkoutDay}
+            />
 
             {selectedWorkoutDay && (
-              <div className="flex flex-col gap-4 w-1/2 h-full items-end justify-center">
-                <Button color="primary" variant="solid" onPress={() => {}}>
-                  Add workout to this day
+              <div className="flex flex-col gap-4 w-full h-full items-end justify-center">
+                <Button color="primary" variant="solid" type="submit">
+                  {createCalendarDayLoading
+                    ? 'Adding workout to this day...'
+                    : 'Add workout to this day'}
                 </Button>
               </div>
             )}
-          </div>
+          </form>
         </div>
       ) : (
         <>

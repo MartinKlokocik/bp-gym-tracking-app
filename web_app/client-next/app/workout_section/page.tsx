@@ -53,7 +53,7 @@ export default function Home() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />
-        <WorkoutTab selectedDate={selectedDate} />
+        <WorkoutTab user={session.user} selectedDate={selectedDate} />
       </div>
 
       <PlanConfigurationModal
