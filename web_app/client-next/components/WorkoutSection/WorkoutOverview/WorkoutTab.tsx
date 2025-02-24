@@ -185,7 +185,7 @@ export const WorkoutTab = ({
                   </div>
                 </div>
                 <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
-                  <div className="flex flex-col gap-4 w-[40%]">
+                  <div className="flex flex-col gap-4 w-[40%] h-full">
                     <h2 className="text-2xl font-semibold">
                       Exercise ({exerciseIndex + 1}/
                       {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
@@ -200,9 +200,10 @@ export const WorkoutTab = ({
                       fallbackSrc="https://placehold.co/500x400"
                     />
                   </div>
-                  <div className="flex flex-col items-start w-[60%]">
+                  <div className="flex flex-col items-start w-[60%] h-full">
                     <GymProgressChart
                       exercise={selectedPlannedExercise?.exercise}
+                      userId={user.id}
                     />
                   </div>
                 </div>

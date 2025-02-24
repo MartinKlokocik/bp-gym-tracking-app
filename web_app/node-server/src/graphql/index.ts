@@ -6,13 +6,14 @@ import exerciseResolvers from "./Resolvers/ExerciseResolvers";
 import plannedWorkoutResolvers from "./Resolvers/PlannedWorkoutResolvers";
 import workoutDayResolvers from "./Resolvers/WorkoutDayResolvers";
 import calendarDayResolvers from "./Resolvers/CalendarDayResolvers";
+import exerciseRecordsResolvers from "./Resolvers/ExerciseRecordsResolvers";
 // TypeDefs
 import userTypeDefs from "./TypeDefs/UserTypeDefs";
 import exerciseTypeDefs from "./TypeDefs/ExerciseTypeDefs";
 import plannedWorkoutTypeDefs from "./TypeDefs/PlannedWorkoutTypeDefs";
 import workoutDayTypeDefs from "./TypeDefs/WorkoutDayTypeDefs";
 import calendarDayTypeDefs from "./TypeDefs/CalendarDayTypeDefs";
-
+import exerciseRecordsTypeDefs from "./TypeDefs/ExerciseRecordsTypeDefs";
 const schema = makeExecutableSchema({
   typeDefs: [
     userTypeDefs,
@@ -20,6 +21,7 @@ const schema = makeExecutableSchema({
     plannedWorkoutTypeDefs,
     workoutDayTypeDefs,
     calendarDayTypeDefs,
+    exerciseRecordsTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -27,6 +29,7 @@ const schema = makeExecutableSchema({
     plannedWorkoutResolvers,
     workoutDayResolvers,
     calendarDayResolvers,
+    exerciseRecordsResolvers,
   ],
 });
 
