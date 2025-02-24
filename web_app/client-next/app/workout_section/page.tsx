@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@apollo/client'
 import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
@@ -8,8 +9,19 @@ import { CalendarBar } from '@/components/WorkoutSection/WorkoutOverview/Calenda
 import { WorkoutTab } from '@/components/WorkoutSection/WorkoutOverview/WorkoutTab'
 import { DayConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/DayConfigurationModal'
 import { PlanConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/PlanConfigurationModal'
+import { GET_CALENDAR_DAY_BY_DATE } from '@/graphql/CalendarConsts'
+import { GetCalendarDayByDateQuery } from '@/graphql/types'
+import { GetCalendarDayByDateQueryVariables } from '@/graphql/types'
 export default function Home() {
   const { data: session } = useSession()
+
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const getCalendarDayByDateQuery = useQuery<
+    GetCalendarDayByDateQuery,
+    GetCalendarDayByDateQueryVariables
+  >(GET_CALENDAR_DAY_BY_DATE, {
+    variables: { date: selectedDate.toISOString() },
+  })
 
   const {
     isOpen: isPlanConfigurationOpen,
@@ -21,7 +33,6 @@ export default function Home() {
     onOpen: onDayConfigurationOpen,
     onOpenChange: onDayConfigurationOpenChange,
   } = useDisclosure()
-  const [selectedDate, setSelectedDate] = useState(new Date())
 
   if (!session) {
     return <div>Loading...</div>
@@ -54,7 +65,11 @@ export default function Home() {
           </ButtonGroup>
         </div>
 
-        <WorkoutTab user={session.user} selectedDate={selectedDate} />
+        <WorkoutTab
+          user={session.user}
+          selectedDate={selectedDate}
+          getCalendarDayByDateQuery={getCalendarDayByDateQuery}
+        />
       </div>
 
       <PlanConfigurationModal
@@ -67,6 +82,7 @@ export default function Home() {
         selectedDate={selectedDate}
         isOpen={isDayConfigurationOpen}
         onOpenChange={onDayConfigurationOpenChange}
+        getCalendarDayByDateQuery={getCalendarDayByDateQuery}
       />
     </>
   )

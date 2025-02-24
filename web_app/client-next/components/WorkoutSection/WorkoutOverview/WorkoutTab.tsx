@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@apollo/client'
+import { QueryResult } from '@apollo/client'
 import {
   Input,
   Image,
@@ -19,21 +19,30 @@ import { getLatestExerciseRecord } from '../utils'
 import { GymProgressChart } from './GymProgressChart'
 import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
 
-import { GET_CALENDAR_DAY_BY_DATE } from '@/graphql/CalendarConsts'
+import {
+  GetCalendarDayByDateQuery,
+  GetCalendarDayByDateQueryVariables,
+} from '@/graphql/types'
 import { PlannedExerciseWithIdsType } from '@/types/WorkoutPlanning'
 type WorkoutTabProps = {
   selectedDate: Date
   user: User
+  getCalendarDayByDateQuery: QueryResult<
+    GetCalendarDayByDateQuery,
+    GetCalendarDayByDateQueryVariables
+  >
 }
-export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
+export const WorkoutTab = ({
+  selectedDate,
+  user,
+  getCalendarDayByDateQuery,
+}: WorkoutTabProps) => {
   const {
     data: calendarDayData,
     error: calendarDayError,
     loading: calendarDayLoading,
     refetch: refetchCalendarDay,
-  } = useQuery(GET_CALENDAR_DAY_BY_DATE, {
-    variables: { date: selectedDate.toISOString() },
-  })
+  } = getCalendarDayByDateQuery
 
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [selectedPlannedExercise, setselectedPlannedExercise] =
@@ -214,7 +223,7 @@ export const WorkoutTab = ({ selectedDate, user }: WorkoutTabProps) => {
                       exerciseIndex
                     ]?.plannedSets?.map(
                       (
-                        set: { reps: number; restTime: number },
+                        set: { id: string; reps: number; restTime?: number },
                         index: number
                       ) => {
                         const setData = latestExerciseRecord?.sets[index]

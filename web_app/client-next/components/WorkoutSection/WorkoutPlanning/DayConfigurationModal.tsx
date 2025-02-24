@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation } from '@apollo/client'
+import { QueryResult, useMutation } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -19,6 +19,8 @@ import { toast } from 'react-toastify'
 import { PlanAndDaySelect } from './components/PlanAndDaySelect'
 
 import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
+import { GetCalendarDayByDateQueryVariables } from '@/graphql/types'
+import { GetCalendarDayByDateQuery } from '@/graphql/types'
 import { CalendarDayWithIdsType, calendarDaySchema } from '@/types/CalendarDay'
 import { PlannedWorkoutDayWithIdType } from '@/types/WorkoutPlanning'
 type DayConfigurationModalProps = {
@@ -26,6 +28,10 @@ type DayConfigurationModalProps = {
   onOpenChange: (open: boolean) => void
   user: User
   selectedDate: Date
+  getCalendarDayByDateQuery: QueryResult<
+    GetCalendarDayByDateQuery,
+    GetCalendarDayByDateQueryVariables
+  >
 }
 
 export const DayConfigurationModal = ({
@@ -33,6 +39,7 @@ export const DayConfigurationModal = ({
   onOpenChange,
   user,
   selectedDate,
+  getCalendarDayByDateQuery,
 }: DayConfigurationModalProps) => {
   const [
     createCalendarDay,
@@ -42,6 +49,8 @@ export const DayConfigurationModal = ({
       error: createCalendarDayError,
     },
   ] = useMutation(CREATE_CALENDAR_DAY)
+
+  const { refetch: refetchCalendarDay } = getCalendarDayByDateQuery
 
   const formMethods = useForm<CalendarDayWithIdsType>({
     resolver: zodResolver(calendarDaySchema),
@@ -69,11 +78,30 @@ export const DayConfigurationModal = ({
       await createCalendarDay({
         variables: {
           input: {
-            ...formData,
+            userId: formData.userId,
+            date: formData.date,
+            plannedWorkoutDay: {
+              id: formData.plannedWorkoutDay.id,
+              userId: formData.plannedWorkoutDay.userId,
+              name: formData.plannedWorkoutDay.name,
+              plannedExercises: formData.plannedWorkoutDay.plannedExercises.map(
+                plannedExercise => ({
+                  id: plannedExercise.id,
+                  userId: plannedExercise.userId,
+                  exerciseId: plannedExercise.exercise.id,
+                  plannedSets: plannedExercise.plannedSets.map(set => ({
+                    id: set.id,
+                    reps: set.reps,
+                    restTime: set.restTime ?? null,
+                  })),
+                })
+              ),
+            },
           },
         },
       })
 
+      await refetchCalendarDay()
       onOpenChange(false)
       reset()
     } catch (err) {
@@ -106,6 +134,10 @@ export const DayConfigurationModal = ({
     }
   }, [selectedWorkoutDay, setValue])
 
+  useEffect(() => {
+    setValue('date', selectedDate.toISOString())
+  }, [selectedDate, setValue])
+
   return (
     <>
       <Modal
@@ -117,7 +149,7 @@ export const DayConfigurationModal = ({
         <ModalContent>
           {onClose => (
             <form onSubmit={handleSubmit(onSubmit)}>
-              <ModalHeader>Plan Editor</ModalHeader>
+              <ModalHeader>Date Editor</ModalHeader>
 
               <ModalBody>
                 <div className="flex flex-col gap-7">

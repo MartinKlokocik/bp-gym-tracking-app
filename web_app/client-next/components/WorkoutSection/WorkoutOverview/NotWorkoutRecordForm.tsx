@@ -74,6 +74,10 @@ export const NotWorkoutRecordForm = ({
     }
   }, [selectedWorkoutDay, setValue])
 
+  useEffect(() => {
+    setValue('date', selectedDate.toISOString())
+  }, [selectedDate, setValue])
+
   const onSubmit = async (formData: CalendarDayWithIdsType) => {
     console.log(formData)
 
@@ -111,6 +115,7 @@ export const NotWorkoutRecordForm = ({
       toast.error('Error with assigning workout day to calendar day.')
     }
   }
+
   return (
     <div className="flex flex-col items-center justify-center w-full h-full gap-4">
       <p>There are not workout records for this day.</p>

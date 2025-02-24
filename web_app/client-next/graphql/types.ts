@@ -1,5 +1,14 @@
-import { Exercise } from '../types/Exercise'
+import { CalendarDayWithIdsType } from '../types/CalendarDay'
+import { ExerciseWithIdsType } from '../types/Exercise'
 
 export type GetAllExercisesQuery = {
-  getAllExercises: Exercise[]
+  getAllExercises: ExerciseWithIdsType[]
+}
+
+export type GetCalendarDayByDateQuery = {
+  getCalendarDayByDate: CalendarDayWithIdsType
+}
+
+export type GetCalendarDayByDateQueryVariables = {
+  date: string
 }

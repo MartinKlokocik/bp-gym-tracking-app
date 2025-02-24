@@ -23,8 +23,10 @@ import { toast } from 'react-toastify'
 import { DayExerciseCards } from './components/DayExerciseCards'
 
 import { CREATE_PLANNED_WORKOUT } from '@/graphql/PlannedWorkoutConsts'
-import { CreateWorkoutPlanFormData } from '@/types/WorkoutPlanning'
-import { plannedWorkoutSchema } from '@/types/WorkoutPlanning'
+import {
+  PlannedWorkoutWithoutIdsType,
+  plannedWorkoutSchema,
+} from '@/types/WorkoutPlanning'
 
 type PlanCreatorModalProps = {
   isOpen: boolean
@@ -50,7 +52,7 @@ export const PlanCreatorModal = ({
   const [numberOfDays, setNumberOfDays] = useState<string>('1')
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0)
 
-  const formMethods = useForm<CreateWorkoutPlanFormData>({
+  const formMethods = useForm<PlannedWorkoutWithoutIdsType>({
     resolver: zodResolver(plannedWorkoutSchema),
     defaultValues: {
       userId: user?.id.toString(),
@@ -86,7 +88,7 @@ export const PlanCreatorModal = ({
     }
   }, [errors])
 
-  const onSubmit = async (formData: CreateWorkoutPlanFormData) => {
+  const onSubmit = async (formData: PlannedWorkoutWithoutIdsType) => {
     console.log('Form submitted:', formData)
 
     try {
