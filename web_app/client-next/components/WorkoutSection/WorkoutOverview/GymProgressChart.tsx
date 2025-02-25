@@ -26,7 +26,7 @@ const aggregateWorkoutData = (
   metric: string
 ) => {
   return data.map(record => ({
-    date: record.calendarDay.date,
+    date: record.date,
     value:
       metric === 'totalVolume'
         ? record.recordSets.reduce((sum, set) => sum + set.weight * set.reps, 0)
@@ -47,6 +47,7 @@ export const GymProgressChart = ({
     error: exerciseRecordsError,
   } = useQuery(GET_ALL_USER_EXERCISE_RECORDS_FOR_EXERCISE, {
     variables: { exerciseId: exercise?.id, userId },
+    skip: !exercise?.id,
   })
 
   const [metric, setMetric] = useState('totalVolume')

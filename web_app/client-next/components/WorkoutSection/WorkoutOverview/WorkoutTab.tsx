@@ -1,6 +1,6 @@
 'use client'
 
-import { QueryResult } from '@apollo/client'
+import { QueryResult, useQuery } from '@apollo/client'
 import {
   Input,
   Image,
@@ -14,11 +14,13 @@ import { User } from 'next-auth'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { getLatestExerciseRecord } from '../utils'
-
 import { GymProgressChart } from './GymProgressChart'
 import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
 
+import {
+  GET_LATEST_EXERCISE_RECORD,
+  GET_RECORD_FOR_THIS_EXERCISE_AND_DATE,
+} from '@/graphql/ExerciseRecordsConsts'
 import {
   GetCalendarDayByDateQuery,
   GetCalendarDayByDateQueryVariables,
@@ -44,12 +46,41 @@ export const WorkoutTab = ({
     refetch: refetchCalendarDay,
   } = getCalendarDayByDateQuery
 
-  const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [selectedPlannedExercise, setselectedPlannedExercise] =
     useState<PlannedExerciseWithIdsType | null>(
       calendarDayData?.getCalendarDayByDate?.plannedWorkoutDay
         .plannedExercises[0] ?? null
     )
+
+  const {
+    data: latestExerciseRecordData,
+    loading: latestExerciseRecordLoading,
+    error: latestExerciseRecordError,
+    refetch: refetchLatestExerciseRecord,
+  } = useQuery(GET_LATEST_EXERCISE_RECORD, {
+    variables: {
+      exerciseId: selectedPlannedExercise?.exercise.id,
+      userId: user.id,
+      date: selectedDate.toISOString().split('T')[0],
+    },
+    skip: !selectedPlannedExercise?.exercise.id,
+  })
+
+  const {
+    data: recordForThisExerciseAndDateData,
+    loading: recordForThisExerciseAndDateLoading,
+    error: recordForThisExerciseAndDateError,
+    refetch: refetchRecordForThisExerciseAndDate,
+  } = useQuery(GET_RECORD_FOR_THIS_EXERCISE_AND_DATE, {
+    variables: {
+      userId: user.id,
+      exerciseId: selectedPlannedExercise?.exercise.id,
+      date: selectedDate.toISOString().split('T')[0],
+    },
+    skip: !selectedPlannedExercise?.exercise.id,
+  })
+
+  const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [notes, setNotes] = useState(
     selectedPlannedExercise?.notes?.trim() ||
       'Put your notes for this exercise here'
@@ -69,6 +100,17 @@ export const WorkoutTab = ({
     }
   }, [refetchCalendarDay])
 
+  const refetchNewRecordsFunction = useCallback(async () => {
+    if (selectedPlannedExercise?.exercise.id) {
+      await refetchLatestExerciseRecord()
+      await refetchRecordForThisExerciseAndDate()
+    }
+  }, [
+    refetchLatestExerciseRecord,
+    refetchRecordForThisExerciseAndDate,
+    selectedPlannedExercise?.exercise.id,
+  ])
+
   useEffect(() => {
     refetchDayFunction()
   }, [calendarDayData, refetchCalendarDay, selectedDate, refetchDayFunction])
@@ -78,6 +120,22 @@ export const WorkoutTab = ({
       toast.error(calendarDayError.message)
     }
   }, [calendarDayError])
+
+  useEffect(() => {
+    if (latestExerciseRecordError) {
+      toast.error(latestExerciseRecordError.message)
+    }
+  }, [latestExerciseRecordError])
+
+  useEffect(() => {
+    if (recordForThisExerciseAndDateError) {
+      toast.error(recordForThisExerciseAndDateError.message)
+    }
+  }, [recordForThisExerciseAndDateError])
+
+  useEffect(() => {
+    refetchNewRecordsFunction()
+  }, [refetchNewRecordsFunction, selectedPlannedExercise])
 
   const handlePrevExercise = () => {
     if (exerciseIndex > 0) {
@@ -124,10 +182,6 @@ export const WorkoutTab = ({
     }
     return true
   }
-
-  const latestExerciseRecord = getLatestExerciseRecord(
-    selectedPlannedExercise?.exercise ?? null
-  )
 
   return (
     <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-5">
@@ -209,12 +263,13 @@ export const WorkoutTab = ({
                 </div>
 
                 <div className="flex flex-row w-full h-full justify-between">
-                  <div className="flex flex-col w-auto h-full items-start justify-start">
-                    <div className="flex flex-row gap-4 justify-between w-full">
-                      {latestExerciseRecord && (
+                  <div className="flex flex-col w-1/2 h-full items-start justify-start">
+                    <div className="grid grid-cols-2 gap-4 items-center w-full">
+                      {latestExerciseRecordData && (
                         <h2 className="text-lg font-semibold flex items-center gap-2">
                           <StepBack size={20} />
-                          Previous
+                          Previous{' '}
+                          {latestExerciseRecordLoading ? 'Loading...' : ''}
                         </h2>
                       )}
                       <h2 className="text-lg font-semibold">Current</h2>
@@ -227,25 +282,37 @@ export const WorkoutTab = ({
                         set: { id: string; reps: number; restTime?: number },
                         index: number
                       ) => {
-                        const setData = latestExerciseRecord?.sets[index]
+                        if (
+                          latestExerciseRecordLoading ||
+                          recordForThisExerciseAndDateLoading
+                        ) {
+                          return null
+                        }
+                        const previousSetData =
+                          latestExerciseRecordData?.getLatestExerciseRecord
+                            ?.recordSets[index]
+                        const currentSetData =
+                          recordForThisExerciseAndDateData
+                            ?.getRecordForThisExerciseAndDate?.recordSets[index]
+
                         return (
                           <div
                             key={index}
-                            className="grid grid-cols-2 gap-4 items-center"
+                            className="grid grid-cols-2 gap-4 items-center w-full"
                           >
                             {/* Previous Section */}
-                            {latestExerciseRecord && (
-                              <div>
+                            {latestExerciseRecordData && (
+                              <div className="w-full">
                                 <Accordion>
                                   <AccordionItem
                                     aria-label={`Set ${index + 1}`}
-                                    title={`Set ${index + 1}: ${setData?.weight} kg`}
+                                    title={`Set ${index + 1}: ${previousSetData?.weight} kg`}
                                     subtitle="See details"
                                     className="w-full"
                                   >
                                     <div className="text-gray-300">
-                                      <p>📊 {setData?.reps} reps</p>
-                                      <p>⏳ {setData?.restTime} sec</p>
+                                      <p>📊 {previousSetData?.reps} reps</p>
+                                      <p>⏳ {previousSetData?.restTime} sec</p>
                                       <p>💓 {/* TODO: Add pulse data */}</p>
                                     </div>
                                   </AccordionItem>
@@ -256,18 +323,26 @@ export const WorkoutTab = ({
                             {/* Current Section */}
                             <div className="w-full mb-2">
                               <Input
-                                label={`Set ${index + 1}`}
+                                label={`Weight set: ${index + 1}`}
                                 placeholder="Current weight"
                                 type="number"
-                                value={setData?.weight.toString()}
+                                value={
+                                  currentSetData?.weight !== 0
+                                    ? currentSetData?.weight.toString()
+                                    : previousSetData?.weight.toString()
+                                }
                                 variant="underlined"
                                 className="w-full"
                               />
                               <Input
-                                label={`Set ${index + 1}`}
+                                label={`Reps set: ${index + 1}`}
                                 placeholder="Current reps"
                                 type="number"
-                                value={setData?.reps.toString()}
+                                value={
+                                  currentSetData?.reps !== 0
+                                    ? currentSetData?.reps.toString()
+                                    : previousSetData?.reps.toString()
+                                }
                                 variant="underlined"
                                 className="w-full"
                               />

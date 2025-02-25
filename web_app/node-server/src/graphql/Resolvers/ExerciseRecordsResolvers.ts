@@ -11,9 +11,40 @@ const exerciseRecordsResolvers = {
       await prisma.exerciseRecord.findMany({
         where: { exerciseId: exerciseId, userId: userId, status: "COMPLETED" },
         include: {
-            recordSets: true,
-            calendarDay: true
-        }
+          recordSets: true,
+        },
+      }),
+
+    getLatestExerciseRecord: async (
+      _: unknown,
+      {
+        exerciseId,
+        userId,
+        date,
+      }: { exerciseId: string; userId: string; date: string }
+    ) =>
+      await prisma.exerciseRecord.findFirst({
+        where: {
+          exerciseId: exerciseId,
+          userId: userId,
+          status: "COMPLETED",
+          date: { lt: date },
+        },
+        orderBy: { date: "desc" },
+        include: {
+          recordSets: true,
+        },
+      }),
+
+    getRecordForThisExerciseAndDate: async (
+      _: unknown,
+      { exerciseId, date, userId }: { exerciseId: string; date: string; userId: string }
+    ) =>
+      await prisma.exerciseRecord.findFirst({
+        where: { exerciseId: exerciseId, date: date, userId: userId },
+        include: {
+          recordSets: true,
+        },
       }),
   },
 };

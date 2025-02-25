@@ -1,9 +1,4 @@
 const ExerciseRecordsTypeDefs = `
-type CalendarDay {
-  id: String!
-  date: String!
-}
-
 type RecordSet {
   id: String!
   reps: Int!
@@ -16,12 +11,15 @@ type ExerciseRecord {
   id: String!
   userId: String!
   exerciseId: String!
-  recordSets: [RecordSet!]!
-  calendarDay: CalendarDay!
+  recordSets: [RecordSet!]!  
+  date: String!
+  notes: String
 }
 
 type Query {
   getAllUserExerciseRecordsForExercise(exerciseId: String!, userId: String!): [ExerciseRecord!]!
+  getLatestExerciseRecord(exerciseId: String!, userId: String!, date: String!): ExerciseRecord
+  getRecordForThisExerciseAndDate(exerciseId: String!, date: String!, userId: String!): ExerciseRecord
 }
 `;
 
