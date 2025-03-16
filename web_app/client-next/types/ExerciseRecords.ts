@@ -16,3 +16,4 @@ export const exerciseRecordSchema = z.object({
 })
 
 export type ExerciseRecordWithIdsType = z.infer<typeof exerciseRecordSchema>
+export type RecordSetWithIdsType = z.infer<typeof recordSetSchema>

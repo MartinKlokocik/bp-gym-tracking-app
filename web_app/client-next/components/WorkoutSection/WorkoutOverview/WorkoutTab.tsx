@@ -1,6 +1,6 @@
 'use client'
 
-import { QueryResult, useQuery } from '@apollo/client'
+import { QueryResult, useMutation, useQuery } from '@apollo/client'
 import {
   Input,
   Image,
@@ -22,9 +22,14 @@ import {
   GET_RECORD_FOR_THIS_EXERCISE_AND_DATE,
 } from '@/graphql/ExerciseRecordsConsts'
 import {
+  UPDATE_WEIGHT_IN_SET_RECORD,
+  UPDATE_REPS_IN_SET_RECORD,
+} from '@/graphql/RecordSetConsts'
+import {
   GetCalendarDayByDateQuery,
   GetCalendarDayByDateQueryVariables,
 } from '@/graphql/types'
+import { RecordSetWithIdsType } from '@/types/ExerciseRecords'
 import { PlannedExerciseWithIdsType } from '@/types/WorkoutPlanning'
 type WorkoutTabProps = {
   selectedDate: Date
@@ -52,6 +57,17 @@ export const WorkoutTab = ({
         .plannedExercises[0] ?? null
     )
 
+  const [sets, setSets] = useState<
+    Record<
+      string,
+      {
+        weight: string
+        reps: string
+        restTime: string
+      }
+    >
+  >({})
+
   const {
     data: latestExerciseRecordData,
     loading: latestExerciseRecordLoading,
@@ -78,6 +94,25 @@ export const WorkoutTab = ({
       date: selectedDate.toISOString().split('T')[0],
     },
     skip: !selectedPlannedExercise?.exercise.id,
+  })
+
+  const [updateWeightInSetRecord] = useMutation(UPDATE_WEIGHT_IN_SET_RECORD, {
+    onCompleted: () => {
+      refetchLatestExerciseRecord()
+      refetchRecordForThisExerciseAndDate()
+    },
+    onError: error => {
+      toast.error(error.message)
+    },
+  })
+  const [updateRepsInSetRecord] = useMutation(UPDATE_REPS_IN_SET_RECORD, {
+    onCompleted: () => {
+      refetchLatestExerciseRecord()
+      refetchRecordForThisExerciseAndDate()
+    },
+    onError: error => {
+      toast.error(error.message)
+    },
   })
 
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
@@ -110,6 +145,33 @@ export const WorkoutTab = ({
     refetchRecordForThisExerciseAndDate,
     selectedPlannedExercise?.exercise.id,
   ])
+
+  useEffect(() => {
+    if (
+      recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate
+        ?.recordSets
+    ) {
+      const setsRecord =
+        recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate.recordSets.reduce(
+          (
+            acc: Record<
+              string,
+              { weight: string; reps: string; restTime: string }
+            >,
+            set: RecordSetWithIdsType
+          ) => ({
+            ...acc,
+            [set.id]: {
+              weight: set.weight.toString(),
+              reps: set.reps.toString(),
+              restTime: set.restTime.toString(),
+            },
+          }),
+          {}
+        )
+      setSets(setsRecord)
+    }
+  }, [recordForThisExerciseAndDateData])
 
   useEffect(() => {
     refetchDayFunction()
@@ -162,6 +224,32 @@ export const WorkoutTab = ({
         calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
           .plannedExercises[newIndex] ?? null
       )
+    }
+  }
+
+  const handleSetChange = (setId: string, field: string, value: string) => {
+    setSets(prevSets => ({
+      ...prevSets,
+      [setId]: {
+        ...prevSets[setId],
+        [field]: value,
+      },
+    }))
+  }
+
+  const handleUpdateSet = (setId: string, field: string, value: string) => {
+    if (value === '') {
+      return
+    }
+    console.log('SET ID', setId)
+    if (field === 'weight') {
+      updateWeightInSetRecord({
+        variables: { setId, weight: parseFloat(value) },
+      })
+    } else if (field === 'reps') {
+      updateRepsInSetRecord({
+        variables: { setId, reps: parseInt(value) },
+      })
     }
   }
 
@@ -323,18 +411,34 @@ export const WorkoutTab = ({
                             {/* Current Section */}
                             <div className="w-full mb-2">
                               <Input
+                                key={`${currentSetData?.id}-weight`}
                                 label={`Weight set: ${index + 1}`}
                                 placeholder="Current weight"
                                 type="number"
                                 value={
-                                  currentSetData?.weight !== 0
-                                    ? currentSetData?.weight.toString()
+                                  sets[currentSetData?.id]?.weight !== ''
+                                    ? sets[currentSetData?.id]?.weight
                                     : previousSetData?.weight.toString()
                                 }
                                 variant="underlined"
                                 className="w-full"
+                                onChange={e => {
+                                  handleSetChange(
+                                    currentSetData?.id,
+                                    'weight',
+                                    e.target.value
+                                  )
+                                }}
+                                onBlur={() => {
+                                  handleUpdateSet(
+                                    currentSetData?.id,
+                                    'weight',
+                                    sets[currentSetData?.id]?.weight
+                                  )
+                                }}
                               />
                               <Input
+                                key={`${currentSetData?.id}-reps`}
                                 label={`Reps set: ${index + 1}`}
                                 placeholder="Current reps"
                                 type="number"
@@ -345,6 +449,20 @@ export const WorkoutTab = ({
                                 }
                                 variant="underlined"
                                 className="w-full"
+                                onChange={e => {
+                                  handleSetChange(
+                                    currentSetData?.id,
+                                    'reps',
+                                    e.target.value
+                                  )
+                                }}
+                                onBlur={() => {
+                                  handleUpdateSet(
+                                    currentSetData?.id,
+                                    'reps',
+                                    sets[currentSetData?.id]?.reps
+                                  )
+                                }}
                               />
                             </div>
                           </div>
