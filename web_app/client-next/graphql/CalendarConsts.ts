@@ -26,6 +26,7 @@ export const GET_CALENDAR_DAY_BY_DATE = gql`
             id
             reps
             restTime
+            setNumber
           }
         }
       }
@@ -34,7 +35,7 @@ export const GET_CALENDAR_DAY_BY_DATE = gql`
 `
 
 export const CREATE_CALENDAR_DAY = gql`
-  mutation CreateCalendarDay($input: CalendarDayInput!) {
+  mutation CreateCalendarDay($input: CalendarDayCreateInput!) {
     createCalendarDay(input: $input) {
       id
       userId
@@ -51,6 +52,7 @@ export const CREATE_CALENDAR_DAY = gql`
             id
             reps
             restTime
+            setNumber
           }
         }
       }

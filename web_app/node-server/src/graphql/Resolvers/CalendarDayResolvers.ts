@@ -54,6 +54,7 @@ const resolvers = {
                 },
                 recordSets: {
                   create: plannedExercise.plannedSets.map((set: any) => ({
+                    setNumber: set.setNumber,
                     reps: set.reps,
                     restTime: set.restTime || null,
                     weight: set.weight || 0,

@@ -33,6 +33,7 @@ export const GET_ALL_PLANNED_WORKOUTS = gql`
             id
             reps
             restTime
+            setNumber
           }
         }
       }
@@ -73,6 +74,7 @@ export const GET_PLANNED_WORKOUT_BY_ID = gql`
             id
             reps
             restTime
+            setNumber
           }
         }
       }
@@ -81,7 +83,7 @@ export const GET_PLANNED_WORKOUT_BY_ID = gql`
 `
 
 export const CREATE_PLANNED_WORKOUT = gql`
-  mutation CreatePlannedWorkout($input: CreatePlannedWorkoutInput!) {
+  mutation CreatePlannedWorkout($input: PlannedWorkoutCreateInput!) {
     createPlannedWorkout(input: $input) {
       id
       userId
@@ -100,6 +102,7 @@ export const CREATE_PLANNED_WORKOUT = gql`
             id
             reps
             restTime
+            setNumber
           }
         }
       }

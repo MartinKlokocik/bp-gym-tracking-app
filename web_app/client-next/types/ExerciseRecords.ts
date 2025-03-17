@@ -5,6 +5,7 @@ export const recordSetSchema = z.object({
   reps: z.number(),
   weight: z.number(),
   restTime: z.number(),
+  setNumber: z.number(),
 })
 
 export const exerciseRecordSchema = z.object({

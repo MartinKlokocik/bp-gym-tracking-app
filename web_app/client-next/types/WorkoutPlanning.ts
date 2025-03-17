@@ -7,6 +7,7 @@ export const plannedSetSchema = z.object({
     .number({ invalid_type_error: 'Reps must be a number' })
     .min(1, 'Reps must be at least 1'),
   restTime: z.number().optional(),
+  setNumber: z.number(),
 })
 
 export const plannedExerciseSchema = z.object({
@@ -39,6 +40,7 @@ export const plannedSetSchemaWithId = z.object({
     .number({ invalid_type_error: 'Reps must be a number' })
     .min(1, 'Reps must be at least 1'),
   restTime: z.number().optional(),
+  setNumber: z.number(),
 })
 
 export const plannedExerciseSchemaWithId = z.object({

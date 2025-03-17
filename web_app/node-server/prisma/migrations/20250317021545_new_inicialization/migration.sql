@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "RecordStatus" AS ENUM ('PENDING', 'COMPLETED', 'SKIPPED');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -41,6 +44,7 @@ CREATE TABLE "PlannedSet" (
     "id" TEXT NOT NULL,
     "reps" INTEGER NOT NULL,
     "restTime" INTEGER,
+    "setNumber" INTEGER NOT NULL,
     "plannedExerciseId" TEXT NOT NULL,
 
     CONSTRAINT "PlannedSet_pkey" PRIMARY KEY ("id")
@@ -71,9 +75,9 @@ CREATE TABLE "PlannedWorkout" (
 -- CreateTable
 CREATE TABLE "CalendarDay" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "date" TIMESTAMP(3) NOT NULL,
+    "date" TEXT NOT NULL,
     "plannedWorkoutDayId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "CalendarDay_pkey" PRIMARY KEY ("id")
 );
@@ -81,9 +85,12 @@ CREATE TABLE "CalendarDay" (
 -- CreateTable
 CREATE TABLE "ExerciseRecord" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "date" TEXT NOT NULL,
+    "status" "RecordStatus" NOT NULL DEFAULT 'PENDING',
+    "notes" TEXT,
     "exerciseId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "calendarDayId" TEXT NOT NULL,
 
     CONSTRAINT "ExerciseRecord_pkey" PRIMARY KEY ("id")
 );
@@ -91,6 +98,7 @@ CREATE TABLE "ExerciseRecord" (
 -- CreateTable
 CREATE TABLE "RecordSet" (
     "id" TEXT NOT NULL,
+    "setNumber" INTEGER NOT NULL,
     "reps" INTEGER NOT NULL,
     "restTime" INTEGER,
     "weight" DOUBLE PRECISION NOT NULL,
@@ -137,6 +145,9 @@ ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_exerciseId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_calendarDayId_fkey" FOREIGN KEY ("calendarDayId") REFERENCES "CalendarDay"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RecordSet" ADD CONSTRAINT "RecordSet_exerciseRecordId_fkey" FOREIGN KEY ("exerciseRecordId") REFERENCES "ExerciseRecord"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

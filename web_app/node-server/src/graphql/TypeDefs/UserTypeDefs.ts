@@ -1,11 +1,4 @@
 const usersTypeDefs = `
-  type User {
-    id: ID!
-    email: String!
-    name: String!
-    createdAt: String!
-  }
-
   type LoginResponse {
     token: String!
     user: User!

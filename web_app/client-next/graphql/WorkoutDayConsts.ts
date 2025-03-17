@@ -26,6 +26,7 @@ export const GET_WORKOUT_DAY_BY_ID = gql`
           id
           reps
           restTime
+          setNumber
         }
       }
     }

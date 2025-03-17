@@ -76,6 +76,7 @@ export const DayExerciseCards = ({
         {
           reps: 10,
           restTime: 60,
+          setNumber: 1,
         },
       ],
       notes: '',
@@ -90,7 +91,14 @@ export const DayExerciseCards = ({
   }
 
   const addSetToExercise = (plannedExerciseIndex: number) => {
+    const existingSets =
+      watch(
+        `days.${selectedDayIndex}.plannedExercises.${plannedExerciseIndex}.plannedSets`
+      ) || []
+    const newSetNumber = existingSets.length + 1
+
     const newSet: PlannedSetWithoutIdsType = {
+      setNumber: newSetNumber,
       reps: 10,
       restTime: 60,
     }
@@ -146,6 +154,13 @@ export const DayExerciseCards = ({
 
       exerciseToUpdate.plannedSets = exerciseToUpdate.plannedSets.filter(
         (_, idx) => idx !== setIndex
+      )
+
+      exerciseToUpdate.plannedSets = exerciseToUpdate.plannedSets.map(
+        (set, idx) => ({
+          ...set,
+          setNumber: idx + 1,
+        })
       )
 
       updatedExercises[plannedExerciseIndex] = exerciseToUpdate
@@ -281,7 +296,7 @@ export const DayExerciseCards = ({
                   className="flex flex-wrap items-center gap-2"
                 >
                   <Chip size="sm" variant="flat">
-                    Set {setIndex + 1}
+                    Set {set.setNumber || setIndex + 1}
                   </Chip>
                   <Input
                     type="number"

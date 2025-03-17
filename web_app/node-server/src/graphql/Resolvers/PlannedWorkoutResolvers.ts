@@ -71,6 +71,7 @@ const resolvers = {
                   notes: plannedExercise.notes || "",
                   plannedSets: {
                     create: plannedExercise.plannedSets.map((set: any) => ({
+                      setNumber: set.setNumber,
                       reps: set.reps,
                       restTime: set.restTime || null,
                     })),

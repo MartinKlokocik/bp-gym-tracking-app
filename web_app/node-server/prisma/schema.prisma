@@ -61,6 +61,7 @@ model PlannedSet {
   id       String @id @default(uuid())
   reps     Int
   restTime Int?
+  setNumber Int
 
   plannedExercise   PlannedExercise @relation(fields: [plannedExerciseId], references: [id])
   plannedExerciseId String
@@ -127,6 +128,7 @@ model ExerciseRecord {
 
 model RecordSet {
   id       String   @id @default(uuid())
+  setNumber Int
   reps     Int
   restTime Int?
   weight   Float

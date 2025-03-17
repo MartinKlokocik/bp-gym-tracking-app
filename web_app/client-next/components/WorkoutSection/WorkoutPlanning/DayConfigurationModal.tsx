@@ -93,6 +93,7 @@ export const DayConfigurationModal = ({
                     id: set.id,
                     reps: set.reps,
                     restTime: set.restTime ?? null,
+                    setNumber: set.setNumber,
                   })),
                 })
               ),

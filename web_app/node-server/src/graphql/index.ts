@@ -16,8 +16,17 @@ import workoutDayTypeDefs from "./TypeDefs/WorkoutDayTypeDefs";
 import calendarDayTypeDefs from "./TypeDefs/CalendarDayTypeDefs";
 import exerciseRecordsTypeDefs from "./TypeDefs/ExerciseRecordsTypeDefs";
 import recordSetTypeDefs from "./TypeDefs/RecordSetTypeDefs";
+import {
+  UpdateInputsTypeDefs,
+  CreateInputsTypeDefs,
+} from "./TypeDefs/InputsTypeDefs";
+import TypesTypeDefs from "./TypeDefs/TypesTypeDefs";
+import { printSchema } from "graphql";
 const schema = makeExecutableSchema({
   typeDefs: [
+    UpdateInputsTypeDefs,
+    TypesTypeDefs,
+    CreateInputsTypeDefs,
     userTypeDefs,
     exerciseTypeDefs,
     plannedWorkoutTypeDefs,
