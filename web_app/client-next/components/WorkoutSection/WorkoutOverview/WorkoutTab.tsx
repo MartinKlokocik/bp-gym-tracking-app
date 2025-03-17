@@ -20,6 +20,7 @@ import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
 import {
   GET_LATEST_EXERCISE_RECORD,
   GET_RECORD_FOR_THIS_EXERCISE_AND_DATE,
+  UPDATE_EXERCISE_RECORD_STATUS,
 } from '@/graphql/ExerciseRecordsConsts'
 import {
   UPDATE_WEIGHT_IN_SET_RECORD,
@@ -114,14 +115,23 @@ export const WorkoutTab = ({
       toast.error(error.message)
     },
   })
+  const [updateExerciseRecordStatus] = useMutation(
+    UPDATE_EXERCISE_RECORD_STATUS,
+    {
+      onCompleted: () => {
+        refetchRecordForThisExerciseAndDate()
+      },
+      onError: error => {
+        toast.error(error.message)
+      },
+    }
+  )
 
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [notes, setNotes] = useState(
     selectedPlannedExercise?.notes?.trim() ||
       'Put your notes for this exercise here'
   )
-  const [isCompleted, setIsCompleted] = useState<boolean>(false)
-  const [isSkipped, setIsSkipped] = useState<boolean>(false)
 
   const refetchDayFunction = useCallback(async () => {
     const { data } = await refetchCalendarDay()
@@ -241,7 +251,6 @@ export const WorkoutTab = ({
     if (value === '') {
       return
     }
-    console.log('SET ID', setId)
     if (field === 'weight') {
       updateWeightInSetRecord({
         variables: { setId, weight: parseFloat(value) },
@@ -250,6 +259,39 @@ export const WorkoutTab = ({
       updateRepsInSetRecord({
         variables: { setId, reps: parseInt(value) },
       })
+    }
+  }
+
+  const handleStatusChange = async (
+    newStatus: 'COMPLETED' | 'SKIPPED' | 'PENDING'
+  ) => {
+    if (!recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate) {
+      return
+    }
+
+    const recordId =
+      recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate.id
+    const currentStatus =
+      recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate.status
+
+    const statusToSet = currentStatus === newStatus ? 'PENDING' : newStatus
+
+    if (currentStatus !== newStatus) {
+      await updateExerciseRecordStatus({
+        variables: {
+          id: recordId,
+          status: statusToSet,
+        },
+      })
+      refetchRecordForThisExerciseAndDate()
+    } else {
+      await updateExerciseRecordStatus({
+        variables: {
+          id: recordId,
+          status: 'PENDING',
+        },
+      })
+      refetchRecordForThisExerciseAndDate()
     }
   }
 
@@ -304,11 +346,12 @@ export const WorkoutTab = ({
                       value="1"
                       color="success"
                       size="lg"
-                      isSelected={isCompleted}
-                      onChange={() => {
-                        setIsCompleted(prev => !prev)
-                        setIsSkipped(false)
-                      }}
+                      isSelected={
+                        recordForThisExerciseAndDateData
+                          ?.getRecordForThisExerciseAndDate?.status ===
+                        'COMPLETED'
+                      }
+                      onChange={() => handleStatusChange('COMPLETED')}
                     >
                       Completed
                     </Checkbox>
@@ -316,11 +359,12 @@ export const WorkoutTab = ({
                       value="-1"
                       color="danger"
                       size="lg"
-                      isSelected={isSkipped}
-                      onChange={() => {
-                        setIsSkipped(prev => !prev)
-                        setIsCompleted(false)
-                      }}
+                      isSelected={
+                        recordForThisExerciseAndDateData
+                          ?.getRecordForThisExerciseAndDate?.status ===
+                        'SKIPPED'
+                      }
+                      onChange={() => handleStatusChange('SKIPPED')}
                     >
                       Skipped
                     </Checkbox>

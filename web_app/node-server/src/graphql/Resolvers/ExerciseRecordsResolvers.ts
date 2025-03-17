@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, RecordStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -57,6 +57,16 @@ const exerciseRecordsResolvers = {
             },
           },
         },
+      }),
+  },
+  Mutation: {
+    updateExerciseRecordStatus: async (
+      _: unknown,
+      { id, status }: { id: string; status: RecordStatus }
+    ) =>
+      await prisma.exerciseRecord.update({
+        where: { id: id },
+        data: { status: status },
       }),
   },
 };

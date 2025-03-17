@@ -20,12 +20,12 @@ import {
   UpdateInputsTypeDefs,
   CreateInputsTypeDefs,
 } from "./TypeDefs/InputsTypeDefs";
-import TypesTypeDefs from "./TypeDefs/TypesTypeDefs";
-import { printSchema } from "graphql";
+import { TypesTypeDefs, EnumTypeDefs } from "./TypeDefs/TypesTypeDefs";
 const schema = makeExecutableSchema({
   typeDefs: [
     UpdateInputsTypeDefs,
     TypesTypeDefs,
+    EnumTypeDefs,
     CreateInputsTypeDefs,
     userTypeDefs,
     exerciseTypeDefs,

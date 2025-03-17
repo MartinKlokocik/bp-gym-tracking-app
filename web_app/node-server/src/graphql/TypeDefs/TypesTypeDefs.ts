@@ -75,7 +75,16 @@ const TypesTypeDefs = `
     recordSets: [RecordSet!]!  
     date: String!
     notes: String
+    status: RecordStatus!
   }
 `;
 
-export default TypesTypeDefs;
+const EnumTypeDefs = `
+  enum RecordStatus {
+    PENDING
+    COMPLETED
+    SKIPPED
+  }
+`;
+
+export { TypesTypeDefs, EnumTypeDefs };

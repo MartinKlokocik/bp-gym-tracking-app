@@ -14,6 +14,7 @@ export const GET_ALL_USER_EXERCISE_RECORDS_FOR_EXERCISE = gql`
       userId
       exerciseId
       notes
+      status
       recordSets {
         id
         reps
@@ -41,6 +42,7 @@ export const GET_LATEST_EXERCISE_RECORD = gql`
       userId
       exerciseId
       notes
+      status
       recordSets {
         id
         reps
@@ -66,6 +68,7 @@ export const GET_RECORD_FOR_THIS_EXERCISE_AND_DATE = gql`
       id
       date
       userId
+      status
       recordSets {
         id
         reps
@@ -73,6 +76,15 @@ export const GET_RECORD_FOR_THIS_EXERCISE_AND_DATE = gql`
         restTime
         setNumber
       }
+    }
+  }
+`
+
+export const UPDATE_EXERCISE_RECORD_STATUS = gql`
+  mutation UpdateExerciseRecordStatus($id: String!, $status: RecordStatus!) {
+    updateExerciseRecordStatus(id: $id, status: $status) {
+      id
+      status
     }
   }
 `
