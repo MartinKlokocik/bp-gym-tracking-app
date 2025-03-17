@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const ADMIN_USER_ID = "YOUR_ADMIN_USER_ID"; // Replace this with your admin user ID
+const ADMIN_USER_ID = "00364937-8e8e-4872-ac19-d9bd0aaac156"; // Replace this with your admin user ID
 
 async function main() {
   console.log("Seeding database...");
@@ -86,6 +86,16 @@ async function main() {
 
   console.log("Exercises seeded successfully!");
 
+  const allExercises = await prisma.exercise.findMany();
+
+  function findExerciseIdByName(name: string) {
+    const exercise = allExercises.find((ex) => ex.name === name);
+    if (!exercise) {
+      throw new Error(`No exercise found with name: ${name}`);
+    }
+    return exercise.id;
+  }
+
   const plannedWorkouts = [
     {
       name: "Full Body Athletic Plan",
@@ -96,7 +106,7 @@ async function main() {
           name: "Power & Explosiveness",
           plannedExercises: [
             {
-              exerciseId: "bfce4435-e546-4610-9fd6-972d9d3fec3c",
+              exerciseName: "Barbell Squat",
               notes: "Explosive movement up.",
               plannedSets: [
                 { setNumber: 1, reps: 3, restTime: 150 },
@@ -104,7 +114,7 @@ async function main() {
               ],
             },
             {
-              exerciseId: "402799f4-c4cf-4809-a5cd-bfb470ad2eed",
+              exerciseName: "Deadlift",
               notes: "Grip tight, controlled movement.",
               plannedSets: [
                 { setNumber: 1, reps: 4, restTime: 120 },
@@ -117,7 +127,7 @@ async function main() {
           name: "Endurance & Core",
           plannedExercises: [
             {
-              exerciseId: "6046cc81-3978-4bdc-a580-5f1c6bf78fde",
+              exerciseName: "Treadmill Run",
               notes: "Maintain steady pace.",
               plannedSets: [
                 { setNumber: 1, reps: 20, restTime: 30 },
@@ -125,7 +135,7 @@ async function main() {
               ],
             },
             {
-              exerciseId: "2f26c432-0bd0-47ff-8542-5a958f0bc20d",
+              exerciseName: "Rowing Machine",
               notes: "Use slow, controlled reps.",
               plannedSets: [
                 { setNumber: 1, reps: 15, restTime: 45 },
@@ -145,7 +155,7 @@ async function main() {
           name: "Chest & Shoulders",
           plannedExercises: [
             {
-              exerciseId: "d3f8ff53-9b8e-4204-b2e5-596cd3973345",
+              exerciseName: "Overhead Press",
               notes: "Controlled eccentric.",
               plannedSets: [
                 { setNumber: 1, reps: 10, restTime: 45 },
@@ -158,7 +168,7 @@ async function main() {
           name: "Leg Day Focus",
           plannedExercises: [
             {
-              exerciseId: "bfce4435-e546-4610-9fd6-972d9d3fec3c",
+              exerciseName: "Barbell Squat",
               notes: "Go deep in each rep.",
               plannedSets: [
                 { setNumber: 1, reps: 8, restTime: 60 },
@@ -166,7 +176,7 @@ async function main() {
               ],
             },
             {
-              exerciseId: "17814a56-c0d8-40b7-b7fc-d69ad87cdf73",
+              exerciseName: "Lat Pulldown",
               notes: "Use slow, controlled reps.",
               plannedSets: [
                 { setNumber: 1, reps: 12, restTime: 60 },
@@ -193,7 +203,7 @@ async function main() {
             plannedExercises: {
               create: day.plannedExercises.map((exercise) => ({
                 userId: ADMIN_USER_ID,
-                exerciseId: exercise.exerciseId,
+                exerciseId: findExerciseIdByName(exercise.exerciseName),
                 notes: exercise.notes,
                 plannedSets: { create: exercise.plannedSets },
               })),
@@ -206,8 +216,6 @@ async function main() {
 
   console.log("Additional planned workouts seeded successfully!");
 }
-
-console.log("Additional planned workouts seeded successfully!");
 
 main()
   .catch((e) => {
