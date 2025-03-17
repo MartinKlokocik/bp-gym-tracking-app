@@ -443,8 +443,8 @@ export const WorkoutTab = ({
                                 placeholder="Current reps"
                                 type="number"
                                 value={
-                                  currentSetData?.reps !== 0
-                                    ? currentSetData?.reps.toString()
+                                  sets[currentSetData?.id]?.reps !== ''
+                                    ? sets[currentSetData?.id]?.reps
                                     : previousSetData?.reps.toString()
                                 }
                                 variant="underlined"

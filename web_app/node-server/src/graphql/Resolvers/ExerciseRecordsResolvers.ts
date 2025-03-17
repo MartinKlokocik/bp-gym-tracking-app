@@ -32,18 +32,30 @@ const exerciseRecordsResolvers = {
         },
         orderBy: { date: "desc" },
         include: {
-          recordSets: true,
+          recordSets: {
+            orderBy: {
+              setNumber: "asc",
+            },
+          },
         },
       }),
 
     getRecordForThisExerciseAndDate: async (
       _: unknown,
-      { exerciseId, date, userId }: { exerciseId: string; date: string; userId: string }
+      {
+        exerciseId,
+        date,
+        userId,
+      }: { exerciseId: string; date: string; userId: string }
     ) =>
       await prisma.exerciseRecord.findFirst({
         where: { exerciseId: exerciseId, date: date, userId: userId },
         include: {
-          recordSets: true,
+          recordSets: {
+            orderBy: {
+              setNumber: "asc",
+            },
+          },
         },
       }),
   },
