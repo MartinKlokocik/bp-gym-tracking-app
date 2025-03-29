@@ -164,6 +164,12 @@ Prisma is used to manage the database. Here's how to work with Prisma:
    npx prisma studio
    ```
 
+5. **Reset the Database:**
+   Open a visual interface to interact with your database:
+   ```bash
+   npx prisma studio
+   ```
+
 ---
 
 ## **Running the App**
@@ -214,21 +220,6 @@ Prisma is used to manage the database. Here's how to work with Prisma:
 
 ---
 
-## **Project Stack and Usage**
-
-### **Frontend Stack**
-- **Next.js:** For building the React-based UI.
-- **Apollo Client:** To fetch and manage GraphQL data.
-- **Tailwind CSS:** For efficient and flexible styling.
-
-### **Backend Stack**
-- **Node.js:** The runtime environment.
-- **Apollo Server:** To create the GraphQL API.
-- **Prisma ORM:** For database migrations and queries.
-- **PostgreSQL:** The relational database for persistent storage.
-
----
-
 ## **Tips for Development**
 - **Database Configuration:**
   Ensure your `.env` file in the backend contains the correct database URL:
@@ -236,15 +227,11 @@ Prisma is used to manage the database. Here's how to work with Prisma:
   DATABASE_URL="postgresql://user:password@localhost:5432/database_name"
   ```
 
-- **Debugging Prisma:**
-  Add logging to Prisma Client for better debugging:
-  ```typescript
-  const prisma = new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
-  });
-  ```
+## **Running scripts on the backend**
 
-- **API Testing:**
-  Use tools like [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/) to test your GraphQL API.
+```bash
+cd node-server
+npx ts-node src/ai/weightOptimalizationAi.ts 
+```
 
 ---

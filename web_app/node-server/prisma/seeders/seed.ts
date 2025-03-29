@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const ADMIN_USER_ID = "00364937-8e8e-4872-ac19-d9bd0aaac156"; // Replace this with your admin user ID
+const ADMIN_USER_ID = "bbca2d39-3032-44c3-b5ef-7993e6170dce"; // Replace this with your admin user ID
 
 async function main() {
   console.log("Seeding database...");
