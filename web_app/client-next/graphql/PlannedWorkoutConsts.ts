@@ -96,6 +96,7 @@ export const CREATE_PLANNED_WORKOUT = gql`
         name
         plannedExercises {
           id
+          exerciseNumber
           notes
           exerciseId
           plannedSets {

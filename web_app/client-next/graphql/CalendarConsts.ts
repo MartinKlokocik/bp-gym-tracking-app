@@ -11,6 +11,7 @@ export const GET_CALENDAR_DAY_BY_DATE = gql`
         name
         plannedExercises {
           id
+          exerciseNumber
           exercise {
             id
             name

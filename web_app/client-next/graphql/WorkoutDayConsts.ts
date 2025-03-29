@@ -10,6 +10,7 @@ export const GET_WORKOUT_DAY_BY_ID = gql`
         id
         userId
         notes
+        exerciseNumber
         exercise {
           id
           userId

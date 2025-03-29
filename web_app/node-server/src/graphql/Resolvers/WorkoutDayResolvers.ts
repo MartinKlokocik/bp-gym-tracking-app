@@ -9,6 +9,9 @@ const resolvers = {
         where: { id },
         include: {
           plannedExercises: {
+            orderBy: {
+              exerciseNumber: "asc",
+            },
             include: {
               plannedSets: true,
               exercise: true,

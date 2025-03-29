@@ -32,6 +32,7 @@ const TypesTypeDefs = `
     exerciseId: String!
     exercise: Exercise!
     notes: String
+    exerciseNumber: Int!
     plannedSets: [PlannedSet!]!
   }
 

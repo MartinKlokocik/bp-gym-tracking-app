@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const ADMIN_USER_ID = "bbca2d39-3032-44c3-b5ef-7993e6170dce"; // Replace this with your admin user ID
+const ADMIN_USER_ID = "4116f715-df81-4887-8010-6c77f300eea7"; // Replace this with your admin user ID
 
 async function main() {
   console.log("Seeding database...");
@@ -108,6 +108,7 @@ async function main() {
             {
               exerciseName: "Barbell Squat",
               notes: "Explosive movement up.",
+              exerciseNumber: 1,
               plannedSets: [
                 { setNumber: 1, reps: 3, restTime: 150 },
                 { setNumber: 2, reps: 3, restTime: 150 },
@@ -116,6 +117,7 @@ async function main() {
             {
               exerciseName: "Deadlift",
               notes: "Grip tight, controlled movement.",
+              exerciseNumber: 2,
               plannedSets: [
                 { setNumber: 1, reps: 4, restTime: 120 },
                 { setNumber: 2, reps: 4, restTime: 120 },
@@ -129,6 +131,7 @@ async function main() {
             {
               exerciseName: "Treadmill Run",
               notes: "Maintain steady pace.",
+              exerciseNumber: 1,
               plannedSets: [
                 { setNumber: 1, reps: 20, restTime: 30 },
                 { setNumber: 2, reps: 20, restTime: 30 },
@@ -137,6 +140,7 @@ async function main() {
             {
               exerciseName: "Rowing Machine",
               notes: "Use slow, controlled reps.",
+              exerciseNumber: 2,
               plannedSets: [
                 { setNumber: 1, reps: 15, restTime: 45 },
                 { setNumber: 2, reps: 15, restTime: 45 },
@@ -157,6 +161,7 @@ async function main() {
             {
               exerciseName: "Overhead Press",
               notes: "Controlled eccentric.",
+              exerciseNumber: 1,
               plannedSets: [
                 { setNumber: 1, reps: 10, restTime: 45 },
                 { setNumber: 2, reps: 8, restTime: 45 },
@@ -170,6 +175,7 @@ async function main() {
             {
               exerciseName: "Barbell Squat",
               notes: "Go deep in each rep.",
+              exerciseNumber: 1,
               plannedSets: [
                 { setNumber: 1, reps: 8, restTime: 60 },
                 { setNumber: 2, reps: 8, restTime: 60 },
@@ -178,6 +184,7 @@ async function main() {
             {
               exerciseName: "Lat Pulldown",
               notes: "Use slow, controlled reps.",
+              exerciseNumber: 2,
               plannedSets: [
                 { setNumber: 1, reps: 12, restTime: 60 },
                 { setNumber: 2, reps: 12, restTime: 60 },
@@ -205,6 +212,7 @@ async function main() {
                 userId: ADMIN_USER_ID,
                 exerciseId: findExerciseIdByName(exercise.exerciseName),
                 notes: exercise.notes,
+                exerciseNumber: exercise.exerciseNumber,
                 plannedSets: { create: exercise.plannedSets },
               })),
             },

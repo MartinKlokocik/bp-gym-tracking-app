@@ -32,6 +32,7 @@ CREATE TABLE "Exercise" (
 CREATE TABLE "PlannedExercise" (
     "id" TEXT NOT NULL,
     "notes" TEXT,
+    "exerciseNumber" INTEGER NOT NULL,
     "exerciseId" TEXT NOT NULL,
     "plannedWorkoutDayId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,

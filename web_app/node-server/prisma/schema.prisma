@@ -44,6 +44,7 @@ model Exercise {
 model PlannedExercise {
   id     String  @id @default(uuid())
   notes  String?
+  exerciseNumber Int
 
   // Relations
   plannedSets PlannedSet[]

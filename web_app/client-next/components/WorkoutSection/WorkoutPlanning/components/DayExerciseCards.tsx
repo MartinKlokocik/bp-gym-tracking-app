@@ -70,6 +70,8 @@ export const DayExerciseCards = ({
 
     const newPlannedExercise: PlannedExerciseWithoutIdsType = {
       userId: session?.user?.id.toString() || '',
+      exerciseNumber:
+        watch(`days.${selectedDayIndex}.plannedExercises`).length + 1,
       exerciseId: exercise.id,
       exercise: exercise,
       plannedSets: [

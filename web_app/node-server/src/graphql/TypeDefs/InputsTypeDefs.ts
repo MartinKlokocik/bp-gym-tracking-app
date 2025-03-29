@@ -45,6 +45,7 @@ const CreateInputsTypeDefs = `
     userId: String!
     exerciseId: String!
     notes: String
+    exerciseNumber: Int!
     plannedSets: [PlannedSetCreateInput!]!
   }
 

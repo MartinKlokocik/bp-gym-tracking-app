@@ -10,6 +10,9 @@ const resolvers = {
           days: {
             include: {
               plannedExercises: {
+                orderBy: {
+                  exerciseNumber: "asc",
+                },
                 include: {
                   plannedSets: true,
                   exercise: true,
@@ -27,6 +30,9 @@ const resolvers = {
           days: {
             include: {
               plannedExercises: {
+                orderBy: {
+                  exerciseNumber: "asc",
+                },
                 include: {
                   plannedSets: true,
                   exercise: true,
@@ -68,6 +74,7 @@ const resolvers = {
                   exercise: {
                     connect: { id: plannedExercise.exerciseId },
                   },
+                  exerciseNumber: plannedExercise.exerciseNumber,
                   notes: plannedExercise.notes || "",
                   plannedSets: {
                     create: plannedExercise.plannedSets.map((set: any) => ({

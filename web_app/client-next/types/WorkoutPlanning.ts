@@ -12,6 +12,7 @@ export const plannedSetSchema = z.object({
 
 export const plannedExerciseSchema = z.object({
   userId: z.string(),
+  exerciseNumber: z.number(),
   notes: z.string().optional(),
   exerciseId: z.string(),
   exercise: exerciseSchemaWithId,
