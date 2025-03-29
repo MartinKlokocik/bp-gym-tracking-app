@@ -165,9 +165,13 @@ Prisma is used to manage the database. Here's how to work with Prisma:
    ```
 
 5. **Reset the Database:**
-   Open a visual interface to interact with your database:
+   Reset the database to the initial state:
    ```bash
-   npx prisma studio
+   npx prisma migrate reset
+   ```
+   Seed the database with example data:
+   ```bash
+   npm run seed
    ```
 
 ---
