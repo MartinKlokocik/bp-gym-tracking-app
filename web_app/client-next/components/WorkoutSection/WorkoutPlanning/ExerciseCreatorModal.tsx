@@ -29,11 +29,13 @@ import { exerciseSchema, ExerciseWithoutIdsType } from '@/types/Exercise'
 type ExerciseCreatorModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  refetchExercises?: () => void
 }
 
 export const ExerciseCreatorModal = ({
   isOpen,
   onOpenChange,
+  refetchExercises,
 }: ExerciseCreatorModalProps) => {
   const { data: session } = useSession()
   const [createExercise, { data, loading, error }] =
@@ -76,6 +78,7 @@ export const ExerciseCreatorModal = ({
 
       reset()
       onOpenChange(false)
+      refetchExercises?.()
     } catch (err) {
       console.error('Error creating exercise:', err)
     }
@@ -104,7 +107,12 @@ export const ExerciseCreatorModal = ({
       >
         <ModalContent>
           {onClose => (
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+              onSubmit={e => {
+                e.preventDefault()
+                handleSubmit(onSubmit)(e)
+              }}
+            >
               <ModalHeader className="flex flex-col gap-1">
                 Create New Exercise
               </ModalHeader>
@@ -239,7 +247,14 @@ export const ExerciseCreatorModal = ({
                 <Button color="danger" variant="flat" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button type="submit" color="primary">
+                <Button
+                  type="button"
+                  color="primary"
+                  onClick={e => {
+                    e.preventDefault()
+                    handleSubmit(onSubmit)(e)
+                  }}
+                >
                   {loading ? 'Creating...' : 'Create Exercise'}
                 </Button>
               </ModalFooter>

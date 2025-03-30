@@ -7,14 +7,22 @@ import {
   DroppableProvided,
   DropResult,
 } from '@hello-pangea/dnd'
-import { Button, Select, SelectItem, Spinner } from '@heroui/react'
+import {
+  Button,
+  Select,
+  SelectItem,
+  Spinner,
+  useDisclosure,
+} from '@heroui/react'
 import { Card } from '@heroui/react'
 import { Chip, Input } from '@heroui/react'
-import { GripVertical, Dumbbell, X } from 'lucide-react'
+import { GripVertical, Dumbbell, X, Plus } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import { toast } from 'react-toastify'
+
+import { ExerciseCreatorModal } from '../ExerciseCreatorModal'
 
 import { GET_ALL_EXERCISES, GET_EXERCISE_BY_ID } from '@/graphql/ExerciseConsts'
 import { GetAllExercisesQuery } from '@/graphql/types'
@@ -36,12 +44,18 @@ export const DayExerciseCards = ({
   form,
   type,
 }: DayExerciseCardsProps) => {
+  const {
+    isOpen: isExerciseCreatorModalOpen,
+    onOpen: onExerciseCreatorModalOpen,
+    onOpenChange: onExerciseCreatorModalOpenChange,
+  } = useDisclosure()
   const { setValue, watch } = form
   const { data: session } = useSession()
   const {
     data: allExercises,
     loading: exercisesLoading,
     error: exercisesError,
+    refetch: refetchExercises,
   } = useQuery<GetAllExercisesQuery>(GET_ALL_EXERCISES)
 
   const [getExerciseById, { error: exerciseError }] =
@@ -257,7 +271,7 @@ export const DayExerciseCards = ({
                   <GripVertical className="text-default-400" size={20} />
                 </div>
                 <Dumbbell className="text-default-400" size={20} />
-                <p className="font-medium">{plannedExercise.exercise.name}</p>
+                <p className="font-medium">{plannedExercise.exercise?.name}</p>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -369,64 +383,83 @@ export const DayExerciseCards = ({
   )
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
+    <>
+      <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           <p className="text-medium font-medium">
             Exercises for {watch(`days.${selectedDayIndex}.name`)}
           </p>
-          <Select
-            key={selectedDayIndex}
-            placeholder="Add Exercise"
-            className="max-w-xs"
-            aria-label="Select an exercise to add"
-            onChange={e => {
-              handleAddExercise(e.target.value)
-            }}
-          >
-            {exercisesLoading ? (
-              <SelectItem key="loading">
-                <Spinner />
-              </SelectItem>
-            ) : (
-              allExercises?.getAllExercises?.map(exercise => (
-                <SelectItem key={exercise.id} value={exercise.id}>
-                  {exercise.name}
+          <div className="flex justify-between items-center">
+            <Select
+              key={selectedDayIndex}
+              placeholder="Add Exercise"
+              className="max-w-xs"
+              aria-label="Select an exercise to add"
+              onChange={e => {
+                handleAddExercise(e.target.value)
+              }}
+            >
+              {exercisesLoading ? (
+                <SelectItem key="loading">
+                  <Spinner />
                 </SelectItem>
-              )) || []
-            )}
-          </Select>
-        </div>
+              ) : (
+                allExercises?.getAllExercises?.map(exercise => (
+                  <SelectItem key={exercise.id} value={exercise.id}>
+                    {exercise.name}
+                  </SelectItem>
+                )) || []
+              )}
+            </Select>
 
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable
-            droppableId={selectedDayIndex.toString()}
-            isDropDisabled={false}
-            isCombineEnabled={false}
-            ignoreContainerClipping={false}
-          >
-            {(provided: DroppableProvided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                {watch(`days.${selectedDayIndex}.plannedExercises`).length ===
-                0 ? (
-                  <div className="text-center p-8 border-2 border-dashed rounded-lg">
-                    <p className="text-default-500">No exercises added yet</p>
-                    <p className="text-sm text-default-400">
-                      Use the dropdown above to add exercises
-                    </p>
-                  </div>
-                ) : (
-                  watch(`days.${selectedDayIndex}.plannedExercises`).map(
-                    (plannedExercise, index) =>
-                      renderExerciseCard(plannedExercise, index)
-                  )
-                )}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+            <Button
+              color="primary"
+              variant="flat"
+              onClick={e => {
+                e.preventDefault()
+                onExerciseCreatorModalOpen()
+              }}
+            >
+              <Plus size={16} />
+            </Button>
+          </div>
+
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable
+              droppableId={selectedDayIndex.toString()}
+              isDropDisabled={false}
+              isCombineEnabled={false}
+              ignoreContainerClipping={false}
+            >
+              {(provided: DroppableProvided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {watch(`days.${selectedDayIndex}.plannedExercises`).length ===
+                  0 ? (
+                    <div className="text-center p-8 border-2 border-dashed rounded-lg">
+                      <p className="text-default-500">No exercises added yet</p>
+                      <p className="text-sm text-default-400">
+                        Use the dropdown above to add exercises
+                      </p>
+                    </div>
+                  ) : (
+                    watch(`days.${selectedDayIndex}.plannedExercises`).map(
+                      (plannedExercise, index) =>
+                        renderExerciseCard(plannedExercise, index)
+                    )
+                  )}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
       </div>
-    </div>
+
+      <ExerciseCreatorModal
+        isOpen={isExerciseCreatorModalOpen}
+        onOpenChange={onExerciseCreatorModalOpenChange}
+        refetchExercises={refetchExercises}
+      />
+    </>
   )
 }
