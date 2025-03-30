@@ -9,13 +9,15 @@ import { CalendarBar } from '@/components/WorkoutSection/WorkoutOverview/Calenda
 import { WorkoutTab } from '@/components/WorkoutSection/WorkoutOverview/WorkoutTab'
 import { DayConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/DayConfigurationModal'
 import { PlanConfigurationModal } from '@/components/WorkoutSection/WorkoutPlanning/PlanConfigurationModal'
+import { useGetDateFromUrl } from '@/CustomHooks/DateHooks'
 import { GET_CALENDAR_DAY_BY_DATE } from '@/graphql/CalendarConsts'
 import { GetCalendarDayByDateQuery } from '@/graphql/types'
 import { GetCalendarDayByDateQueryVariables } from '@/graphql/types'
+
 export default function Home() {
   const { data: session } = useSession()
 
-  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(useGetDateFromUrl())
   const getCalendarDayByDateQuery = useQuery<
     GetCalendarDayByDateQuery,
     GetCalendarDayByDateQueryVariables

@@ -1,8 +1,10 @@
 'use client'
 import { addDays, format, subDays } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
+import { useGetDateFromUrl } from '@/CustomHooks/DateHooks'
 type CalendarBarProps = {
   selectedDate: Date
   setSelectedDate: (date: Date) => void
@@ -12,7 +14,9 @@ export const CalendarBar = ({
   selectedDate,
   setSelectedDate,
 }: CalendarBarProps) => {
-  const [startDate, setStartDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(useGetDateFromUrl())
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   const handlePrevWeek = () => {
     setStartDate(subDays(startDate, 7))
@@ -21,6 +25,22 @@ export const CalendarBar = ({
   const handleNextWeek = () => {
     setStartDate(addDays(startDate, 7))
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams?.toString() ?? '')
+    const date = params.get('date')
+    if (date) {
+      setSelectedDate(new Date(date))
+    }
+  }, [searchParams, setSelectedDate])
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams?.toString() ?? '')
+    if (selectedDate) {
+      params.set('date', format(selectedDate, 'yyyy-MM-dd'))
+      router.push(`?${params.toString()}`)
+    }
+  }, [selectedDate, searchParams, router])
 
   return (
     <div className="flex items-center justify-between gap-2 bg-black p-4 rounded-lg">
