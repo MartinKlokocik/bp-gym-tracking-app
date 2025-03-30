@@ -72,8 +72,6 @@ export const DayConfigurationModal = ({
   >()
 
   const onSubmit = async (formData: CalendarDayWithIdsType) => {
-    console.log(formData)
-
     try {
       await createCalendarDay({
         variables: {

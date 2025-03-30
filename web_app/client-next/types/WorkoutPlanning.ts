@@ -49,6 +49,7 @@ export const plannedExerciseSchemaWithId = z.object({
   userId: z.string(),
   notes: z.string().optional(),
   exercise: exerciseSchemaWithId,
+  exerciseNumber: z.number(),
   plannedSets: z
     .array(plannedSetSchemaWithId)
     .min(1, 'At least one set is required'),

@@ -22,6 +22,7 @@ import { getActiveWorkoutPlan } from '../utils'
 
 import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 import { PlanCreatorModal } from './PlanCreatorModal'
+import { WorkoutDetailViewModal } from './WorkoutDetailViewModal'
 
 import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
 import { PlannedWorkoutWithIdsType } from '@/types/WorkoutPlanning'
@@ -52,6 +53,11 @@ export const PlanConfigurationModal = ({
     isOpen: isExerciseCreatorModalOpen,
     onOpen: onExerciseCreatorModalOpen,
     onOpenChange: onExerciseCreatorModalOpenChange,
+  } = useDisclosure()
+  const {
+    isOpen: isWorkoutDetailViewModalOpen,
+    onOpen: onWorkoutDetailViewModalOpen,
+    onOpenChange: onWorkoutDetailViewModalOpenChange,
   } = useDisclosure()
 
   const [selectedWorkoutPlan, setSelectedWorkoutPlan] = useState<string>('')
@@ -119,7 +125,9 @@ export const PlanConfigurationModal = ({
                     </Select>
 
                     <Link
-                      onPress={() => {}}
+                      onPress={() => {
+                        onWorkoutDetailViewModalOpen()
+                      }}
                       className="text-sm ml-1 cursor-pointer"
                     >
                       Detail view
@@ -196,6 +204,12 @@ export const PlanConfigurationModal = ({
       <ExerciseCreatorModal
         isOpen={isExerciseCreatorModalOpen}
         onOpenChange={onExerciseCreatorModalOpenChange}
+      />
+
+      <WorkoutDetailViewModal
+        isOpen={isWorkoutDetailViewModalOpen}
+        onOpenChange={onWorkoutDetailViewModalOpenChange}
+        selectedWorkoutPlanId={selectedWorkoutPlan}
       />
     </>
   )
