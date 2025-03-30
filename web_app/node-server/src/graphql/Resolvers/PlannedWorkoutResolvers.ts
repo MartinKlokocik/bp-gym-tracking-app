@@ -6,6 +6,7 @@ const resolvers = {
   Query: {
     getAllPlannedWorkouts: async () => {
       return await prisma.plannedWorkout.findMany({
+        where: { isDeleted: false },
         include: {
           days: {
             include: {
@@ -48,8 +49,6 @@ const resolvers = {
   Mutation: {
     createPlannedWorkout: async (_: unknown, { input }: { input: any }) => {
       const { userId, name, schema, isActive, isPublic, days } = input;
-
-      console.log(input);
 
       return await prisma.plannedWorkout.create({
         data: {
@@ -99,6 +98,13 @@ const resolvers = {
             },
           },
         },
+      });
+    },
+
+    deletePlannedWorkout: async (_: unknown, { id }: { id: string }) => {
+      return await prisma.plannedWorkout.update({
+        where: { id },
+        data: { isDeleted: true },
       });
     },
   },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -12,6 +12,7 @@ import {
   SelectItem,
   Link,
   useDisclosure,
+  Spinner,
 } from '@heroui/react'
 import { EditIcon, PlusIcon, Trash } from 'lucide-react'
 import { User } from 'next-auth'
@@ -24,7 +25,10 @@ import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 import { PlanCreatorModal } from './PlanCreatorModal'
 import { WorkoutDetailViewModal } from './WorkoutDetailViewModal'
 
-import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
+import {
+  DELETE_PLANNED_WORKOUT,
+  GET_ALL_PLANNED_WORKOUTS,
+} from '@/graphql/PlannedWorkoutConsts'
 import { PlannedWorkoutWithIdsType } from '@/types/WorkoutPlanning'
 
 type PlanConfigurationModalProps = {
@@ -42,7 +46,11 @@ export const PlanConfigurationModal = ({
     data: allPlannedWorkoutsData,
     loading: allPlannedWorkoutsLoading,
     error: allPlannedWorkoutsError,
+    refetch: refetchPlannedWorkouts,
   } = useQuery(GET_ALL_PLANNED_WORKOUTS)
+
+  const [deletePlannedWorkout, { loading: deletePlannedWorkoutLoading }] =
+    useMutation(DELETE_PLANNED_WORKOUT)
 
   const {
     isOpen: isPlanCreatorModalOpen,
@@ -80,6 +88,21 @@ export const PlanConfigurationModal = ({
       )
     }
   }, [allPlannedWorkoutsData])
+
+  const handleDeletePlannedWorkout = async () => {
+    if (!selectedWorkoutPlan) {
+      return
+    }
+
+    try {
+      await deletePlannedWorkout({ variables: { id: selectedWorkoutPlan } })
+      toast.success('Workout plan deleted successfully')
+      refetchPlannedWorkouts()
+    } catch (error) {
+      console.error('Error deleting workout plan: ', error)
+      toast.error('Error deleting workout plan')
+    }
+  }
 
   return (
     <>
@@ -168,11 +191,15 @@ export const PlanConfigurationModal = ({
                   color="danger"
                   size="md"
                   variant="flat"
-                  onPress={() => {}}
+                  onPress={handleDeletePlannedWorkout}
                   startContent={<Trash size={14} />}
                   disabled={!selectedWorkoutPlan}
                 >
-                  Delete this plan
+                  {deletePlannedWorkoutLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    'Delete this plan'
+                  )}
                 </Button>
                 <Button
                   color="primary"

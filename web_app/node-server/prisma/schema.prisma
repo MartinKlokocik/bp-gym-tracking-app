@@ -89,7 +89,8 @@ model PlannedWorkout {
   schema   String  @default("")
   isActive Boolean @default(false)
   isPublic Boolean @default(false)
-
+  isDeleted Boolean @default(false)
+  
   // Relations
   days PlannedWorkoutDay[]
 

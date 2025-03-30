@@ -110,3 +110,12 @@ export const CREATE_PLANNED_WORKOUT = gql`
     }
   }
 `
+
+export const DELETE_PLANNED_WORKOUT = gql`
+  mutation DeletePlannedWorkout($id: String!) {
+    deletePlannedWorkout(id: $id) {
+      id
+      name
+    }
+  }
+`

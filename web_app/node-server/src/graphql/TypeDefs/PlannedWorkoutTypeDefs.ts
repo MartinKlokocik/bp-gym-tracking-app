@@ -6,6 +6,7 @@ const PlannedWorkoutTypeDefs = `
 
   type Mutation {
     createPlannedWorkout(input: PlannedWorkoutCreateInput!): PlannedWorkout!
+    deletePlannedWorkout(id: String!): PlannedWorkout!
   }
 `;
 
