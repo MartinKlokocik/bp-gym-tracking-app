@@ -124,60 +124,38 @@ export const PlanConfigurationModal = ({
                       )}
                     </Select>
 
-                    <Link
-                      onPress={() => {
-                        onWorkoutDetailViewModalOpen()
-                      }}
-                      className="text-sm ml-1 cursor-pointer"
-                    >
-                      Detail view
-                    </Link>
+                    {selectedWorkoutPlan && (
+                      <Link
+                        onPress={() => {
+                          onWorkoutDetailViewModalOpen()
+                        }}
+                        className="text-md ml-1 cursor-pointer"
+                      >
+                        Detail view
+                      </Link>
+                    )}
                   </div>
 
-                  <div className="flex flex-col gap-4 w-full">
-                    <div className="flex flex-row justify-start gap-3 w-full flex-wrap">
-                      <Button
-                        color="primary"
-                        size="md"
-                        variant="flat"
-                        onPress={() => {}}
-                        startContent={<EditIcon size={14} />}
-                      >
-                        Edit this plan
-                      </Button>
+                  <div className="flex flex-row justify-start gap-3 w-full flex-wrap">
+                    <Button
+                      color="primary"
+                      size="md"
+                      variant="flat"
+                      onPress={onPlanCreatorModalOpen}
+                      startContent={<PlusIcon size={14} />}
+                    >
+                      Create new plan
+                    </Button>
 
-                      <Button
-                        color="danger"
-                        size="md"
-                        variant="flat"
-                        onPress={() => {}}
-                        startContent={<Trash size={14} />}
-                      >
-                        Delete this plan
-                      </Button>
-                    </div>
-
-                    <div className="flex flex-row justify-start gap-3 w-full flex-wrap">
-                      <Button
-                        color="primary"
-                        size="md"
-                        variant="flat"
-                        onPress={onPlanCreatorModalOpen}
-                        startContent={<PlusIcon size={14} />}
-                      >
-                        Create new plan
-                      </Button>
-
-                      <Button
-                        color="primary"
-                        size="md"
-                        variant="flat"
-                        onPress={onExerciseCreatorModalOpen}
-                        startContent={<PlusIcon size={14} />}
-                      >
-                        Create new exercise
-                      </Button>
-                    </div>
+                    <Button
+                      color="primary"
+                      size="md"
+                      variant="flat"
+                      onPress={onExerciseCreatorModalOpen}
+                      startContent={<PlusIcon size={14} />}
+                    >
+                      Create new exercise
+                    </Button>
                   </div>
                 </div>
               </ModalBody>
@@ -186,8 +164,25 @@ export const PlanConfigurationModal = ({
                 <Button color="danger" variant="flat" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={onClose}>
-                  Set workout as active
+                <Button
+                  color="danger"
+                  size="md"
+                  variant="flat"
+                  onPress={() => {}}
+                  startContent={<Trash size={14} />}
+                  disabled={!selectedWorkoutPlan}
+                >
+                  Delete this plan
+                </Button>
+                <Button
+                  color="primary"
+                  size="md"
+                  variant="flat"
+                  onPress={() => {}}
+                  startContent={<EditIcon size={14} />}
+                  disabled={!selectedWorkoutPlan}
+                >
+                  Edit this plan
                 </Button>
               </ModalFooter>
             </>
