@@ -21,7 +21,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-import { equipment, muscleGroups } from '../DummyData'
+import { equipmentOptions, muscleGroups } from '../DummyData'
 
 import { CREATE_EXERCISE } from '@/graphql/ExerciseConsts'
 import { exerciseSchema, ExerciseWithoutIdsType } from '@/types/Exercise'
@@ -230,7 +230,7 @@ export const ExerciseCreatorModal = ({
                       variant="bordered"
                       selectionMode="multiple"
                     >
-                      {equipment.map(equipment => (
+                      {equipmentOptions.map(equipment => (
                         <SelectItem
                           key={equipment.value}
                           value={equipment.value}
