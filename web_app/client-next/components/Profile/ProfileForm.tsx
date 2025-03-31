@@ -5,6 +5,7 @@ import React, { Key, useState } from 'react'
 import { BasicInformationTab } from './ProfileForm/BasicInformationTab'
 import { FitnessProfileTab } from './ProfileForm/FitnesProfileTab'
 import { PhysicalStatsTab } from './ProfileForm/PhysicalStatsTab'
+import { PreferencesTab } from './ProfileForm/PreferencesTab'
 
 // Example type for the profile form
 export type UserProfile = {
