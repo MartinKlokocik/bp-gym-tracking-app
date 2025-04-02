@@ -1,18 +1,18 @@
 import { Button, Slider } from '@heroui/react'
 import { ChevronRight, Database, Ruler, Scale } from 'lucide-react'
+import { UseFormReturn } from 'react-hook-form'
 
-import { UserProfile } from '../ProfileForm'
+import { UserProfileType } from '@/types/UserProfile'
 
 type PhysicalStatsTabProps = {
-  profile: UserProfile
-  handleChange: (field: string, value: any) => void
+  formMethods: UseFormReturn<UserProfileType>
   setActiveTab: (tab: string) => void
 }
 export const PhysicalStatsTab = ({
-  profile,
-  handleChange,
+  formMethods,
   setActiveTab,
 }: PhysicalStatsTabProps) => {
+  const { watch, setValue } = formMethods
   return (
     <div className="p-6">
       <div className="space-y-6">
@@ -37,16 +37,17 @@ export const PhysicalStatsTab = ({
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex-grow">
               <Slider
-                value={profile.height}
-                onChange={value => handleChange('height', value)}
-                defaultValue={profile.height}
+                value={watch('height')}
+                onChange={value => setValue('height', value as number)}
+                defaultValue={watch('height')}
+                aria-label="Height"
                 step={1}
                 minValue={60}
                 maxValue={250}
                 className="mb-2"
               />
               <div className="text-center text-2xl font-bold text-purple-400">
-                {profile.height} cm
+                {watch('height')} cm
               </div>
             </div>
           </div>
@@ -62,16 +63,17 @@ export const PhysicalStatsTab = ({
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex-grow">
               <Slider
-                value={profile.weight}
-                onChange={value => handleChange('weight', value)}
-                defaultValue={profile.weight}
+                value={watch('weight')}
+                onChange={value => setValue('weight', value as number)}
+                defaultValue={watch('weight')}
+                aria-label="Weight"
                 step={0.5}
                 minValue={30}
                 maxValue={200}
                 className="mb-2"
               />
               <div className="text-center text-2xl font-bold text-purple-400">
-                {profile.weight} kg
+                {watch('weight')} kg
               </div>
             </div>
           </div>
@@ -81,13 +83,18 @@ export const PhysicalStatsTab = ({
           <Button
             variant="flat"
             color="default"
-            onClick={() => setActiveTab('basicInfo')}
+            onClick={e => {
+              e.preventDefault()
+              setActiveTab('basicInfo')
+            }}
           >
             Back
           </Button>
           <Button
             color="primary"
-            onClick={() => setActiveTab('fitnessProfile')}
+            onClick={() => {
+              setActiveTab('fitnessProfile')
+            }}
           >
             Continue
             <ChevronRight className="ml-1 w-4 h-4" />

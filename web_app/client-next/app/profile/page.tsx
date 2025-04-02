@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 
-import ProfileForm from '@/components/Profile/ProfileForm'
+import { ProfileForm } from '@/components/Profile/ProfileForm'
 export default function Profile() {
   const { data: session } = useSession()
 
@@ -12,7 +12,7 @@ export default function Profile() {
 
   return (
     <>
-      <ProfileForm />
+      <ProfileForm userId={session.user.id} />
     </>
   )
 }

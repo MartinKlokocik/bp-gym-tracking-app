@@ -14,21 +14,21 @@ import {
   Medal,
   Target,
 } from 'lucide-react'
-
-import { UserProfile } from '../ProfileForm'
+import { UseFormReturn } from 'react-hook-form'
 
 import { goalOptions } from '@/components/WorkoutSection/DummyData'
+import { UserProfileType } from '@/types/UserProfile'
 
 type FitnessProfileTabProps = {
-  profile: UserProfile
-  handleChange: (field: string, value: any) => void
+  formMethods: UseFormReturn<UserProfileType>
   setActiveTab: (tab: string) => void
 }
 export const FitnessProfileTab = ({
-  profile,
-  handleChange,
+  formMethods,
   setActiveTab,
 }: FitnessProfileTabProps) => {
+  const { watch, setValue } = formMethods
+
   return (
     <div className="p-6">
       <div className="space-y-6">
@@ -51,18 +51,20 @@ export const FitnessProfileTab = ({
           </div>
 
           <RadioGroup
-            value={profile.fitnessLevel}
-            onValueChange={value => handleChange('fitnessLevel', value)}
+            value={watch('fitnessLevel')}
+            onValueChange={value => {
+              setValue('fitnessLevel', value)
+            }}
             classNames={{
               wrapper: 'flex flex-col gap-6 mb-4 mt-2',
             }}
           >
             {/* BEGINNER */}
             <Radio
-              value="beginner"
+              value="BEGINNER"
               description="New to fitness or returning after a long break"
               className={`border ${
-                profile.fitnessLevel === 'beginner'
+                watch('fitnessLevel') === 'BEGINNER'
                   ? 'border-purple-500'
                   : 'border-gray-700'
               } rounded-lg p-4 cursor-pointer`}
@@ -72,10 +74,10 @@ export const FitnessProfileTab = ({
 
             {/* INTERMEDIATE */}
             <Radio
-              value="intermediate"
+              value="INTERMEDIATE"
               description="Consistent workout routine for 6+ months"
               className={`border ${
-                profile.fitnessLevel === 'intermediate'
+                watch('fitnessLevel') === 'INTERMEDIATE'
                   ? 'border-purple-500'
                   : 'border-gray-700'
               } rounded-lg p-4 cursor-pointer`}
@@ -85,10 +87,10 @@ export const FitnessProfileTab = ({
 
             {/* ADVANCED */}
             <Radio
-              value="advanced"
+              value="ADVANCED"
               description="Serious training for 2+ years with good results"
               className={`border ${
-                profile.fitnessLevel === 'advanced'
+                watch('fitnessLevel') === 'ADVANCED'
                   ? 'border-purple-500'
                   : 'border-gray-700'
               } rounded-lg p-4 cursor-pointer`}
@@ -98,10 +100,10 @@ export const FitnessProfileTab = ({
 
             {/* EXPERT */}
             <Radio
-              value="expert"
+              value="EXPERT"
               description="5+ years of focused training, significant achievements"
               className={`border ${
-                profile.fitnessLevel === 'expert'
+                watch('fitnessLevel') === 'EXPERT'
                   ? 'border-purple-500'
                   : 'border-gray-700'
               } rounded-lg p-4 cursor-pointer`}
@@ -115,8 +117,9 @@ export const FitnessProfileTab = ({
               Years of Training Experience
             </h4>
             <Slider
-              value={profile.yearsOfExperience}
-              onChange={value => handleChange('yearsOfExperience', value)}
+              value={watch('yearsOfExperience')}
+              onChange={value => setValue('yearsOfExperience', value as number)}
+              aria-label="Years of Training Experience"
               defaultValue={0}
               step={0.5}
               minValue={0}
@@ -125,8 +128,8 @@ export const FitnessProfileTab = ({
             />
             <div className="text-center">
               <span className="text-lg font-medium text-purple-400">
-                {profile.yearsOfExperience}{' '}
-                {profile.yearsOfExperience === 1 ? 'year' : 'years'}
+                {watch('yearsOfExperience')}{' '}
+                {watch('yearsOfExperience') === 1 ? 'year' : 'years'}
               </span>
             </div>
           </div>
@@ -142,8 +145,11 @@ export const FitnessProfileTab = ({
           <div className="mb-4">
             <h4 className="text-lg font-medium mb-4">Primary Goal</h4>
             <Select
-              value={profile.primaryGoal}
-              onChange={value => handleChange('primaryGoal', value)}
+              selectedKeys={[watch('primaryGoal') || '']}
+              onChange={e => {
+                setValue('primaryGoal', e.target.value)
+              }}
+              aria-label="Primary Goal"
               className="rounded-lg border border-gray-700"
               classNames={{
                 trigger: 'bg-gray-800',
@@ -165,25 +171,28 @@ export const FitnessProfileTab = ({
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
               {goalOptions
-                .filter(goal => goal.value !== profile.primaryGoal)
+                .filter(goal => goal.value !== watch('primaryGoal'))
                 .map(goal => (
                   <div
                     key={goal.value}
                     className={`flex items-center space-x-2 border ${
-                      profile.secondaryGoals.includes(goal.value)
+                      watch('secondaryGoals')?.includes(goal.value)
                         ? 'border-purple-500 bg-purple-500 bg-opacity-20'
                         : 'border-gray-700'
                     } rounded-lg p-3 cursor-pointer`}
                     onClick={() => {
-                      const newGoals = profile.secondaryGoals.includes(
+                      const newGoals = watch('secondaryGoals')?.includes(
                         goal.value
                       )
-                        ? profile.secondaryGoals.filter(g => g !== goal.value)
-                        : [...profile.secondaryGoals, goal.value].slice(0, 3)
-                      handleChange('secondaryGoals', newGoals)
+                        ? watch('secondaryGoals')?.filter(g => g !== goal.value)
+                        : [
+                            ...(watch('secondaryGoals') || []),
+                            goal.value,
+                          ].slice(0, 3)
+                      setValue('secondaryGoals', newGoals)
                     }}
                   >
-                    {profile.secondaryGoals.includes(goal.value) && (
+                    {watch('secondaryGoals')?.includes(goal.value) && (
                       <CheckCircle className="text-purple-500 w-5 h-5" />
                     )}
                     <span>{goal.label}</span>
@@ -214,8 +223,11 @@ export const FitnessProfileTab = ({
               <span>7</span>
             </div>
             <Slider
-              value={profile.preferredWorkoutDays}
-              onChange={value => handleChange('preferredWorkoutDays', value)}
+              value={watch('preferredWorkoutDays')}
+              onChange={value =>
+                setValue('preferredWorkoutDays', value as number)
+              }
+              aria-label="Preferred Workout Days Per Week"
               defaultValue={1}
               minValue={1}
               maxValue={7}
@@ -224,8 +236,8 @@ export const FitnessProfileTab = ({
             />
             <div className="text-center">
               <span className="text-lg font-medium text-purple-400">
-                {profile.preferredWorkoutDays}{' '}
-                {profile.preferredWorkoutDays === 1 ? 'day' : 'days'} per week
+                {watch('preferredWorkoutDays')}{' '}
+                {watch('preferredWorkoutDays') === 1 ? 'day' : 'days'} per week
               </span>
             </div>
           </div>
@@ -235,8 +247,9 @@ export const FitnessProfileTab = ({
               Workout Duration (minutes)
             </h4>
             <Slider
-              value={profile.workoutDuration}
-              onChange={value => handleChange('workoutDuration', value)}
+              value={watch('workoutDuration')}
+              onChange={value => setValue('workoutDuration', value as number)}
+              aria-label="Workout Duration"
               defaultValue={15}
               step={15}
               minValue={15}
@@ -245,7 +258,7 @@ export const FitnessProfileTab = ({
             />
             <div className="text-center">
               <span className="text-lg font-medium text-purple-400">
-                {profile.workoutDuration} minutes
+                {watch('workoutDuration')} minutes
               </span>
             </div>
           </div>
@@ -255,11 +268,19 @@ export const FitnessProfileTab = ({
           <Button
             variant="flat"
             color="default"
-            onClick={() => setActiveTab('physicalStats')}
+            onClick={e => {
+              e.preventDefault()
+              setActiveTab('physicalStats')
+            }}
           >
             Back
           </Button>
-          <Button color="primary" onClick={() => setActiveTab('preferences')}>
+          <Button
+            color="primary"
+            onPress={() => {
+              setActiveTab('preferences')
+            }}
+          >
             Continue
             <ChevronRight className="ml-1 w-4 h-4" />
           </Button>

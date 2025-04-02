@@ -21,6 +21,35 @@ model User {
   plannedWorkouts    PlannedWorkout[]
   calendarDays       CalendarDay[]
   exerciseRecords    ExerciseRecord[]
+  profile            UserProfile?
+}
+
+model UserProfile {
+  id              String   @id @default(uuid())
+
+  firstName String?
+  lastName String?
+  dateOfBirth String?
+  gender String?
+  profilePicture String?
+  height Int?
+  weight Int?
+
+  fitnessLevel FitnessLevel?
+  yearsOfExperience Int?
+  primaryGoal String?
+  secondaryGoals String[] @default([])
+  preferredWorkoutDays Int?
+  workoutDuration Int?
+  availableEquipment String[] @default([])
+  healthIssues String?
+  injuries String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String   @unique
 }
 
 model Exercise {
@@ -144,4 +173,11 @@ enum RecordStatus {
   PENDING
   COMPLETED
   SKIPPED
+}
+
+enum FitnessLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }

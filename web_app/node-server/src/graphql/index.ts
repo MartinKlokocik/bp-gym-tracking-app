@@ -21,6 +21,8 @@ import {
   CreateInputsTypeDefs,
 } from "./TypeDefs/InputsTypeDefs";
 import { TypesTypeDefs, EnumTypeDefs } from "./TypeDefs/TypesTypeDefs";
+import userProfileResolvers from "./Resolvers/UserProfileResolvers";
+import userProfileTypeDefs from "./TypeDefs/UserProfileTypeDefs";
 const schema = makeExecutableSchema({
   typeDefs: [
     UpdateInputsTypeDefs,
@@ -34,6 +36,7 @@ const schema = makeExecutableSchema({
     calendarDayTypeDefs,
     exerciseRecordsTypeDefs,
     recordSetTypeDefs,
+    userProfileTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -43,6 +46,7 @@ const schema = makeExecutableSchema({
     calendarDayResolvers,
     exerciseRecordsResolvers,
     recordSetResolvers,
+    userProfileResolvers,
   ],
 });
 

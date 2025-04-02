@@ -1,20 +1,19 @@
 import { Button, Textarea } from '@heroui/react'
 import { Activity, CheckCircle } from 'lucide-react'
-
-import { UserProfile } from '../ProfileForm'
+import { UseFormReturn } from 'react-hook-form'
 
 import { equipmentOptions } from '@/components/WorkoutSection/DummyData'
+import { UserProfileType } from '@/types/UserProfile'
 
 type PreferencesTabProps = {
-  profile: UserProfile
-  handleChange: (field: string, value: any) => void
+  formMethods: UseFormReturn<UserProfileType>
   setActiveTab: (tab: string) => void
 }
 export const PreferencesTab = ({
-  profile,
-  handleChange,
+  formMethods,
   setActiveTab,
 }: PreferencesTabProps) => {
+  const { watch, setValue } = formMethods
   return (
     <div className="p-6">
       <div className="space-y-6">
@@ -37,20 +36,22 @@ export const PreferencesTab = ({
               <div
                 key={equip.value}
                 className={`flex items-center space-x-2 border ${
-                  profile.availableEquipment.includes(equip.value)
+                  watch('availableEquipment')?.includes(equip.value)
                     ? 'border-purple-500 bg-purple-500 bg-opacity-20'
                     : 'border-gray-700'
                 } rounded-lg p-3 cursor-pointer`}
                 onClick={() => {
-                  const newEquipment = profile.availableEquipment.includes(
+                  const newEquipment = watch('availableEquipment')?.includes(
                     equip.value
                   )
-                    ? profile.availableEquipment.filter(e => e !== equip.value)
-                    : [...profile.availableEquipment, equip.value]
-                  handleChange('availableEquipment', newEquipment)
+                    ? watch('availableEquipment')?.filter(
+                        e => e !== equip.value
+                      )
+                    : [...(watch('availableEquipment') || []), equip.value]
+                  setValue('availableEquipment', newEquipment)
                 }}
               >
-                {profile.availableEquipment.includes(equip.value) && (
+                {watch('availableEquipment')?.includes(equip.value) && (
                   <CheckCircle className="text-purple-500 w-5 h-5" />
                 )}
                 <span>{equip.label}</span>
@@ -64,8 +65,8 @@ export const PreferencesTab = ({
           <h4 className="text-lg font-medium mb-4">Health Considerations</h4>
           <div className="mb-4">
             <Textarea
-              value={profile.healthIssues}
-              onChange={e => handleChange('healthIssues', e.target.value)}
+              value={watch('healthIssues')}
+              onChange={e => setValue('healthIssues', e.target.value)}
               placeholder="e.g., asthma, diabetes, heart conditions, etc."
               classNames={{
                 inputWrapper: 'bg-gray-800 border border-gray-700 rounded-lg',
@@ -79,8 +80,8 @@ export const PreferencesTab = ({
           </div>
           <div>
             <Textarea
-              value={profile.injuries}
-              onChange={e => handleChange('injuries', e.target.value)}
+              value={watch('injuries')}
+              onChange={e => setValue('injuries', e.target.value)}
               placeholder="e.g., lower back pain, sprained ankle, shoulder issues, etc."
               classNames={{
                 inputWrapper: 'bg-gray-800 border border-gray-700 rounded-lg',
@@ -97,7 +98,10 @@ export const PreferencesTab = ({
           <Button
             variant="flat"
             color="default"
-            onClick={() => setActiveTab('fitnessProfile')}
+            onClick={e => {
+              e.preventDefault()
+              setActiveTab('fitnessProfile')
+            }}
           >
             Back
           </Button>

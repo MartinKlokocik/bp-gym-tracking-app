@@ -39,6 +39,15 @@ export default {
           name,
         },
       });
+
+      await prisma.userProfile.create({
+        data: {
+          userId: user.id,
+          firstName: name.split(" ")[0],
+          lastName: name.split(" ")[1],
+        },
+      });
+
       return user;
     },
 

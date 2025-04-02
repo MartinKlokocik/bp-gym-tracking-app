@@ -78,6 +78,27 @@ const TypesTypeDefs = `
     notes: String
     status: RecordStatus!
   }
+
+  type UserProfile {
+    id: String!
+    userId: String!
+    firstName: String
+    lastName: String
+    dateOfBirth: String
+    gender: String
+    profilePicture: String
+    height: Int
+    weight: Int
+    fitnessLevel: FitnessLevel
+    yearsOfExperience: Int
+    primaryGoal: String
+    secondaryGoals: [String]
+    preferredWorkoutDays: Int
+    workoutDuration: Int
+    availableEquipment: [String]
+    healthIssues: String
+    injuries: String
+  }
 `;
 
 const EnumTypeDefs = `
@@ -86,6 +107,12 @@ const EnumTypeDefs = `
     COMPLETED
     SKIPPED
   }
-`;
 
+  enum FitnessLevel {
+    BEGINNER
+    INTERMEDIATE
+    ADVANCED
+    EXPERT
+  }
+`;
 export { TypesTypeDefs, EnumTypeDefs };

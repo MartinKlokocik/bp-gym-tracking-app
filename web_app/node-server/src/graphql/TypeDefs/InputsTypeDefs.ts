@@ -32,6 +32,26 @@ const UpdateInputsTypeDefs = `
     isDefault: Boolean!
     type: String!
   }
+
+  input UserProfileUpdateInput {
+    userId: String!
+    firstName: String
+    lastName: String
+    dateOfBirth: String
+    gender: String
+    profilePicture: String
+    height: Int
+    weight: Int
+    fitnessLevel: FitnessLevel
+    yearsOfExperience: Int
+    primaryGoal: String
+    secondaryGoals: [String]
+    preferredWorkoutDays: Int
+    workoutDuration: Int
+    availableEquipment: [String]
+    healthIssues: String
+    injuries: String
+  }
 `;
 
 const CreateInputsTypeDefs = `
