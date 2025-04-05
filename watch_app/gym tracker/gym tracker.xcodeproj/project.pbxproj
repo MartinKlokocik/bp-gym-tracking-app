@@ -1,0 +1,671 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		63AD117B2DA159F300411E6F /* gym tracker Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 63AD117A2DA159F300411E6F /* gym tracker Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		63AD117C2DA159F300411E6F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63AD116E2DA159F300411E6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63AD11792DA159F300411E6F;
+			remoteInfo = "gym tracker Watch App";
+		};
+		63AD118D2DA159F400411E6F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63AD116E2DA159F300411E6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63AD11792DA159F300411E6F;
+			remoteInfo = "gym tracker Watch App";
+		};
+		63AD11972DA159F500411E6F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63AD116E2DA159F300411E6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 63AD11792DA159F300411E6F;
+			remoteInfo = "gym tracker Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		63AD11A32DA159F500411E6F /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				63AD117B2DA159F300411E6F /* gym tracker Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		63AD11742DA159F300411E6F /* gym tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gym tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		63AD117A2DA159F300411E6F /* gym tracker Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gym tracker Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		63AD118C2DA159F400411E6F /* gym tracker Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "gym tracker Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		63AD11962DA159F500411E6F /* gym tracker Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "gym tracker Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		63AD117E2DA159F300411E6F /* gym tracker Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "gym tracker Watch App";
+			sourceTree = "<group>";
+		};
+		63AD118F2DA159F400411E6F /* gym tracker Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "gym tracker Watch AppTests";
+			sourceTree = "<group>";
+		};
+		63AD11992DA159F500411E6F /* gym tracker Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "gym tracker Watch AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		63AD11772DA159F300411E6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD11892DA159F400411E6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD11932DA159F500411E6F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		63AD116D2DA159F300411E6F = {
+			isa = PBXGroup;
+			children = (
+				63AD117E2DA159F300411E6F /* gym tracker Watch App */,
+				63AD118F2DA159F400411E6F /* gym tracker Watch AppTests */,
+				63AD11992DA159F500411E6F /* gym tracker Watch AppUITests */,
+				63AD11752DA159F300411E6F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		63AD11752DA159F300411E6F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				63AD11742DA159F300411E6F /* gym tracker.app */,
+				63AD117A2DA159F300411E6F /* gym tracker Watch App.app */,
+				63AD118C2DA159F400411E6F /* gym tracker Watch AppTests.xctest */,
+				63AD11962DA159F500411E6F /* gym tracker Watch AppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		63AD11732DA159F300411E6F /* gym tracker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63AD11A42DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker" */;
+			buildPhases = (
+				63AD11722DA159F300411E6F /* Resources */,
+				63AD11A32DA159F500411E6F /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				63AD117D2DA159F300411E6F /* PBXTargetDependency */,
+			);
+			name = "gym tracker";
+			packageProductDependencies = (
+			);
+			productName = "gym tracker";
+			productReference = 63AD11742DA159F300411E6F /* gym tracker.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		63AD11792DA159F300411E6F /* gym tracker Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63AD11A02DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker Watch App" */;
+			buildPhases = (
+				63AD11762DA159F300411E6F /* Sources */,
+				63AD11772DA159F300411E6F /* Frameworks */,
+				63AD11782DA159F300411E6F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				63AD117E2DA159F300411E6F /* gym tracker Watch App */,
+			);
+			name = "gym tracker Watch App";
+			packageProductDependencies = (
+			);
+			productName = "gym tracker Watch App";
+			productReference = 63AD117A2DA159F300411E6F /* gym tracker Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		63AD118B2DA159F400411E6F /* gym tracker Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63AD11A72DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker Watch AppTests" */;
+			buildPhases = (
+				63AD11882DA159F400411E6F /* Sources */,
+				63AD11892DA159F400411E6F /* Frameworks */,
+				63AD118A2DA159F400411E6F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				63AD118E2DA159F400411E6F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				63AD118F2DA159F400411E6F /* gym tracker Watch AppTests */,
+			);
+			name = "gym tracker Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "gym tracker Watch AppTests";
+			productReference = 63AD118C2DA159F400411E6F /* gym tracker Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		63AD11952DA159F500411E6F /* gym tracker Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63AD11AA2DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker Watch AppUITests" */;
+			buildPhases = (
+				63AD11922DA159F500411E6F /* Sources */,
+				63AD11932DA159F500411E6F /* Frameworks */,
+				63AD11942DA159F500411E6F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				63AD11982DA159F500411E6F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				63AD11992DA159F500411E6F /* gym tracker Watch AppUITests */,
+			);
+			name = "gym tracker Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "gym tracker Watch AppUITests";
+			productReference = 63AD11962DA159F500411E6F /* gym tracker Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		63AD116E2DA159F300411E6F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					63AD11732DA159F300411E6F = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					63AD11792DA159F300411E6F = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					63AD118B2DA159F400411E6F = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 63AD11792DA159F300411E6F;
+					};
+					63AD11952DA159F500411E6F = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 63AD11792DA159F300411E6F;
+					};
+				};
+			};
+			buildConfigurationList = 63AD11712DA159F300411E6F /* Build configuration list for PBXProject "gym tracker" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 63AD116D2DA159F300411E6F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 63AD11752DA159F300411E6F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				63AD11732DA159F300411E6F /* gym tracker */,
+				63AD11792DA159F300411E6F /* gym tracker Watch App */,
+				63AD118B2DA159F400411E6F /* gym tracker Watch AppTests */,
+				63AD11952DA159F500411E6F /* gym tracker Watch AppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		63AD11722DA159F300411E6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD11782DA159F300411E6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD118A2DA159F400411E6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD11942DA159F500411E6F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		63AD11762DA159F300411E6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD11882DA159F400411E6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63AD11922DA159F500411E6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		63AD117D2DA159F300411E6F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 63AD11792DA159F300411E6F /* gym tracker Watch App */;
+			targetProxy = 63AD117C2DA159F300411E6F /* PBXContainerItemProxy */;
+		};
+		63AD118E2DA159F400411E6F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 63AD11792DA159F300411E6F /* gym tracker Watch App */;
+			targetProxy = 63AD118D2DA159F400411E6F /* PBXContainerItemProxy */;
+		};
+		63AD11982DA159F500411E6F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 63AD11792DA159F300411E6F /* gym tracker Watch App */;
+			targetProxy = 63AD11972DA159F500411E6F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		63AD119E2DA159F500411E6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		63AD119F2DA159F500411E6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		63AD11A12DA159F500411E6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"gym tracker Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "gym tracker";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		63AD11A22DA159F500411E6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"gym tracker Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "gym tracker";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		63AD11A52DA159F500411E6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				INFOPLIST_KEY_CFBundleDisplayName = "gym tracker";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		63AD11A62DA159F500411E6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				INFOPLIST_KEY_CFBundleDisplayName = "gym tracker";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		63AD11A82DA159F500411E6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gym tracker Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/gym tracker Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		63AD11A92DA159F500411E6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gym tracker Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/gym tracker Watch App";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		63AD11AB2DA159F500411E6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "gym tracker Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		63AD11AC2DA159F500411E6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QQC6G8QVH5;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "gym tracker Watch App";
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		63AD11712DA159F300411E6F /* Build configuration list for PBXProject "gym tracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63AD119E2DA159F500411E6F /* Debug */,
+				63AD119F2DA159F500411E6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63AD11A02DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63AD11A12DA159F500411E6F /* Debug */,
+				63AD11A22DA159F500411E6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63AD11A42DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63AD11A52DA159F500411E6F /* Debug */,
+				63AD11A62DA159F500411E6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63AD11A72DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63AD11A82DA159F500411E6F /* Debug */,
+				63AD11A92DA159F500411E6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63AD11AA2DA159F500411E6F /* Build configuration list for PBXNativeTarget "gym tracker Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63AD11AB2DA159F500411E6F /* Debug */,
+				63AD11AC2DA159F500411E6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 63AD116E2DA159F300411E6F /* Project object */;
+}
