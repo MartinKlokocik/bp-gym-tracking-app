@@ -23,6 +23,9 @@ import {
 import { TypesTypeDefs, EnumTypeDefs } from "./TypeDefs/TypesTypeDefs";
 import userProfileResolvers from "./Resolvers/UserProfileResolvers";
 import userProfileTypeDefs from "./TypeDefs/UserProfileTypeDefs";
+import appleWatchTypeDefs from "./TypeDefs/AppleWatchTypeDefs";
+import appleWatchResolvers from "./Resolvers/AppleWatchResolvers";
+
 const schema = makeExecutableSchema({
   typeDefs: [
     UpdateInputsTypeDefs,
@@ -37,6 +40,7 @@ const schema = makeExecutableSchema({
     exerciseRecordsTypeDefs,
     recordSetTypeDefs,
     userProfileTypeDefs,
+    appleWatchTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -47,6 +51,7 @@ const schema = makeExecutableSchema({
     exerciseRecordsResolvers,
     recordSetResolvers,
     userProfileResolvers,
+    appleWatchResolvers,
   ],
 });
 

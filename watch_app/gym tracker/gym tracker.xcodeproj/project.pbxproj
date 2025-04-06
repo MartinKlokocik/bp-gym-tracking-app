@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		63562C112DA15DB600137EFA /* gym tracker Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 63562C102DA15DB600137EFA /* gym tracker Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		63E7959B2DA1F7EA00595310 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 63E7959A2DA1F7EA00595310 /* Apollo */; };
+		63E7959D2DA1F7EA00595310 /* ApolloWebSocket in Frameworks */ = {isa = PBXBuildFile; productRef = 63E7959C2DA1F7EA00595310 /* ApolloWebSocket */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,9 +57,22 @@
 		63562C2C2DA15DB800137EFA /* gym tracker Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "gym tracker Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		631F4B142DA32357007F4B6A /* Exceptions for "gym tracker Watch App" folder in "gym tracker Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 63562C0F2DA15DB600137EFA /* gym tracker Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		63562C142DA15DB600137EFA /* gym tracker Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				631F4B142DA32357007F4B6A /* Exceptions for "gym tracker Watch App" folder in "gym tracker Watch App" target */,
+			);
 			path = "gym tracker Watch App";
 			sourceTree = "<group>";
 		};
@@ -78,6 +93,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63E7959B2DA1F7EA00595310 /* Apollo in Frameworks */,
+				63E7959D2DA1F7EA00595310 /* ApolloWebSocket in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +175,8 @@
 			);
 			name = "gym tracker Watch App";
 			packageProductDependencies = (
+				63E7959A2DA1F7EA00595310 /* Apollo */,
+				63E7959C2DA1F7EA00595310 /* ApolloWebSocket */,
 			);
 			productName = "gym tracker Watch App";
 			productReference = 63562C102DA15DB600137EFA /* gym tracker Watch App.app */;
@@ -244,6 +263,9 @@
 			);
 			mainGroup = 63562C032DA15DB600137EFA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				63E795992DA1F7EA00595310 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 63562C0B2DA15DB600137EFA /* Products */;
 			projectDirPath = "";
@@ -450,12 +472,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "gym tracker Watch App/gym tracker Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"gym tracker Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = QQC6G8QVH5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "gym tracker Watch App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "gym tracker";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -464,6 +488,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -471,7 +496,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Debug;
 		};
@@ -480,12 +505,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "gym tracker Watch App/gym tracker Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"gym tracker Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = QQC6G8QVH5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "gym tracker Watch App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "gym tracker";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -494,6 +521,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "martin.gym-tracker.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -502,7 +530,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};
@@ -553,7 +581,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gym tracker Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/gym tracker Watch App";
-				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Debug;
 		};
@@ -574,7 +602,7 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gym tracker Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/gym tracker Watch App";
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};
@@ -593,7 +621,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_TARGET_NAME = "gym tracker Watch App";
-				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Debug;
 		};
@@ -613,7 +641,7 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_TARGET_NAME = "gym tracker Watch App";
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 11.2;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
 			};
 			name = Release;
 		};
@@ -666,6 +694,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		63E795992DA1F7EA00595310 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.19.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		63E7959A2DA1F7EA00595310 /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63E795992DA1F7EA00595310 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
+		};
+		63E7959C2DA1F7EA00595310 /* ApolloWebSocket */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 63E795992DA1F7EA00595310 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = ApolloWebSocket;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 63562C042DA15DB600137EFA /* Project object */;
 }
