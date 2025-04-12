@@ -78,7 +78,7 @@ class GraphQLService {
         }.resume()
     }
     
-    func sendPulseData(pulse: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func sendPulseData(pulse: Int, exerciseIndex: Int, setIndex: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
            guard let url = URL(string: urlString) else {
                completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
                return

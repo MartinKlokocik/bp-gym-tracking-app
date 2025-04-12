@@ -1,70 +1,18 @@
-import SwiftUI
 import HealthKit
+import Combine
 import Foundation
+import SwiftUI
 
-
-struct MonitorPulseView: View {
-    @StateObject private var viewModel = MonitorPulseViewModel()
-
-    var body: some View {
-        VStack(spacing: 16) {
-            if let currentRate = viewModel.currentHeartRate {
-                Text("\(Int(currentRate)) bpm")
-                    .font(.title3)
-            } else {
-                Text("Current HR: --")
-                    .font(.title3)
-            }
-
-            if let message = viewModel.statusMessage {
-                Text(message)
-                    .padding(.top, 8)
-                    .multilineTextAlignment(.center)
-            }
-
-            Spacer()
-
-            if viewModel.isMonitoring {
-                Button("STOP") {
-                    viewModel.stopMonitoring()
-                }
-                .padding()
-                .background(Color.red.opacity(0.7))
-                .cornerRadius(8)
-                .foregroundColor(.white)
-            } else {
-                Button("START") {
-                    viewModel.startMonitoring()
-                }
-                .padding()
-                .background(Color.green.opacity(0.7))
-                .cornerRadius(8)
-                .foregroundColor(.white)
-            }
-        }
-        .padding()
-        .onAppear {
-            viewModel.requestHealthKitAuthorization()
-        }
-    }
-}
-
-#Preview {
-    MonitorPulseView()
-}
-
-
-
-class MonitorPulseViewModel: NSObject, ObservableObject {
+class HeartRateManager: NSObject, ObservableObject {
     @Published var currentHeartRate: Double?
     @Published var statusMessage: String?
     @Published var isMonitoring = false
 
-    private let service = GraphQLService() // Your existing service for sending pulse data
+    private let service = GraphQLService()
     private let healthStore = HKHealthStore()
     private var workoutSession: HKWorkoutSession?
     private var query: HKQuery?
-    private var heartRates: [Double] = [] // To record heart rate samples
+    private var heartRates: [Double] = []
 
     // Request permission to read heart rate data
     func requestHealthKitAuthorization() {
@@ -79,7 +27,7 @@ class MonitorPulseViewModel: NSObject, ObservableObject {
             return
         }
         
-        let typesToShare: Set<HKSampleType> = []  // No need to write data in this case
+        let typesToShare: Set<HKSampleType> = []
         let typesToRead: Set<HKObjectType> = [heartRateType]
         
         healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
@@ -117,7 +65,6 @@ class MonitorPulseViewModel: NSObject, ObservableObject {
             return
         }
         
-        // Start the query to receive heart rate samples
         startHeartRateQuery()
     }
     
@@ -126,7 +73,6 @@ class MonitorPulseViewModel: NSObject, ObservableObject {
         // Only fetch samples from now on
         let predicate = HKQuery.predicateForSamples(withStart: Date(), end: nil, options: .strictStartDate)
         
-        // Create an anchored query
         let anchoredQuery = HKAnchoredObjectQuery(type: heartRateType,
                                                   predicate: predicate,
                                                   anchor: nil,
@@ -142,7 +88,6 @@ class MonitorPulseViewModel: NSObject, ObservableObject {
         healthStore.execute(anchoredQuery)
     }
     
-    // Process incoming heart rate samples
     private func processHeartRateSamples(_ samples: [HKSample]?) {
         guard let samples = samples as? [HKQuantitySample] else { return }
         
@@ -183,7 +128,7 @@ class MonitorPulseViewModel: NSObject, ObservableObject {
     
     // Send the computed average pulse to the server
     private func sendAveragePulseToServer(_ avgPulse: Int) {
-        service.sendPulseData(pulse: avgPulse) { result in
+        service.sendPulseData(pulse: avgPulse, exerciseIndex: 1, setIndex: 1) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let success):
@@ -201,22 +146,19 @@ class MonitorPulseViewModel: NSObject, ObservableObject {
 }
 
 // MARK: - HKWorkoutSessionDelegate
-
-extension MonitorPulseViewModel: HKWorkoutSessionDelegate {
-    func workoutSession(_ workoutSession: HKWorkoutSession,
-                        didChangeTo toState: HKWorkoutSessionState,
-                        from fromState: HKWorkoutSessionState,
-                        date: Date) {
-        // You can handle state changes here if needed.
+extension HeartRateManager: HKWorkoutSessionDelegate {
+    @objc func workoutSession(
+        _ workoutSession: HKWorkoutSession,
+        didChangeTo toState: HKWorkoutSessionState,
+        from fromState: HKWorkoutSessionState,
+        date: Date
+    ) {
     }
     
-    func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
+    @objc func workoutSession(_ workoutSession: HKWorkoutSession, didFailWithError error: Error) {
         DispatchQueue.main.async {
             self.statusMessage = "Workout session error: \(error.localizedDescription)"
             self.isMonitoring = false
         }
     }
 }
-
-
-
