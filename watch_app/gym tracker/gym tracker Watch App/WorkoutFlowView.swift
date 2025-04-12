@@ -183,7 +183,7 @@ class WorkoutFlowViewModel: ObservableObject {
 }
 
 
-// MARK: - Example Data Models (Remove if you have them in other files!)
+// MARK: - Data Models
 struct PlannedWorkoutDay {
     var name: String?
     var plannedExercises: [PlannedExercise]?

@@ -85,13 +85,15 @@ class GraphQLService {
            }
 
            let mutation = """
-           mutation SendPulseData($pulseData: Int!) {
-             sendPulseData(pulseData: $pulseData)
+           mutation SendPulseData($avgPulse: Int!, $exerciseIndex: Int!, $setIndex: Int!) {
+             sendPulseData(avgPulse: $avgPulse, exerciseIndex: $exerciseIndex, setIndex: $setIndex)
            }
            """
 
            let variables: [String: Any] = [
-               "pulseData": pulse
+               "avgPulse": pulse,
+               "exerciseIndex": exerciseIndex,
+               "setIndex": setIndex
            ]
 
            let body: [String: Any] = [

@@ -29,7 +29,7 @@ type Query {
   getWorkoutForToday(userId: String!): WatchesWorkout
 }
 type Mutation {
-  sendPulseData(pulseData: Int!): Boolean
+  sendPulseData(avgPulse: Int!, exerciseIndex: Int!, setIndex: Int!): Boolean
 }
 `;
 

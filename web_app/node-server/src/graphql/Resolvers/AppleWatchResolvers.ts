@@ -54,8 +54,13 @@ const resolvers = {
     },
   },
   Mutation: {
-    sendPulseData: async (_: unknown, { pulseData }: { pulseData: number }) => {
-      console.log(pulseData);
+    sendPulseData: async (
+      _: unknown,
+      { avgPulse, exerciseIndex, setIndex }: { avgPulse: number; exerciseIndex: number; setIndex: number }
+    ) => {
+      console.log("avgPulse", avgPulse);
+      console.log("exerciseIndex", exerciseIndex);
+      console.log("setIndex", setIndex);
       return true;
     },
   },

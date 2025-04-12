@@ -60,7 +60,7 @@ struct WorkoutInProgressView: View {
                     } else {
                         Button("Complete") {
                             completeSet()
-                            heartRateManger.stopMonitoring()
+                            heartRateManger.stopMonitoring(setIndex: setIndex, exerciseIndex: exerciseIndex)
                         }
                     }
                 }
