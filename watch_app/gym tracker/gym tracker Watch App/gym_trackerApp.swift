@@ -1,10 +1,3 @@
-//
-//  gym_trackerApp.swift
-//  gym tracker Watch App
-//
-//  Created by Martin Klokočík on 05/04/2025.
-//
-
 import SwiftUI
 
 @main
