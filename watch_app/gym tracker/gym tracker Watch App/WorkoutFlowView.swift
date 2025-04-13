@@ -38,7 +38,7 @@ struct WorkoutFlowView: View {
                 )
                 
             case .finished:
-                Text("Workout Completed!")
+                WorkoutCompletedView()
             }
         }
         .onAppear {

@@ -48,9 +48,9 @@ struct WorkoutRestView: View {
         let nextPlannedSet = sets[nextSetIndex]
         
         return AnyView(
-            VStack(spacing: 12) {
+            VStack(spacing: 4) {
                 Text("Rest: \(timeLeft) sec")
-                    .font(.headline)
+                    .font(.title3)
                 
                 Text("Up Next:")
                 Text(exercise.exercise?.name ?? "Unnamed Exercise")
@@ -58,15 +58,18 @@ struct WorkoutRestView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 
-                Text("Set \(nextSetIndex + 1)/\(sets.count)")
-                Text("\(nextPlannedSet.reps ?? 0) reps")
+                Text("Set \(nextSetIndex + 1)/\(sets.count) • \(nextPlannedSet.reps ?? 0) reps")
+                    .font(.body)
                 
                 Button(nextButtonLabel) {
                     self.timer?.invalidate()
                     nextSetAction()
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(timeLeft == 0 ? .green : .secondary)
             }
             .padding()
+            .navigationBarBackButtonHidden(true)
             .onAppear {
                 startCountdown()
             }

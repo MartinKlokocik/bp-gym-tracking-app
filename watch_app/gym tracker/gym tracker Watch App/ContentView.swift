@@ -18,7 +18,6 @@ struct ContentView: View {
                 .controlSize(.large)
                 .tint(.blue)
             }
-            .padding()
         }
     }
     

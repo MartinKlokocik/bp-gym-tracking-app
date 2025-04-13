@@ -31,29 +31,30 @@ struct WorkoutInProgressView: View {
         let currentSet = sets[setIndex]
         
         return AnyView(
-            ScrollView {
-                VStack(spacing: 12) {
-                    Text(exercise.exercise?.name ?? "Unnamed Exercise")
-                        .font(.title3)
-                        .lineLimit(nil)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                    
-                    Text("Exercise \(exerciseIndex + 1)/\(exercises.count)")
-
-                    Text("Set \(setIndex + 1)/\(sets.count) • \(currentSet.reps ?? 0) reps")
-                        .font(.body)
-
-                    if let currentRate = heartRateManger.currentHeartRate {
-                        Text("\(Int(currentRate)) bpm")
+                VStack(spacing: 10) {
+                    VStack(spacing: 2){
+                        Text(exercise.exercise?.name ?? "Unnamed Exercise")
                             .font(.title3)
-                    } else {
-                        Text("Loading HR...")
-                            .font(.title3)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text("Exercise \(exerciseIndex + 1)/\(exercises.count)")
+                            .font(.body)
+
+                        Text("Set \(setIndex + 1)/\(sets.count) • \(currentSet.reps ?? 0) reps")
+                            .font(.body)
+
+                        if let currentRate = heartRateManger.currentHeartRate {
+                            Text("\(Int(currentRate)) bpm")
+                                .font(.title3)
+                        } else if isMonitoring {
+                            Text("Calculating HR...")
+                                .font(.title3)
+                        }
                     }
 
                     if !isMonitoring {
-                        Button("Monitor") {
+                        Button("Monitor HR") {
                             toggleMonitor()
                             heartRateManger.startMonitoring()
                         }
@@ -62,14 +63,18 @@ struct WorkoutInProgressView: View {
                             completeSet()
                             heartRateManger.stopMonitoring(setIndex: setIndex, exerciseIndex: exerciseIndex)
                         }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .tint(.green)
                     }
                 }
-                .padding(.vertical)
+                .padding(.zero)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .navigationBarBackButtonHidden(true)
+                .edgesIgnoringSafeArea(.bottom)
                 .onAppear {
                     heartRateManger.requestHealthKitAuthorization()
                 }
-            }
         )
-
     }
 }
