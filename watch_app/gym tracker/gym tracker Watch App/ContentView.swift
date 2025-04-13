@@ -4,11 +4,12 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 10) {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundStyle(.tint)
+                Image("gym-icon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 30, height: 30)
 
-                Text("Gym Tracker")
+                Text("Workout Tracker")
                     .font(.headline)
 
                 NavigationLink(destination: WorkoutFlowView()) {
