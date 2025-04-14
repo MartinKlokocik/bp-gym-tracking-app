@@ -127,7 +127,7 @@ class WorkoutFlowViewModel: ObservableObject {
     // MARK: - Complete Set → Move to Rest State
     func completeSet() {
         switch state {
-        case .inProgress(let workout, let exerciseIndex, let setIndex, let isMonitoring):
+        case .inProgress(let workout, let exerciseIndex, let setIndex, _):
             guard
                 let day = workout.plannedWorkoutDay,
                 let exercises = day.plannedExercises,
