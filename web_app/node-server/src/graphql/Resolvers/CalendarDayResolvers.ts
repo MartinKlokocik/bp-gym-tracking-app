@@ -2,6 +2,38 @@ import { PrismaClient, RecordStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+const deleteCalendarDay = async (id: string) => {
+  try {
+    const calendarDay = await prisma.calendarDay.findUnique({
+      where: { id },
+      include: { exerciseRecords: true },
+    });
+
+    if (!calendarDay) return false;
+
+    await prisma.$transaction(async (tx) => {
+      for (const record of calendarDay.exerciseRecords) {
+        await tx.recordSet.deleteMany({
+          where: { exerciseRecordId: record.id },
+        });
+      }
+
+      await tx.exerciseRecord.deleteMany({
+        where: { calendarDayId: id },
+      });
+
+      await tx.calendarDay.delete({
+        where: { id },
+      });
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting calendar day:", error);
+    return false;
+  }
+}
+
 const resolvers = {
   Query: {
     getCalendarDayByDate: async (_: unknown, { date }: { date: string }) => {
@@ -30,7 +62,18 @@ const resolvers = {
   },
   Mutation: {
     createCalendarDay: async (_: unknown, { input }: { input: any }) => {
-      const { userId, date, plannedWorkoutDay } = input;
+      const { userId, date, plannedWorkoutDay } = input
+
+      const existingCalendarDay = await prisma.calendarDay.findFirst({
+        where: {
+          user: { id: userId },
+          date: date.split("T")[0],
+        },
+      });
+
+      if (existingCalendarDay) {
+        await deleteCalendarDay(existingCalendarDay.id);
+      }
 
       return await prisma.calendarDay.create({
         data: {
