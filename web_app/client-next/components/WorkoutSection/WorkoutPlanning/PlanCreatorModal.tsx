@@ -114,6 +114,9 @@ export const PlanCreatorModal = ({
       await refetchPlannedWorkouts()
       onOpenChange(false)
       reset()
+      setStep(1)
+      setNumberOfDays('1')
+      setSelectedDayIndex(0)
     } catch (err) {
       console.error('Error creating workout plan:', err)
     }
