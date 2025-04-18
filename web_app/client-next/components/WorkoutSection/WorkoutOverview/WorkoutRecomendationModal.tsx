@@ -130,7 +130,7 @@ export const WorkoutRecomendationModal = ({
                     </div>
                   </div>
                 ) : (
-                  <div>
+                  <div className="flex flex-col gap-4 justify-center items-center">
                     <p>No recommendation data available</p>
                     <Button
                       type="button"
