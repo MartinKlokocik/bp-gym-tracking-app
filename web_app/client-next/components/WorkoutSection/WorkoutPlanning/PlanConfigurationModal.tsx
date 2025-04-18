@@ -221,6 +221,7 @@ export const PlanConfigurationModal = ({
         isOpen={isPlanCreatorModalOpen}
         onOpenChange={onPlanCreatorModalOpenChange}
         user={user}
+        refetchPlannedWorkouts={refetchPlannedWorkouts}
       />
 
       <ExerciseCreatorModal

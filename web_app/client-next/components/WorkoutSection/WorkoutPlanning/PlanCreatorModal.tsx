@@ -32,12 +32,14 @@ type PlanCreatorModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   user: User
+  refetchPlannedWorkouts: () => void
 }
 
 export const PlanCreatorModal = ({
   isOpen,
   onOpenChange,
   user,
+  refetchPlannedWorkouts,
 }: PlanCreatorModalProps) => {
   const [
     createPlannedWorkout,
@@ -109,6 +111,7 @@ export const PlanCreatorModal = ({
         },
       })
 
+      await refetchPlannedWorkouts()
       onOpenChange(false)
       reset()
     } catch (err) {
