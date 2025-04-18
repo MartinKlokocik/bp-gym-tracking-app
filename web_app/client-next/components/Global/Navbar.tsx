@@ -120,8 +120,8 @@ export default function Navbar() {
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
-                <DropdownItem key="profile">
-                  <Link href="/profile">Profile</Link>
+                <DropdownItem key="profile" as={Link} href="/profile">
+                  Profile
                 </DropdownItem>
                 <DropdownItem key="settings">Settings</DropdownItem>
                 <DropdownItem
