@@ -127,6 +127,15 @@ const resolvers = {
         },
       });
     },
+    deleteCalendarDay: async (_: unknown, { date }: { date: string }) => {
+      const calendarDay = await prisma.calendarDay.findFirst({
+        where: { date: date.split("T")[0] },
+      });
+
+      if (!calendarDay) return false;
+
+      return await deleteCalendarDay(calendarDay.id);
+    },
   },
 };
 

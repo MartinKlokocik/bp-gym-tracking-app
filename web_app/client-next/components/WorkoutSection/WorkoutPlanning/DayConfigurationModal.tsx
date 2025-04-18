@@ -18,7 +18,10 @@ import { toast } from 'react-toastify'
 
 import { PlanAndDaySelect } from './components/PlanAndDaySelect'
 
-import { CREATE_CALENDAR_DAY } from '@/graphql/CalendarConsts'
+import {
+  CREATE_CALENDAR_DAY,
+  DELETE_CALENDAR_DAY,
+} from '@/graphql/CalendarConsts'
 import { GetCalendarDayByDateQueryVariables } from '@/graphql/types'
 import { GetCalendarDayByDateQuery } from '@/graphql/types'
 import { CalendarDayWithIdsType, calendarDaySchema } from '@/types/CalendarDay'
@@ -49,6 +52,8 @@ export const DayConfigurationModal = ({
       error: createCalendarDayError,
     },
   ] = useMutation(CREATE_CALENDAR_DAY)
+
+  const [deleteCalendarDay] = useMutation(DELETE_CALENDAR_DAY)
 
   const { refetch: refetchCalendarDay } = getCalendarDayByDateQuery
 
@@ -138,6 +143,22 @@ export const DayConfigurationModal = ({
     setValue('date', selectedDate.toISOString())
   }, [selectedDate, setValue])
 
+  const handleDeleteCalendarDay = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault()
+    try {
+      await deleteCalendarDay({
+        variables: { date: selectedDate.toISOString() },
+      })
+
+      await refetchCalendarDay()
+    } catch (err) {
+      console.error('Error with deleting calendar day: ', err)
+      toast.error('Error with deleting calendar day.')
+    }
+  }
+
   return (
     <>
       <Modal
@@ -168,12 +189,10 @@ export const DayConfigurationModal = ({
                         setSelectedWorkoutDay={setSelectedWorkoutDay}
                       /> */}
 
-                      <Button
-                        color="danger"
-                        onPress={onClose}
-                        startContent={<Trash2 size={16} />}
-                      >
-                        Remove all records for this day
+                      <Button color="primary" type="submit">
+                        {createCalendarDayLoading
+                          ? 'Adding...'
+                          : 'Add to this day'}
                       </Button>
                     </div>
                   )}
@@ -191,8 +210,12 @@ export const DayConfigurationModal = ({
                 >
                   Cancel
                 </Button>
-                <Button color="primary" type="submit">
-                  {createCalendarDayLoading ? 'Adding...' : 'Add to this day'}
+                <Button
+                  color="danger"
+                  onClick={handleDeleteCalendarDay}
+                  startContent={<Trash2 size={16} />}
+                >
+                  Remove all records for this day
                 </Button>
               </ModalFooter>
             </form>

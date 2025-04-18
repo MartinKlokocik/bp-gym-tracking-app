@@ -61,3 +61,9 @@ export const CREATE_CALENDAR_DAY = gql`
     }
   }
 `
+
+export const DELETE_CALENDAR_DAY = gql`
+  mutation DeleteCalendarDay($date: String!) {
+    deleteCalendarDay(date: $date)
+  }
+`

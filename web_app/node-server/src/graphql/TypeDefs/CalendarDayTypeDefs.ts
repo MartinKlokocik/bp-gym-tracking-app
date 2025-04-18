@@ -5,6 +5,7 @@ const CalendarDayTypeDefs = `
 
   type Mutation {
     createCalendarDay(input: CalendarDayCreateInput!): CalendarDay!
+    deleteCalendarDay(date: String!): Boolean!
   }
 `;
 
