@@ -10,6 +10,7 @@ const UpdateInputsTypeDefs = `
     id: String!
     userId: String!
     exerciseId: String!
+    exerciseNumber: Int!
     plannedSets: [PlannedSetUpdateInput!]!
   }
 

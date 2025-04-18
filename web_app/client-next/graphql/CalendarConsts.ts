@@ -49,6 +49,7 @@ export const CREATE_CALENDAR_DAY = gql`
           id
           userId
           exerciseId
+          exerciseNumber
           plannedSets {
             id
             reps

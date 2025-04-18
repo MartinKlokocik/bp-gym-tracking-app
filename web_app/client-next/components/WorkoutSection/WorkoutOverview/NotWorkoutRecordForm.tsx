@@ -96,6 +96,7 @@ export const NotWorkoutRecordForm = ({
                   id: plannedExercise.id,
                   userId: plannedExercise.userId,
                   exerciseId: plannedExercise.exercise.id,
+                  exerciseNumber: plannedExercise.exerciseNumber,
                   plannedSets: plannedExercise.plannedSets.map(set => ({
                     id: set.id,
                     reps: set.reps,

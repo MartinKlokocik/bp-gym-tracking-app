@@ -16,6 +16,7 @@ export const GET_ALL_PLANNED_WORKOUTS = gql`
         plannedExercises {
           id
           userId
+          exerciseNumber
           exercise {
             id
             userId
@@ -57,6 +58,7 @@ export const GET_PLANNED_WORKOUT_BY_ID = gql`
         plannedExercises {
           userId
           id
+          exerciseNumber
           notes
           exercise {
             id
