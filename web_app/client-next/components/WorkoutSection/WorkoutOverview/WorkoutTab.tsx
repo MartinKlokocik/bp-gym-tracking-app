@@ -9,13 +9,14 @@ import {
   AccordionItem,
   Checkbox,
 } from '@heroui/react'
-import { ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
+import { BrainIcon, ChevronLeft, ChevronRight, StepBack } from 'lucide-react'
 import { User } from 'next-auth'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { GymProgressChart } from './GymProgressChart'
 import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
+import { WorkoutRecomendationModal } from './WorkoutRecomendationModal'
 
 import {
   GET_LATEST_EXERCISE_RECORD,
@@ -51,6 +52,8 @@ export const WorkoutTab = ({
     loading: calendarDayLoading,
     refetch: refetchCalendarDay,
   } = getCalendarDayByDateQuery
+
+  const [isOpen, setIsOpen] = useState(false)
 
   const [selectedPlannedExercise, setselectedPlannedExercise] =
     useState<PlannedExerciseWithIdsType | null>(
@@ -404,7 +407,16 @@ export const WorkoutTab = ({
                           {latestExerciseRecordLoading ? 'Loading...' : ''}
                         </h2>
                       )}
-                      <h2 className="text-lg font-semibold">Current</h2>
+                      <div className="w-full flex justify-between items-center">
+                        <h2 className="text-lg font-semibold">Current</h2>
+                        <BrainIcon
+                          size={20}
+                          className="text-blue-500 cursor-pointer"
+                          onClick={() => {
+                            setIsOpen(true)
+                          }}
+                        />
+                      </div>
                     </div>
 
                     {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay.plannedExercises[
@@ -553,6 +565,7 @@ export const WorkoutTab = ({
           )}
         </>
       )}
+      <WorkoutRecomendationModal isOpen={isOpen} onOpenChange={setIsOpen} />
     </div>
   )
 }

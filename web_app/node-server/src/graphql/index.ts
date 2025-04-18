@@ -8,6 +8,10 @@ import workoutDayResolvers from "./Resolvers/WorkoutDayResolvers";
 import calendarDayResolvers from "./Resolvers/CalendarDayResolvers";
 import exerciseRecordsResolvers from "./Resolvers/ExerciseRecordsResolvers";
 import recordSetResolvers from "./Resolvers/RecordSetResolvers";
+import appleWatchResolvers from "./Resolvers/AppleWatchResolvers";
+import { weightRecommendationResolver } from "./Resolvers/AiCallsResolvers";
+import userProfileResolvers from "./Resolvers/UserProfileResolvers";
+
 // TypeDefs
 import userTypeDefs from "./TypeDefs/UserTypeDefs";
 import exerciseTypeDefs from "./TypeDefs/ExerciseTypeDefs";
@@ -21,10 +25,9 @@ import {
   CreateInputsTypeDefs,
 } from "./TypeDefs/InputsTypeDefs";
 import { TypesTypeDefs, EnumTypeDefs } from "./TypeDefs/TypesTypeDefs";
-import userProfileResolvers from "./Resolvers/UserProfileResolvers";
 import userProfileTypeDefs from "./TypeDefs/UserProfileTypeDefs";
 import appleWatchTypeDefs from "./TypeDefs/AppleWatchTypeDefs";
-import appleWatchResolvers from "./Resolvers/AppleWatchResolvers";
+import aiTypeDefs from "./TypeDefs/AiTypeDefs";
 
 const schema = makeExecutableSchema({
   typeDefs: [
@@ -41,6 +44,7 @@ const schema = makeExecutableSchema({
     recordSetTypeDefs,
     userProfileTypeDefs,
     appleWatchTypeDefs,
+    aiTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -52,6 +56,7 @@ const schema = makeExecutableSchema({
     recordSetResolvers,
     userProfileResolvers,
     appleWatchResolvers,
+    weightRecommendationResolver,
   ],
 });
 

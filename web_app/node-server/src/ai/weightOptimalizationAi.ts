@@ -100,8 +100,25 @@ async function getWeightOptimizationAi(
   }
 }
 
-getWeightOptimizationAi(previousWorkouts, exerciseType, userData).then(
-  (response) => {
+// getWeightOptimizationAi(previousWorkouts, exerciseType, userData).then(
+//   (response) => {
+//     console.log("AI:", response);
+//   }
+// );
+
+const getWeightRecommendation = async (exerciseRecordId: string) => {
+  try {
+    const response = await getWeightOptimizationAi(
+      previousWorkouts,
+      exerciseType,
+      userData
+    );
     console.log("AI Decision:", response);
+    return JSON.stringify(response);
+  } catch (error) {
+    console.error("Error getting weight recommendation:", error);
+    throw error;
   }
-);
+};
+
+export { getWeightRecommendation };
