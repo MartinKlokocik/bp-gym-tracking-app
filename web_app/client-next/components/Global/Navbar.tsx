@@ -76,11 +76,6 @@ export default function Navbar() {
               Workouts section
             </Link>
           </NavbarItem>
-          <NavbarItem isActive={activeItem === 'food_section'}>
-            <Link color="foreground" href="/food_section">
-              Food section
-            </Link>
-          </NavbarItem>
           <NavbarItem isActive={activeItem === 'community_section'}>
             <Link color="foreground" href="/community_section">
               Community section
