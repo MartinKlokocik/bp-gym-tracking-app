@@ -1,7 +1,9 @@
+import { getDataForWeightOptimalization } from "./getDataForWeightOptimalization";
+
 const { OpenAI } = require("openai");
 const dotenv = require("dotenv");
 const {
-  previousWorkouts,
+  previousWorkoutsDummy,
   exerciseType,
   userData,
   getJsonForPrompt,
@@ -14,15 +16,18 @@ const openai = new OpenAI({
 });
 
 async function getWeightOptimizationAi(
+  latestRecord: any,
   previousWorkouts: any[],
-  exerciseType: string,
+  exerciseName: string,
   userData: any
 ) {
   try {
-    previousWorkouts.sort(
+    const prevoiousWorkoutsDummy = previousWorkoutsDummy.sort(
       (a: any, b: any) =>
         new Date(a.date).getTime() - new Date(b.date).getTime()
     );
+
+    const latestRecordDummy = previousWorkouts[0];
 
     const jsonSchema = getJsonForPrompt(numberOfSets);
 
@@ -34,11 +39,7 @@ async function getWeightOptimizationAi(
         - Body composition goals (weight loss, muscle gain, etc.)
 
         You have a user with these stats:
-        - Age: ${userData.age} years
-        - Weight: ${userData.weight} kg
-        - Height: ${userData.height} cm
-        - Training experience: ${userData.experienceLevel}
-        - Main goal: ${userData.preference}
+        ${JSON.stringify(userData, null, 2)}
 
         Your task: 
         1. **Analyze only the workout data for the specific exercise** in the user’s history (if any) in chronological order.
@@ -56,15 +57,21 @@ async function getWeightOptimizationAi(
     `;
 
     const userMessage = `
-      Here is the user's workout history for the exercise "${exerciseType}" (ordered by date):
-      ${JSON.stringify(previousWorkouts, null, 2)}
+      Here is the user's workout history for the exercise "${exerciseName}" (ordered by date):
+      ${JSON.stringify(prevoiousWorkoutsDummy, null, 2)}
 
       The best number of reps for each set is:
       - Set 1: 8 reps
       - Set 2: 6 reps
       - Set 3: 5 reps
 
-      What is the best next strategy?
+      Your goal is to provide personalized recommendations for the next workout by analyzing:
+      - Progress or regression across all past records
+      - Comparison of this ${JSON.stringify(
+        latestRecordDummy,
+        null,
+        2
+      )} most recent set vs the next set(s) 
     `;
 
     const response = await openai.chat.completions.create({
@@ -100,20 +107,20 @@ async function getWeightOptimizationAi(
   }
 }
 
-// getWeightOptimizationAi(previousWorkouts, exerciseType, userData).then(
-//   (response) => {
-//     console.log("AI:", response);
-//   }
-// );
-
-const getWeightRecommendation = async (exerciseRecordId: string) => {
+const getWeightRecommendation = async (
+  exerciseRecordId: string
+) => {
   try {
+    const exerciseRecordIdOverride = "2dcc196c-b6f2-4692-af8a-bc23ff47f82f";
+    const data = await getDataForWeightOptimalization(exerciseRecordIdOverride);
     const response = await getWeightOptimizationAi(
-      previousWorkouts,
-      exerciseType,
-      userData
+      data.latestRecord,
+      data.previousWorkouts,
+      data.exerciseName,
+      data.userData
     );
-    console.log("AI Decision:", response);
+
+    console.log("AI Decision:", JSON.stringify(response, null, 2));
     return JSON.stringify(response);
   } catch (error) {
     console.error("Error getting weight recommendation:", error);

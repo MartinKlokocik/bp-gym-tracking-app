@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import {
   Button,
   Modal,
@@ -17,18 +17,18 @@ import { GET_WEIGHT_RECOMMENDATION } from '../../../graphql/AiCallsConsts'
 type WorkoutRecomendationModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  exerciseRecordId: string
 }
 
 export const WorkoutRecomendationModal = ({
   isOpen,
   onOpenChange,
+  exerciseRecordId,
 }: WorkoutRecomendationModalProps) => {
-  const { data, loading, error, refetch } = useQuery(
-    GET_WEIGHT_RECOMMENDATION,
-    {
-      variables: { exerciseRecordId: '123' },
-    }
-  )
+  const [getWeightRecommendation, { data, loading, error, refetch }] =
+    useLazyQuery(GET_WEIGHT_RECOMMENDATION, {
+      variables: { exerciseRecordId },
+    })
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [recommendationData, setRecommendationData] = useState<any>(null)
@@ -130,7 +130,17 @@ export const WorkoutRecomendationModal = ({
                     </div>
                   </div>
                 ) : (
-                  <p>No recommendation data available</p>
+                  <div>
+                    <p>No recommendation data available</p>
+                    <Button
+                      type="button"
+                      color="primary"
+                      onClick={() => getWeightRecommendation()}
+                      isLoading={loading}
+                    >
+                      Generate
+                    </Button>
+                  </div>
                 )}
               </ModalBody>
 

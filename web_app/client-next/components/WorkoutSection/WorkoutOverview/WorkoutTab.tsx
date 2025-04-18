@@ -565,7 +565,13 @@ export const WorkoutTab = ({
           )}
         </>
       )}
-      <WorkoutRecomendationModal isOpen={isOpen} onOpenChange={setIsOpen} />
+      <WorkoutRecomendationModal
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        exerciseRecordId={
+          recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate?.id
+        }
+      />
     </div>
   )
 }

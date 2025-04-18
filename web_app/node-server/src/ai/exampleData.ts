@@ -1,6 +1,6 @@
 export const exerciseType = "bench_press";
 
-export const previousWorkouts = [
+export const previousWorkoutsDummy = [
   {
     id: "5",
     userId: "123",
