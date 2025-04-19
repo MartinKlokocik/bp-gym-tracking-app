@@ -79,7 +79,9 @@ const prepareResultForWorkoutCreator = (
     result.schema = "";
   }
 
-  result.userId = userId;
+  result.userId = userId
+  result.isActive = false
+  result.isPublic = false
 
   const workoutDays = result.days.map((day: any) => {
     day.userId = userId;
