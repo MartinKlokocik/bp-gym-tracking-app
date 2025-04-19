@@ -71,6 +71,7 @@ export const PlanCreatorModal = ({
       isPublic: user?.id.toString() === '1' ? true : false,
       isActive: false,
       schema: '',
+      name: '',
       days: [
         {
           userId: user?.id.toString(),
@@ -123,10 +124,7 @@ export const PlanCreatorModal = ({
 
       await refetchPlannedWorkouts()
       onOpenChange(false)
-      reset()
-      setStep(1)
-      setNumberOfDays('1')
-      setSelectedDayIndex(0)
+      await handleReset()
     } catch (err) {
       console.error('Error creating workout plan:', err)
     }
