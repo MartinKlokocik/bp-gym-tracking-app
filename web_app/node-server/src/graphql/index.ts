@@ -9,7 +9,7 @@ import calendarDayResolvers from "./Resolvers/CalendarDayResolvers";
 import exerciseRecordsResolvers from "./Resolvers/ExerciseRecordsResolvers";
 import recordSetResolvers from "./Resolvers/RecordSetResolvers";
 import appleWatchResolvers from "./Resolvers/AppleWatchResolvers";
-import { weightRecommendationResolver } from "./Resolvers/AiCallsResolvers";
+import { weightRecommendationResolver, workoutCreatorResolver } from "./Resolvers/AiCallsResolvers";
 import userProfileResolvers from "./Resolvers/UserProfileResolvers";
 
 // TypeDefs
@@ -57,6 +57,7 @@ const schema = makeExecutableSchema({
     userProfileResolvers,
     appleWatchResolvers,
     weightRecommendationResolver,
+    workoutCreatorResolver,
   ],
 });
 

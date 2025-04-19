@@ -15,6 +15,11 @@ const aiTypeDefs = `
     getWeightRecommendation(
       exerciseRecordId: String!
     ): String
+    generateWorkouts(
+      additionalInformations: String!
+      userId: String!
+      useProfileData: Boolean
+    ): String
   }
 `;
 

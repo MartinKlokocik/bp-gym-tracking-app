@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation } from '@apollo/client'
+import { useMutation, useLazyQuery } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -12,6 +12,7 @@ import {
   Card,
   CardBody,
   Checkbox,
+  Textarea,
 } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight, Pencil } from 'lucide-react'
@@ -22,6 +23,7 @@ import { toast } from 'react-toastify'
 
 import { DayExerciseCards } from './components/DayExerciseCards'
 
+import { GENERATE_WORKOUTS } from '@/graphql/AiCallsConsts'
 import { CREATE_PLANNED_WORKOUT } from '@/graphql/PlannedWorkoutConsts'
 import {
   PlannedWorkoutWithoutIdsType,
@@ -50,9 +52,17 @@ export const PlanCreatorModal = ({
     },
   ] = useMutation(CREATE_PLANNED_WORKOUT)
 
+  const [
+    generateWorkouts,
+    { loading: generateWorkoutsLoading, error: generateWorkoutsError },
+  ] = useLazyQuery(GENERATE_WORKOUTS)
+
   const [step, setStep] = useState(1)
   const [numberOfDays, setNumberOfDays] = useState<string>('1')
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0)
+  const [isGeneratingByAI, setIsGeneratingByAI] = useState<boolean>(false)
+  const [profileDataUsage, setProfileDataUsage] = useState<boolean>(false)
+  const [additionalInformation, setAdditionalInformation] = useState<string>('')
 
   const formMethods = useForm<PlannedWorkoutWithoutIdsType>({
     resolver: zodResolver(plannedWorkoutSchema),
@@ -134,6 +144,28 @@ export const PlanCreatorModal = ({
     }
   }, [createPlannedWorkoutData])
 
+  const handleGeneratePlan = async () => {
+    try {
+      const userId = watch('userId')
+      const result = await generateWorkouts({
+        variables: {
+          additionalInformations: additionalInformation,
+          userId: userId,
+          useProfileData: profileDataUsage,
+        },
+      })
+      console.log('Generated plan:', result)
+
+      const parsedResult = JSON.parse(result.data.generateWorkouts)
+      console.log('Parsed result:', parsedResult)
+      reset(parsedResult)
+      setNumberOfDays(parsedResult.days.length.toString())
+      setStep(2)
+    } catch (error) {
+      console.error('Error generating plan:', error)
+    }
+  }
+
   const initializeWorkoutDays = () => {
     const days = parseInt(numberOfDays)
     if (isNaN(days) || days < 1) return
@@ -188,164 +220,213 @@ export const PlanCreatorModal = ({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
-          {onClose => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Create Workout Plan - Step {step} of 3
-              </ModalHeader>
+          <ModalHeader className="flex flex-col gap-1">
+            Create Workout Plan - Step {step} of 3
+          </ModalHeader>
 
-              <ModalBody>
-                {step === 1 && (
-                  <div className="space-y-3">
-                    <Input
-                      label="Plan Name"
-                      placeholder="Enter plan name"
-                      variant="bordered"
-                      required
-                      {...register('name')}
-                      errorMessage={errors.name?.message}
-                      isInvalid={!!errors.name}
-                    />
-                    <Input
-                      type="number"
-                      label="Number of Workout Days"
-                      placeholder="Enter number of days"
-                      min={1}
-                      required
-                      value={numberOfDays}
-                      onChange={e => setNumberOfDays(e.target.value)}
-                      variant="bordered"
-                    />
+          <ModalBody>
+            {step === 1 && (
+              <div className="space-y-3">
+                <Input
+                  label="Plan Name"
+                  placeholder="Enter plan name"
+                  variant="bordered"
+                  required
+                  {...register('name')}
+                  errorMessage={errors.name?.message}
+                  isInvalid={!!errors.name}
+                />
+                <Input
+                  type="number"
+                  label="Number of Workout Days"
+                  placeholder="Enter number of days"
+                  min={1}
+                  required
+                  value={numberOfDays}
+                  onChange={e => setNumberOfDays(e.target.value)}
+                  variant="bordered"
+                />
+                <Checkbox
+                  defaultSelected={true}
+                  color="primary"
+                  size="md"
+                  {...register('isPublic')}
+                >
+                  Do you want the plan to be public?
+                </Checkbox>
+                <div className="w-full h-[1px] bg-default-200" />
+                <Checkbox
+                  defaultSelected={false}
+                  color="primary"
+                  size="md"
+                  onChange={e => setIsGeneratingByAI(e.target.checked)}
+                >
+                  Do you want to generate it by AI?
+                </Checkbox>
+                {isGeneratingByAI && (
+                  <>
                     <Checkbox
-                      defaultSelected={true}
+                      defaultSelected={false}
                       color="primary"
                       size="md"
-                      {...register('isPublic')}
+                      onChange={e => setProfileDataUsage(e.target.checked)}
                     >
-                      Do you want the plan to be public?
+                      Do you want to use your profile data to generate the plan?
+                      (goals, experience, injuries, etc.)
                     </Checkbox>
-                  </div>
+                    <Textarea
+                      label="Additional information"
+                      placeholder="Enter additional information for plan generation"
+                      variant="bordered"
+                      value={additionalInformation}
+                      onChange={e => setAdditionalInformation(e.target.value)}
+                    />
+                    <p>{generateWorkoutsError?.message}</p>
+                  </>
                 )}
+              </div>
+            )}
 
-                {step === 2 && (
-                  <div className="space-y-6 w-full">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-4 w-4/5">
-                        <p className="text-medium font-medium">Workout Days</p>
-                        {watch('days').map((day, index) => (
-                          <Card
-                            key={index}
-                            className={
-                              selectedDayIndex === index
-                                ? 'border-2 border-primary'
-                                : ''
-                            }
-                          >
-                            <CardBody className="p-3">
-                              <div className="flex justify-between items-center">
-                                <Input
-                                  size="sm"
-                                  {...register(`days.${index}.name`)}
-                                  errorMessage={
-                                    errors.days?.[index]?.name?.message
-                                  }
-                                  isInvalid={!!errors.days?.[index]?.name}
-                                  variant="bordered"
-                                  onClick={e => {
-                                    e.stopPropagation()
-                                  }}
-                                  endContent={
-                                    <Pencil className="text-default-400 w-5" />
-                                  }
-                                />
-                                <Button
-                                  isIconOnly
-                                  variant="light"
-                                  className="ml-1"
-                                  onPress={() => setSelectedDayIndex(index)}
-                                >
-                                  <ChevronRight className="text-default-600" />
-                                </Button>
-                              </div>
-                            </CardBody>
-                          </Card>
-                        ))}
-                      </div>
-
-                      {watch('days')[selectedDayIndex] && (
-                        <DayExerciseCards
-                          selectedDayIndex={selectedDayIndex}
-                          type="createPlanForm"
-                          form={formMethods}
-                        />
-                      )}
-                    </div>
+            {step === 2 && (
+              <div className="space-y-6 w-full">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-4 w-4/5">
+                    <p className="text-medium font-medium">Workout Days</p>
+                    {watch('days').map((day, index) => (
+                      <Card
+                        key={index}
+                        className={
+                          selectedDayIndex === index
+                            ? 'border-2 border-primary'
+                            : ''
+                        }
+                      >
+                        <CardBody className="p-3">
+                          <div className="flex justify-between items-center">
+                            <Input
+                              size="sm"
+                              {...register(`days.${index}.name`)}
+                              errorMessage={errors.days?.[index]?.name?.message}
+                              isInvalid={!!errors.days?.[index]?.name}
+                              variant="bordered"
+                              onClick={e => {
+                                e.stopPropagation()
+                              }}
+                              endContent={
+                                <Pencil className="text-default-400 w-5" />
+                              }
+                            />
+                            <Button
+                              isIconOnly
+                              variant="light"
+                              className="ml-1"
+                              onPress={() => setSelectedDayIndex(index)}
+                            >
+                              <ChevronRight className="text-default-600" />
+                            </Button>
+                          </div>
+                        </CardBody>
+                      </Card>
+                    ))}
                   </div>
-                )}
 
-                {step === 3 && renderPreview()}
-              </ModalBody>
+                  {watch('days')[selectedDayIndex] && (
+                    <DayExerciseCards
+                      selectedDayIndex={selectedDayIndex}
+                      type="createPlanForm"
+                      form={formMethods}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
 
-              <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Cancel
-                </Button>
-                {step === 1 ? (
-                  <Button
-                    color="primary"
-                    onPress={() => {
-                      if (watch('name') && numberOfDays) {
-                        initializeWorkoutDays()
-                        setStep(2)
-                      }
-                    }}
-                    isDisabled={!watch('name') || !numberOfDays}
-                  >
-                    Next
-                  </Button>
-                ) : step === 2 ? (
-                  <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      color="default"
-                      variant="flat"
-                      onPress={() => setStep(1)}
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      type="button"
-                      color="primary"
-                      onClick={e => {
-                        setStep(3)
-                        e.preventDefault()
-                      }}
-                      isDisabled={watch('days').some(
-                        day => day.plannedExercises.length === 0
-                      )}
-                    >
-                      Preview
-                    </Button>
-                  </div>
+            {step === 3 && renderPreview()}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              color="danger"
+              variant="flat"
+              onPress={() => {
+                reset()
+                setStep(1)
+                setNumberOfDays('1')
+                setSelectedDayIndex(0)
+                setProfileDataUsage(false)
+                setAdditionalInformation('')
+                setIsGeneratingByAI(false)
+              }}
+            >
+              Reset all data
+            </Button>
+            {step === 1 && !isGeneratingByAI ? (
+              <Button
+                color="primary"
+                onPress={() => {
+                  if (watch('name') && numberOfDays) {
+                    initializeWorkoutDays()
+                    setStep(2)
+                  }
+                }}
+                isDisabled={!watch('name') || !numberOfDays}
+              >
+                Next
+              </Button>
+            ) : step === 1 && isGeneratingByAI ? (
+              <Button
+                color="primary"
+                type="button"
+                onClick={e => {
+                  e.preventDefault()
+                  handleGeneratePlan()
+                }}
+              >
+                {generateWorkoutsLoading ? (
+                  <span className="animate-pulse">Generating...</span>
                 ) : (
-                  <div className="flex gap-2">
-                    <Button
-                      color="default"
-                      variant="flat"
-                      onPress={() => setStep(2)}
-                    >
-                      Back
-                    </Button>
-                    <Button color="primary" type="submit">
-                      {createPlannedWorkoutLoading
-                        ? 'Creating...'
-                        : 'Create Plan'}
-                    </Button>
-                  </div>
+                  'Generate Plan'
                 )}
-              </ModalFooter>
-            </>
-          )}
+              </Button>
+            ) : step === 2 ? (
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  color="default"
+                  variant="flat"
+                  onPress={() => setStep(1)}
+                >
+                  Back
+                </Button>
+                <Button
+                  type="button"
+                  color="primary"
+                  onClick={e => {
+                    setStep(3)
+                    e.preventDefault()
+                  }}
+                  isDisabled={watch('days').some(
+                    day => day.plannedExercises.length === 0
+                  )}
+                >
+                  Preview
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Button
+                  color="default"
+                  variant="flat"
+                  onPress={() => setStep(2)}
+                >
+                  Back
+                </Button>
+                <Button color="primary" type="submit">
+                  {createPlannedWorkoutLoading ? 'Creating...' : 'Create Plan'}
+                </Button>
+              </div>
+            )}
+          </ModalFooter>
         </ModalContent>
       </form>
     </Modal>
