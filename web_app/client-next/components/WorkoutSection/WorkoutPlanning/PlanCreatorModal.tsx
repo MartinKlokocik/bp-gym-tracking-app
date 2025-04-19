@@ -166,6 +166,34 @@ export const PlanCreatorModal = ({
     }
   }
 
+  const handleReset = () => {
+    reset({
+      userId: user?.id.toString(),
+      isPublic: user?.id.toString() === '1' ? true : false,
+      isActive: false,
+      schema: '',
+      name: '',
+      days: [
+        {
+          userId: user?.id.toString(),
+          name: 'Workout 1',
+          plannedExercises: [
+            {
+              userId: user?.id.toString(),
+              plannedSets: [{ reps: 8, restTime: 60 }],
+            },
+          ],
+        },
+      ],
+    })
+    setStep(1)
+    setNumberOfDays('1')
+    setSelectedDayIndex(0)
+    setProfileDataUsage(false)
+    setAdditionalInformation('')
+    setIsGeneratingByAI(false)
+  }
+
   const initializeWorkoutDays = () => {
     const days = parseInt(numberOfDays)
     if (isNaN(days) || days < 1) return
@@ -345,19 +373,7 @@ export const PlanCreatorModal = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              color="danger"
-              variant="flat"
-              onPress={() => {
-                reset()
-                setStep(1)
-                setNumberOfDays('1')
-                setSelectedDayIndex(0)
-                setProfileDataUsage(false)
-                setAdditionalInformation('')
-                setIsGeneratingByAI(false)
-              }}
-            >
+            <Button color="danger" variant="flat" onPress={handleReset}>
               Reset all data
             </Button>
             {step === 1 && !isGeneratingByAI ? (
