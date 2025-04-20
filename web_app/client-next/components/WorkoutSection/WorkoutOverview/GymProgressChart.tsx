@@ -18,6 +18,7 @@ import { ExerciseRecordWithIdsType } from '@/types/ExerciseRecords'
 type GymProgressChartProps = {
   exercise: ExerciseWithIdsType | undefined
   userId: string
+  updateTrigger: number
 }
 
 // TODO: CHECK IF THIS IS CORRECT
@@ -40,15 +41,21 @@ const aggregateWorkoutData = (
 export const GymProgressChart = ({
   exercise,
   userId,
+  updateTrigger,
 }: GymProgressChartProps) => {
   const {
     data: exerciseRecordsData,
     loading: exerciseRecordsLoading,
     error: exerciseRecordsError,
+    refetch,
   } = useQuery(GET_ALL_USER_EXERCISE_RECORDS_FOR_EXERCISE, {
     variables: { exerciseId: exercise?.id, userId },
     skip: !exercise?.id,
   })
+
+  useEffect(() => {
+    refetch()
+  }, [exerciseRecordsData, refetch, updateTrigger])
 
   const [metric, setMetric] = useState('totalVolume')
 

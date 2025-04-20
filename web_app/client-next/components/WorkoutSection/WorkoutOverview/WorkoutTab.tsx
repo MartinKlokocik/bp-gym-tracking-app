@@ -54,6 +54,7 @@ export const WorkoutTab = ({
   } = getCalendarDayByDateQuery
 
   const [isOpen, setIsOpen] = useState(false)
+  const [updateTrigger, setUpdateTrigger] = useState<number>(0)
 
   const [selectedPlannedExercise, setselectedPlannedExercise] =
     useState<PlannedExerciseWithIdsType | null>(
@@ -104,6 +105,7 @@ export const WorkoutTab = ({
     onCompleted: () => {
       refetchLatestExerciseRecord()
       refetchRecordForThisExerciseAndDate()
+      setUpdateTrigger(updateTrigger + 1)
     },
     onError: error => {
       toast.error(error.message)
@@ -113,6 +115,7 @@ export const WorkoutTab = ({
     onCompleted: () => {
       refetchLatestExerciseRecord()
       refetchRecordForThisExerciseAndDate()
+      setUpdateTrigger(updateTrigger + 1)
     },
     onError: error => {
       toast.error(error.message)
@@ -123,6 +126,7 @@ export const WorkoutTab = ({
     {
       onCompleted: () => {
         refetchRecordForThisExerciseAndDate()
+        setUpdateTrigger(updateTrigger + 1)
       },
       onError: error => {
         toast.error(error.message)
@@ -434,6 +438,7 @@ export const WorkoutTab = ({
                     <GymProgressChart
                       exercise={selectedPlannedExercise?.exercise}
                       userId={user.id}
+                      updateTrigger={updateTrigger}
                     />
                   </div>
                 </div>
