@@ -11,6 +11,7 @@ import recordSetResolvers from "./Resolvers/RecordSetResolvers";
 import appleWatchResolvers from "./Resolvers/AppleWatchResolvers";
 import { weightRecommendationResolver, workoutCreatorResolver } from "./Resolvers/AiCallsResolvers";
 import userProfileResolvers from "./Resolvers/UserProfileResolvers";
+import dashboardMetricsResolver from "./Resolvers/DashboardMetricsResolver";
 
 // TypeDefs
 import userTypeDefs from "./TypeDefs/UserTypeDefs";
@@ -28,6 +29,7 @@ import { TypesTypeDefs, EnumTypeDefs } from "./TypeDefs/TypesTypeDefs";
 import userProfileTypeDefs from "./TypeDefs/UserProfileTypeDefs";
 import appleWatchTypeDefs from "./TypeDefs/AppleWatchTypeDefs";
 import aiTypeDefs from "./TypeDefs/AiTypeDefs";
+import dashboardMetricsTypeDefs from "./TypeDefs/DashboardMetricsTypeDefs";
 
 const schema = makeExecutableSchema({
   typeDefs: [
@@ -45,6 +47,7 @@ const schema = makeExecutableSchema({
     userProfileTypeDefs,
     appleWatchTypeDefs,
     aiTypeDefs,
+    dashboardMetricsTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -58,6 +61,7 @@ const schema = makeExecutableSchema({
     appleWatchResolvers,
     weightRecommendationResolver,
     workoutCreatorResolver,
+    dashboardMetricsResolver,
   ],
 });
 
