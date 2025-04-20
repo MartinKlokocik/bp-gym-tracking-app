@@ -472,7 +472,8 @@ export const WorkoutTab = ({
                                 placeholder="Current weight"
                                 type="number"
                                 value={
-                                  sets[currentSetData?.id]?.weight !== ''
+                                  sets[currentSetData?.id]?.weight !== '' &&
+                                  sets[currentSetData?.id]?.weight !== '0'
                                     ? sets[currentSetData?.id]?.weight
                                     : previousSetData?.weight.toString()
                                 }
