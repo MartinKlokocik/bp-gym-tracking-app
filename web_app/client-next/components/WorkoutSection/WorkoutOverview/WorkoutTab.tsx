@@ -187,6 +187,47 @@ export const WorkoutTab = ({
   }, [recordForThisExerciseAndDateData])
 
   useEffect(() => {
+    if (
+      latestExerciseRecordData?.getLatestExerciseRecord?.recordSets &&
+      recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate
+        ?.recordSets
+    ) {
+      const currentSets =
+        recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate
+          .recordSets
+      const previousSets =
+        latestExerciseRecordData.getLatestExerciseRecord.recordSets
+
+      currentSets.forEach((currentSet: RecordSetWithIdsType, index: number) => {
+        const previousSet = previousSets[index]
+
+        if (currentSet.weight === 0 && previousSet && previousSet.weight > 0) {
+          updateWeightInSetRecord({
+            variables: {
+              setId: currentSet.id,
+              weight: previousSet.weight,
+            },
+          })
+        }
+
+        if (currentSet.reps === 0 && previousSet && previousSet.reps > 0) {
+          updateRepsInSetRecord({
+            variables: {
+              setId: currentSet.id,
+              reps: previousSet.reps,
+            },
+          })
+        }
+      })
+    }
+  }, [
+    latestExerciseRecordData,
+    recordForThisExerciseAndDateData,
+    updateWeightInSetRecord,
+    updateRepsInSetRecord,
+  ])
+
+  useEffect(() => {
     refetchDayFunction()
   }, [calendarDayData, refetchCalendarDay, selectedDate, refetchDayFunction])
 
