@@ -485,11 +485,15 @@ export const WorkoutTab = ({
                           return null
                         }
                         const previousSetData =
-                          latestExerciseRecordData?.getLatestExerciseRecord
-                            ?.recordSets[index]
+                          latestExerciseRecordData?.getLatestExerciseRecord?.recordSets.find(
+                            (s: RecordSetWithIdsType) =>
+                              s.setNumber === index + 1
+                          )
                         const currentSetData =
-                          recordForThisExerciseAndDateData
-                            ?.getRecordForThisExerciseAndDate?.recordSets[index]
+                          recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate?.recordSets.find(
+                            (s: RecordSetWithIdsType) =>
+                              s.setNumber === index + 1
+                          )
 
                         return (
                           <div

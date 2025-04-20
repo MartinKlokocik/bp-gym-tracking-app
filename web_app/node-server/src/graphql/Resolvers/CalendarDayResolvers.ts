@@ -44,7 +44,11 @@ const resolvers = {
             include: {
               plannedExercises: {
                 include: {
-                  plannedSets: true,
+                  plannedSets: {
+                    orderBy: {
+                      setNumber: "asc",
+                    },
+                  },
                   exercise: true,
                 },
               },
