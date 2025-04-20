@@ -1,4 +1,5 @@
 export type VolumeLiftedInWeeks = {
+  weekLabel: string
   dateFrom: string
   dateTo: string
   volume: number

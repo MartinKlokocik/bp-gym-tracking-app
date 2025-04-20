@@ -1,5 +1,6 @@
 const DashboardMetricsTypeDefs = `
   type VolumeLiftedInWeek {
+    weekLabel: String!
     dateFrom: String!
     dateTo: String!
     volume: Int!

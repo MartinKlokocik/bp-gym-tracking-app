@@ -36,7 +36,6 @@ const getVolumeLiftedInWeeks = async (userId: string) => {
     },
   });
 
-  // Group records by week
   const weeklyVolumes = new Map();
 
   completedExerciseRecords.forEach((record) => {
@@ -65,7 +64,14 @@ const getVolumeLiftedInWeeks = async (userId: string) => {
     week.volume += recordVolume;
   });
 
-  return Array.from(weeklyVolumes.values());
+  const sortedWeeks = Array.from(weeklyVolumes.values()).sort(
+    (a, b) => new Date(a.dateFrom).getTime() - new Date(b.dateFrom).getTime()
+  );
+
+  return sortedWeeks.map((week, index) => ({
+    ...week,
+    weekLabel: `Week ${index + 1}`,
+  }));
 };
 
 const getRecentPRs = async (userId: string) => {

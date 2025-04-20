@@ -5,6 +5,7 @@ export const GET_DASHBOARD_METRICS = gql`
     getDashboardMetrics(userId: $userId) {
       last7DaysConsistency
       volumeLiftedInWeeks {
+        weekLabel
         dateFrom
         dateTo
         volume
