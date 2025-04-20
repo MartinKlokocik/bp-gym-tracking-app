@@ -55,6 +55,13 @@ export const WorkoutTab = ({
 
   const [isOpen, setIsOpen] = useState(false)
   const [updateTrigger, setUpdateTrigger] = useState<number>(0)
+  const [exerciseIndex, setExerciseIndex] = useState<number>(0)
+
+  useEffect(() => {
+    if (selectedDate) {
+      setExerciseIndex(0)
+    }
+  }, [selectedDate])
 
   const [selectedPlannedExercise, setselectedPlannedExercise] =
     useState<PlannedExerciseWithIdsType | null>(
@@ -134,7 +141,6 @@ export const WorkoutTab = ({
     }
   )
 
-  const [exerciseIndex, setExerciseIndex] = useState<number>(0)
   const [notes, setNotes] = useState(
     selectedPlannedExercise?.notes?.trim() ||
       'Put your notes for this exercise here'
