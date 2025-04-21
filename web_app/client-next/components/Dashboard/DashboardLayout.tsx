@@ -18,11 +18,11 @@ export default function DashboardLayout({ userId }: { userId: string }) {
     <div className="w-full h-full flex flex-col items-center justify-center p-6">
       <div className="w-full h-full grid grid-cols-3 gap-4">
         <TotalVolumeGraph data={data.getDashboardMetrics.volumeLiftedInWeeks} />
-        <div className="grid grid-rows-2 gap-4">
+        <div className="flex flex-col gap-4">
           <ConsistencyCard
             consistency={data.getDashboardMetrics.last7DaysConsistency}
           />
-          <RecentPrsCard />
+          <RecentPrsCard data={data.getDashboardMetrics.recentPRs} />
         </div>
       </div>
     </div>

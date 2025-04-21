@@ -118,7 +118,7 @@ const getRecentPRs = async (userId: string) => {
   const PRs = Array.from(exerciseMaxMap.values());
   return PRs.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  ).slice(0, 5);
+  ).slice(0, 4);
 };
 
 const resolvers = {
