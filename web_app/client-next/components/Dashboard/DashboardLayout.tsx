@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 
 import { ConsistencyCard } from './ConsistencyCard'
+import { AveragePulseGraph } from './Graphs/AveragePulseGraph'
 import { MuscleGroupsFocusGraph } from './Graphs/MuscleGroupsFocusGraph'
 import { ProgressionCurveGraph } from './Graphs/ProgressionCurveGraph'
 import { TotalVolumeGraph } from './Graphs/TotalVolumeGraph'
@@ -37,6 +38,7 @@ export default function DashboardLayout({ userId }: { userId: string }) {
         />
       </div>
       <div className="w-full grid grid-cols-2 gap-4">
+        <AveragePulseGraph />
         <WorkoutCompletitionGraph
           data={data.getDashboardMetrics.workoutCompletionRate}
         />
