@@ -22,12 +22,22 @@ const DashboardMetricsTypeDefs = `
     weights: [Int!]!
   }
 
+  type WorkoutCompletionRate {
+    weekLabel: String!
+    dateFrom: String!
+    dateTo: String!
+    numberOfCompletedExercises: Int!
+    numberOfSkipped: Int!
+    numberOfPending: Int!
+  }
+
   type DashboardMetrics {
     last7DaysConsistency: Int!
     volumeLiftedInWeeks: [VolumeLiftedInWeek!]!
     recentPRs: [RecentPR!]!
     muscleGroupsFocus: [MuscleGroupFocus!]!
     progressionCurve: [ProgressionCurve!]!
+    workoutCompletionRate: [WorkoutCompletionRate!]!
   }
 
   type Query {

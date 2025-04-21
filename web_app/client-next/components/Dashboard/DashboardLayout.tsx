@@ -4,6 +4,7 @@ import { ConsistencyCard } from './ConsistencyCard'
 import { MuscleGroupsFocusGraph } from './Graphs/MuscleGroupsFocusGraph'
 import { ProgressionCurveGraph } from './Graphs/ProgressionCurveGraph'
 import { TotalVolumeGraph } from './Graphs/TotalVolumeGraph'
+import { WorkoutCompletitionGraph } from './Graphs/WorkoutCompletitionGraph'
 import { RecentPrsCard } from './RecentPrsCard'
 
 import { GET_DASHBOARD_METRICS } from '@/graphql/DashboardMetricsConsts'
@@ -33,6 +34,11 @@ export default function DashboardLayout({ userId }: { userId: string }) {
         />
         <ProgressionCurveGraph
           data={data.getDashboardMetrics.progressionCurve}
+        />
+      </div>
+      <div className="w-full grid grid-cols-2 gap-4">
+        <WorkoutCompletitionGraph
+          data={data.getDashboardMetrics.workoutCompletionRate}
         />
       </div>
     </div>

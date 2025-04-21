@@ -20,3 +20,11 @@ export type ProgressionCurve = {
   exerciseName: string
   weights: number[]
 }
+
+export type WorkoutCompletionRate = {
+  dateFrom: string
+  dateTo: string
+  numberOfCompletedExercises: number
+  numberOfSkipped: number
+  numberOfPending: number
+}

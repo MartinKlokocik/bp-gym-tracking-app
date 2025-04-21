@@ -172,16 +172,73 @@ const getProgressionCurveForKeyLifts = async (userId: string) => {
 
   records.forEach((record) => {
     const exerciseName = record.exercise.name;
-    const maxSetWeight = Math.max(...record.recordSets.map((set) => set.weight));
+    const maxSetWeight = Math.max(
+      ...record.recordSets.map((set) => set.weight)
+    );
     if (!progressionCurve.has(exerciseName)) {
       progressionCurve.set(exerciseName, []);
     }
     progressionCurve.get(exerciseName).push(maxSetWeight);
   });
 
-  return Array.from(progressionCurve.entries()).map(([exerciseName, weights]) => ({
-    exerciseName,
-    weights,
+  return Array.from(progressionCurve.entries()).map(
+    ([exerciseName, weights]) => ({
+      exerciseName,
+      weights,
+    })
+  );
+};
+
+const getWorkoutCompletionRate = async (userId: string) => {
+  const exerciseRecords = await prisma.exerciseRecord.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      date: "asc",
+    },
+  });
+
+  const weeklyStats = new Map();
+
+  exerciseRecords.forEach((record) => {
+    const recordDate = new Date(record.date);
+    const weekStart = new Date(recordDate);
+    weekStart.setDate(recordDate.getDate() - recordDate.getDay());
+
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+
+    const weekKey = weekStart.toISOString().split("T")[0];
+
+    if (!weeklyStats.has(weekKey)) {
+      weeklyStats.set(weekKey, {
+        dateFrom: weekStart.toISOString().split("T")[0],
+        dateTo: weekEnd.toISOString().split("T")[0],
+        numberOfCompletedExercises: 0,
+        numberOfSkipped: 0,
+        numberOfPending: 0,
+      });
+    }
+
+    const week = weeklyStats.get(weekKey);
+
+    if (record.status === RecordStatus.COMPLETED) {
+      week.numberOfCompletedExercises += 1;
+    } else if (record.status === RecordStatus.SKIPPED) {
+      week.numberOfSkipped += 1;
+    } else if (record.status === RecordStatus.PENDING) {
+      week.numberOfPending += 1;
+    }
+  });
+
+  const sortedWeeks = Array.from(weeklyStats.values()).sort(
+    (a, b) => new Date(a.dateFrom).getTime() - new Date(b.dateFrom).getTime()
+  );
+
+  return sortedWeeks.map((week, index) => ({
+    ...week,
+    weekLabel: `Week ${index + 1}`,
   }));
 };
 
@@ -193,12 +250,14 @@ const resolvers = {
       const recentPRs = await getRecentPRs(userId);
       const muscleGroupsFocus = await getMuscleGroupsFocus(userId);
       const progressionCurve = await getProgressionCurveForKeyLifts(userId);
+      const workoutCompletionRate = await getWorkoutCompletionRate(userId);
       return {
         last7DaysConsistency,
         volumeLiftedInWeeks,
         recentPRs,
         muscleGroupsFocus,
         progressionCurve,
+        workoutCompletionRate,
       };
     },
   },

@@ -23,6 +23,14 @@ export const GET_DASHBOARD_METRICS = gql`
         exerciseName
         weights
       }
+      workoutCompletionRate {
+        weekLabel
+        dateFrom
+        dateTo
+        numberOfCompletedExercises
+        numberOfSkipped
+        numberOfPending
+      }
     }
   }
 `
