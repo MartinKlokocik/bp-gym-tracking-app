@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client'
 
 import { ConsistencyCard } from './ConsistencyCard'
 import { MuscleGroupsFocusGraph } from './Graphs/MuscleGroupsFocusGraph'
+import { ProgressionCurveGraph } from './Graphs/ProgressionCurveGraph'
 import { TotalVolumeGraph } from './Graphs/TotalVolumeGraph'
 import { RecentPrsCard } from './RecentPrsCard'
 
@@ -29,6 +30,9 @@ export default function DashboardLayout({ userId }: { userId: string }) {
       <div className="w-full grid grid-cols-3 gap-4">
         <MuscleGroupsFocusGraph
           data={data.getDashboardMetrics.muscleGroupsFocus}
+        />
+        <ProgressionCurveGraph
+          data={data.getDashboardMetrics.progressionCurve}
         />
       </div>
     </div>

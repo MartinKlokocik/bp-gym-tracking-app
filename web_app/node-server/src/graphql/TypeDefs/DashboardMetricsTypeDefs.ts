@@ -17,11 +17,17 @@ const DashboardMetricsTypeDefs = `
     count: Int!
   }
 
+  type ProgressionCurve {
+    exerciseName: String!
+    weights: [Int!]!
+  }
+
   type DashboardMetrics {
     last7DaysConsistency: Int!
     volumeLiftedInWeeks: [VolumeLiftedInWeek!]!
     recentPRs: [RecentPR!]!
     muscleGroupsFocus: [MuscleGroupFocus!]!
+    progressionCurve: [ProgressionCurve!]!
   }
 
   type Query {

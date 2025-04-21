@@ -151,6 +151,40 @@ const getMuscleGroupsFocus = async (userId: string) => {
   }));
 };
 
+const getProgressionCurveForKeyLifts = async (userId: string) => {
+  const records = await prisma.exerciseRecord.findMany({
+    where: {
+      userId,
+      status: RecordStatus.COMPLETED,
+      exercise: {
+        name: {
+          in: ["Bench Press", "Squat", "Deadlift"],
+        },
+      },
+    },
+    include: {
+      recordSets: true,
+      exercise: true,
+    },
+  });
+
+  const progressionCurve = new Map();
+
+  records.forEach((record) => {
+    const exerciseName = record.exercise.name;
+    const maxSetWeight = Math.max(...record.recordSets.map((set) => set.weight));
+    if (!progressionCurve.has(exerciseName)) {
+      progressionCurve.set(exerciseName, []);
+    }
+    progressionCurve.get(exerciseName).push(maxSetWeight);
+  });
+
+  return Array.from(progressionCurve.entries()).map(([exerciseName, weights]) => ({
+    exerciseName,
+    weights,
+  }));
+};
+
 const resolvers = {
   Query: {
     getDashboardMetrics: async (_: unknown, { userId }: { userId: string }) => {
@@ -158,11 +192,13 @@ const resolvers = {
       const volumeLiftedInWeeks = await getVolumeLiftedInWeeks(userId);
       const recentPRs = await getRecentPRs(userId);
       const muscleGroupsFocus = await getMuscleGroupsFocus(userId);
+      const progressionCurve = await getProgressionCurveForKeyLifts(userId);
       return {
         last7DaysConsistency,
         volumeLiftedInWeeks,
         recentPRs,
         muscleGroupsFocus,
+        progressionCurve,
       };
     },
   },

@@ -2,7 +2,6 @@ import { format } from 'date-fns'
 
 import { RecentPRs } from '@/types/DashboardMetrics'
 export const RecentPrsCard = ({ data }: { data: RecentPRs[] }) => {
-  console.log('RecentPrsCard', data)
   return (
     <div className="p-4 pl-8 border border-gray-700 rounded-lg">
       <div className="text-xl font-bold">Recent PRs</div>

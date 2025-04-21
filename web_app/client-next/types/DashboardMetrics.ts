@@ -15,3 +15,8 @@ export type MuscleGroupsFocus = {
   muscleGroup: string
   count: number
 }
+
+export type ProgressionCurve = {
+  exerciseName: string
+  weights: number[]
+}

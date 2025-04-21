@@ -19,6 +19,10 @@ export const GET_DASHBOARD_METRICS = gql`
         muscleGroup
         count
       }
+      progressionCurve {
+        exerciseName
+        weights
+      }
     }
   }
 `
