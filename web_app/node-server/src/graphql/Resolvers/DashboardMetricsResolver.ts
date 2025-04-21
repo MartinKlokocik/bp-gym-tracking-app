@@ -121,16 +121,48 @@ const getRecentPRs = async (userId: string) => {
   ).slice(0, 4);
 };
 
+const getMuscleGroupsFocus = async (userId: string) => {
+  const records = await prisma.exerciseRecord.findMany({
+    where: {
+      userId,
+      status: RecordStatus.COMPLETED,
+    },
+    include: {
+      exercise: true,
+    },
+  });
+
+  const muscleGroupsMap = new Map();
+
+  records.forEach((record) => {
+    const muscleGroup = record.exercise.muscleGroup;
+    if (muscleGroup) {
+      if (muscleGroupsMap.has(muscleGroup)) {
+        muscleGroupsMap.set(muscleGroup, muscleGroupsMap.get(muscleGroup) + 1);
+      } else {
+        muscleGroupsMap.set(muscleGroup, 1);
+      }
+    }
+  });
+
+  return Array.from(muscleGroupsMap.entries()).map(([muscleGroup, count]) => ({
+    muscleGroup,
+    count,
+  }));
+};
+
 const resolvers = {
   Query: {
     getDashboardMetrics: async (_: unknown, { userId }: { userId: string }) => {
       const last7DaysConsistency = await getLast7DaysConsistency(userId);
       const volumeLiftedInWeeks = await getVolumeLiftedInWeeks(userId);
       const recentPRs = await getRecentPRs(userId);
+      const muscleGroupsFocus = await getMuscleGroupsFocus(userId);
       return {
         last7DaysConsistency,
         volumeLiftedInWeeks,
         recentPRs,
+        muscleGroupsFocus,
       };
     },
   },

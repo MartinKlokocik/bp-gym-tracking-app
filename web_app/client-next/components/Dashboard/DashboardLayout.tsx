@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client'
 
 import { ConsistencyCard } from './ConsistencyCard'
+import { MuscleGroupsFocusGraph } from './Graphs/MuscleGroupsFocusGraph'
 import { TotalVolumeGraph } from './Graphs/TotalVolumeGraph'
 import { RecentPrsCard } from './RecentPrsCard'
 
@@ -15,7 +16,7 @@ export default function DashboardLayout({ userId }: { userId: string }) {
   if (error) return <div>Error: {error.message}</div>
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-6">
+    <div className="w-full h-full flex flex-col items-center justify-center p-6 gap-4">
       <div className="w-full h-full grid grid-cols-3 gap-4">
         <TotalVolumeGraph data={data.getDashboardMetrics.volumeLiftedInWeeks} />
         <div className="flex flex-col gap-4">
@@ -24,6 +25,11 @@ export default function DashboardLayout({ userId }: { userId: string }) {
           />
           <RecentPrsCard data={data.getDashboardMetrics.recentPRs} />
         </div>
+      </div>
+      <div className="w-full grid grid-cols-3 gap-4">
+        <MuscleGroupsFocusGraph
+          data={data.getDashboardMetrics.muscleGroupsFocus}
+        />
       </div>
     </div>
   )

@@ -10,3 +10,8 @@ export type RecentPRs = {
   weight: number
   date: string
 }
+
+export type MuscleGroupsFocus = {
+  muscleGroup: string
+  count: number
+}

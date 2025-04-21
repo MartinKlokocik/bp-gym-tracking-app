@@ -15,6 +15,10 @@ export const GET_DASHBOARD_METRICS = gql`
         weight
         date
       }
+      muscleGroupsFocus {
+        muscleGroup
+        count
+      }
     }
   }
 `

@@ -12,10 +12,16 @@ const DashboardMetricsTypeDefs = `
     date: String!
   }
 
+  type MuscleGroupFocus {
+    muscleGroup: String!
+    count: Int!
+  }
+
   type DashboardMetrics {
     last7DaysConsistency: Int!
     volumeLiftedInWeeks: [VolumeLiftedInWeek!]!
     recentPRs: [RecentPR!]!
+    muscleGroupsFocus: [MuscleGroupFocus!]!
   }
 
   type Query {
