@@ -5,10 +5,15 @@ const prisma = new PrismaClient();
 
 const getLast7DaysConsistency = async (userId: string) => {
   const today = new Date();
+  const sevenDaysAgo = subDays(today, 7);
+
   const calendarDays = await prisma.calendarDay.findMany({
     where: {
       userId,
-      date: { lte: subDays(today, 7).toISOString().split("T")[0] },
+      date: {
+        gte: sevenDaysAgo.toISOString().split("T")[0],
+        lte: today.toISOString().split("T")[0],
+      },
       exerciseRecords: {
         some: {
           status: RecordStatus.COMPLETED,

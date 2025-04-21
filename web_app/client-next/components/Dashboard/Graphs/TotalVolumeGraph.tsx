@@ -26,7 +26,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 
 export const TotalVolumeGraph = ({ data }: { data: VolumeLiftedInWeeks[] }) => {
   return (
-    <div className="col-span-2 p-6 pl-8 flex flex-col gap-4">
+    <div className="col-span-2 pl-2 flex flex-col gap-4">
       <div className="text-2xl font-bold pl-2">Total Volume in Weeks</div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
