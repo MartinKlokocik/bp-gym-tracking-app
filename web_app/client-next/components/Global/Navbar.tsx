@@ -11,11 +11,15 @@ import {
   NavbarItem,
   User,
   DropdownMenu,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
 } from '@heroui/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { signOut } from 'next-auth/react'
+import { useState } from 'react'
 
 export const AcmeLogo = () => {
   return (
@@ -34,15 +38,37 @@ export default function Navbar() {
   const pathname = usePathname()
   const activeItem = pathname?.split('/').pop()
   const { data: session, status } = useSession()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleLogout = () => {
     signOut()
   }
 
+  const navItems = [
+    {
+      name: 'Dashboard',
+      href: '/dashboard',
+      isActive: activeItem === 'dashboard',
+    },
+    {
+      name: 'Workouts section',
+      href: '/workout_section',
+      isActive: activeItem === 'workout_section',
+    },
+    {
+      name: 'Community section',
+      href: '/community_section',
+      isActive: activeItem === 'community_section',
+    },
+  ]
+
   return (
     <NavbarHeroui
       maxWidth="full"
       isBlurred={false}
+      isBordered
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
       classNames={{
         item: [
           'flex',
@@ -60,33 +86,34 @@ export default function Navbar() {
         ],
       }}
     >
-      <NavbarBrand>
-        <AcmeLogo />
-        <p className="font-bold text-inherit">ACME</p>
-      </NavbarBrand>
+      <NavbarContent>
+        {session && status === 'authenticated' && (
+          <NavbarMenuToggle
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            className="sm:hidden"
+          />
+        )}
+        <NavbarBrand className="hidden md:flex">
+          <AcmeLogo />
+        </NavbarBrand>
+      </NavbarContent>
+
       {session && status === 'authenticated' && (
         <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem isActive={activeItem === 'dashboard'}>
-            <Link color="foreground" href="/dashboard">
-              Dashboard
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive={activeItem === 'workout_section'}>
-            <Link aria-current="page" href="/workout_section">
-              Workouts section
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive={activeItem === 'community_section'}>
-            <Link color="foreground" href="/community_section">
-              Community section
-            </Link>
-          </NavbarItem>
+          {navItems.map(item => (
+            <NavbarItem key={item.href} isActive={item.isActive}>
+              <Link color="foreground" href={item.href}>
+                {item.name}
+              </Link>
+            </NavbarItem>
+          ))}
         </NavbarContent>
       )}
+
       <NavbarContent justify="end">
         {!session ? (
           <>
-            <NavbarItem className="hidden lg:flex">
+            <NavbarItem className="hidden md:flex">
               <Link href="/auth/login">Login</Link>
             </NavbarItem>
             <NavbarItem>
@@ -95,30 +122,37 @@ export default function Navbar() {
                 color="primary"
                 href="/auth/signup"
                 variant="flat"
+                size="sm"
+                className="md:text-base md:px-4"
               >
                 Sign Up
               </Button>
             </NavbarItem>
           </>
         ) : (
-          <NavbarItem className="mt-2">
+          <NavbarItem>
             <Dropdown placement="bottom-end">
               <DropdownTrigger>
                 <User
                   as="button"
                   avatarProps={{
                     isBordered: true,
+                    size: 'sm',
+                    className: 'md:w-10 md:h-10',
                   }}
                   className="transition-transform"
                   description={session?.user?.email}
                   name={session?.user?.name}
+                  classNames={{
+                    name: 'hidden md:block',
+                    description: 'hidden md:block',
+                  }}
                 />
               </DropdownTrigger>
               <DropdownMenu aria-label="User Actions" variant="flat">
                 <DropdownItem key="profile" as={Link} href="/profile">
                   Profile
                 </DropdownItem>
-                <DropdownItem key="settings">Settings</DropdownItem>
                 <DropdownItem
                   key="logout"
                   color="danger"
@@ -131,6 +165,21 @@ export default function Navbar() {
           </NavbarItem>
         )}
       </NavbarContent>
+
+      {session && status === 'authenticated' && (
+        <NavbarMenu>
+          {navItems.map(item => (
+            <NavbarMenuItem key={`mobile-${item.href}`}>
+              <Link
+                href={item.href}
+                className={`w-full ${item.isActive ? 'text-primary' : ''}`}
+              >
+                {item.name}
+              </Link>
+            </NavbarMenuItem>
+          ))}
+        </NavbarMenu>
+      )}
     </NavbarHeroui>
   )
 }
