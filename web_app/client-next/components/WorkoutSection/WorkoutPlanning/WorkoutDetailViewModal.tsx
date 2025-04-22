@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import {
   Modal,
   ModalBody,
@@ -7,6 +7,7 @@ import {
   Card,
   Divider,
   Button,
+  Spinner,
 } from '@heroui/react'
 import {
   Dumbbell,
@@ -16,11 +17,15 @@ import {
   Clock,
   Edit,
   Repeat,
+  Trash,
 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { GET_PLANNED_WORKOUT_BY_ID } from '@/graphql/PlannedWorkoutConsts'
+import {
+  DELETE_PLANNED_WORKOUT,
+  GET_PLANNED_WORKOUT_BY_ID,
+} from '@/graphql/PlannedWorkoutConsts'
 import { PlannedWorkoutWithIdsType } from '@/types/WorkoutPlanning'
 import { formatRestTime } from '@/utils/TimeUtils'
 
@@ -28,12 +33,14 @@ type WorkoutDetailViewModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   selectedWorkoutPlanId: string
+  refetchPlannedWorkouts: () => void
 }
 
 export const WorkoutDetailViewModal = ({
   isOpen,
   onOpenChange,
   selectedWorkoutPlanId,
+  refetchPlannedWorkouts,
 }: WorkoutDetailViewModalProps) => {
   const {
     data: workoutPlanData,
@@ -43,6 +50,9 @@ export const WorkoutDetailViewModal = ({
     variables: { id: selectedWorkoutPlanId },
     skip: !selectedWorkoutPlanId,
   })
+
+  const [deletePlannedWorkout, { loading: deletePlannedWorkoutLoading }] =
+    useMutation(DELETE_PLANNED_WORKOUT)
 
   const [workoutPlan, setWorkoutPlan] =
     useState<PlannedWorkoutWithIdsType | null>(null)
@@ -78,6 +88,21 @@ export const WorkoutDetailViewModal = ({
     }))
   }
 
+  const handleDeletePlannedWorkout = async () => {
+    if (!selectedWorkoutPlanId) {
+      return
+    }
+
+    try {
+      await deletePlannedWorkout({ variables: { id: selectedWorkoutPlanId } })
+      toast.success('Workout plan deleted successfully')
+      refetchPlannedWorkouts()
+    } catch (error) {
+      console.error('Error deleting workout plan: ', error)
+      toast.error('Error deleting workout plan')
+    }
+  }
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
       <ModalContent>
@@ -103,6 +128,19 @@ export const WorkoutDetailViewModal = ({
               <Button variant="flat" color="default">
                 <Edit className="w-4 h-4 mr-1" />
                 Edit
+              </Button>
+              <Button
+                color="danger"
+                size="md"
+                variant="flat"
+                onPress={handleDeletePlannedWorkout}
+                startContent={<Trash size={14} />}
+              >
+                {deletePlannedWorkoutLoading ? (
+                  <Spinner size="sm" />
+                ) : (
+                  'Delete this plan'
+                )}
               </Button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMutation, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import {
   Modal,
   ModalContent,
@@ -10,11 +10,9 @@ import {
   Button,
   Select,
   SelectItem,
-  Link,
   useDisclosure,
-  Spinner,
 } from '@heroui/react'
-import { EditIcon, PlusIcon, Trash } from 'lucide-react'
+import { Eye, PlusIcon } from 'lucide-react'
 import { User } from 'next-auth'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
@@ -25,10 +23,7 @@ import { ExerciseCreatorModal } from './ExerciseCreatorModal'
 import { PlanCreatorModal } from './PlanCreatorModal'
 import { WorkoutDetailViewModal } from './WorkoutDetailViewModal'
 
-import {
-  DELETE_PLANNED_WORKOUT,
-  GET_ALL_PLANNED_WORKOUTS,
-} from '@/graphql/PlannedWorkoutConsts'
+import { GET_ALL_PLANNED_WORKOUTS } from '@/graphql/PlannedWorkoutConsts'
 import { PlannedWorkoutWithIdsType } from '@/types/WorkoutPlanning'
 
 type PlanConfigurationModalProps = {
@@ -48,9 +43,6 @@ export const PlanConfigurationModal = ({
     error: allPlannedWorkoutsError,
     refetch: refetchPlannedWorkouts,
   } = useQuery(GET_ALL_PLANNED_WORKOUTS)
-
-  const [deletePlannedWorkout, { loading: deletePlannedWorkoutLoading }] =
-    useMutation(DELETE_PLANNED_WORKOUT)
 
   const {
     isOpen: isPlanCreatorModalOpen,
@@ -88,21 +80,6 @@ export const PlanConfigurationModal = ({
       )
     }
   }, [allPlannedWorkoutsData])
-
-  const handleDeletePlannedWorkout = async () => {
-    if (!selectedWorkoutPlan) {
-      return
-    }
-
-    try {
-      await deletePlannedWorkout({ variables: { id: selectedWorkoutPlan } })
-      toast.success('Workout plan deleted successfully')
-      refetchPlannedWorkouts()
-    } catch (error) {
-      console.error('Error deleting workout plan: ', error)
-      toast.error('Error deleting workout plan')
-    }
-  }
 
   return (
     <>
@@ -146,17 +123,6 @@ export const PlanConfigurationModal = ({
                         )
                       )}
                     </Select>
-
-                    {selectedWorkoutPlan && (
-                      <Link
-                        onPress={() => {
-                          onWorkoutDetailViewModalOpen()
-                        }}
-                        className="text-md ml-1 cursor-pointer"
-                      >
-                        Detail view
-                      </Link>
-                    )}
                   </div>
 
                   <div className="flex flex-row justify-start gap-3 w-full flex-wrap">
@@ -184,33 +150,21 @@ export const PlanConfigurationModal = ({
               </ModalBody>
 
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  color="danger"
-                  size="md"
-                  variant="flat"
-                  onPress={handleDeletePlannedWorkout}
-                  startContent={<Trash size={14} />}
-                  disabled={!selectedWorkoutPlan}
-                >
-                  {deletePlannedWorkoutLoading ? (
-                    <Spinner size="sm" />
-                  ) : (
-                    'Delete this plan'
-                  )}
-                </Button>
-                <Button
-                  color="primary"
-                  size="md"
-                  variant="flat"
-                  onPress={() => {}}
-                  startContent={<EditIcon size={14} />}
-                  disabled={!selectedWorkoutPlan}
-                >
-                  Edit this plan
-                </Button>
+                <div className="flex flex-col md:flex-row gap-3 w-full justify-end">
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cancel
+                  </Button>
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      onWorkoutDetailViewModalOpen()
+                    }}
+                    disabled={!selectedWorkoutPlan}
+                    startContent={<Eye size={14} />}
+                  >
+                    Detail view
+                  </Button>
+                </div>
               </ModalFooter>
             </>
           )}
@@ -233,6 +187,7 @@ export const PlanConfigurationModal = ({
         isOpen={isWorkoutDetailViewModalOpen}
         onOpenChange={onWorkoutDetailViewModalOpenChange}
         selectedWorkoutPlanId={selectedWorkoutPlan}
+        refetchPlannedWorkouts={refetchPlannedWorkouts}
       />
     </>
   )
