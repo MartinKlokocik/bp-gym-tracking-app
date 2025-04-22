@@ -137,6 +137,7 @@ export const WorkoutRecomendationModal = ({
                       color="primary"
                       onClick={() => getWeightRecommendation()}
                       isLoading={loading}
+                      className="w-full md:w-auto"
                     >
                       Generate
                     </Button>
