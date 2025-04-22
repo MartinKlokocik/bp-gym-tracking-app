@@ -122,7 +122,7 @@ export const NotWorkoutRecordForm = ({
     <div className="flex flex-col items-center justify-center w-full h-full gap-4">
       <p>There are not workout records for this day.</p>
       <form
-        className="flex flex-col gap-4 w-1/2 h-full items-center justify-center"
+        className="flex flex-col gap-4 w-full md:w-3/4 lg:w-1/2 h-full items-center justify-center"
         onSubmit={handleSubmit(onSubmit)}
       >
         <PlanAndDaySelect
@@ -131,8 +131,13 @@ export const NotWorkoutRecordForm = ({
         />
 
         {selectedWorkoutDay && (
-          <div className="flex flex-col gap-4 w-full h-full items-end justify-center">
-            <Button color="primary" variant="solid" type="submit">
+          <div className="flex flex-col gap-4 w-full h-full items-center md:items-end justify-center">
+            <Button
+              color="primary"
+              variant="solid"
+              type="submit"
+              className="w-full md:w-auto py-2"
+            >
               {createCalendarDayLoading
                 ? 'Adding workout to this day...'
                 : 'Add workout to this day'}
