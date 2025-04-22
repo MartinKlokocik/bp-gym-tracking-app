@@ -34,11 +34,11 @@ export const CalendarBar = ({
   }, [])
 
   const handlePrevWeek = () => {
-    setStartDate(subDays(startDate, 7))
+    setStartDate(subDays(startDate, visibleDays))
   }
 
   const handleNextWeek = () => {
-    setStartDate(addDays(startDate, 7))
+    setStartDate(addDays(startDate, visibleDays))
   }
 
   useEffect(() => {
