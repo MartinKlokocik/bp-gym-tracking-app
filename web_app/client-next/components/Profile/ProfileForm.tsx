@@ -124,8 +124,14 @@ export const ProfileForm = ({ userId }: ProfileFormProps) => {
               selectedKey={activeTab}
               onSelectionChange={setActiveTab as (key: Key) => void}
               classNames={{
-                tabList: 'ml-4 bg-gray-800',
+                tabList:
+                  'ml-4 bg-gray-800 flex-wrap justify-center md:justify-start overflow-x-auto',
+                tab: 'text-sm md:text-base',
+                panel: 'p-2 md:p-4',
               }}
+              variant="underlined"
+              size="sm"
+              fullWidth
             >
               <Tab key="basicInfo" title="Basic Info">
                 <BasicInformationTab
