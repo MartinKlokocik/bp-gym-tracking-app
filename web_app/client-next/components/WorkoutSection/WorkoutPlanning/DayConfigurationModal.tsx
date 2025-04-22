@@ -174,7 +174,7 @@ export const DayConfigurationModal = ({
 
               <ModalBody>
                 <div className="flex flex-col gap-7">
-                  <div className="flex flex-row gap-1">
+                  <div className="flex flex-col md:flex-row gap-1">
                     <PlanAndDaySelect
                       selectedWorkoutDay={selectedWorkoutDay}
                       setSelectedWorkoutDay={setSelectedWorkoutDay}
@@ -200,23 +200,27 @@ export const DayConfigurationModal = ({
               </ModalBody>
 
               <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="flat"
-                  onPress={() => {
-                    reset()
-                    onClose()
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  color="danger"
-                  onClick={handleDeleteCalendarDay}
-                  startContent={<Trash2 size={16} />}
-                >
-                  Remove all records for this day
-                </Button>
+                <div className="flex flex-col md:flex-row gap-3 w-full items-center justify-center md:justify-end">
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    onPress={() => {
+                      reset()
+                      onClose()
+                    }}
+                    className="w-full md:w-auto"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color="danger"
+                    onClick={handleDeleteCalendarDay}
+                    startContent={<Trash2 size={16} />}
+                    className="w-full md:w-auto"
+                  >
+                    Remove all records for this day
+                  </Button>
+                </div>
               </ModalFooter>
             </form>
           )}
