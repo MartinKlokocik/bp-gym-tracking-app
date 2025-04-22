@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 
 export const AveragePulseGraph = () => {
   return (
-    <div className="col-span-1 p-6 pl-8 flex flex-col gap-4">
+    <div className="col-span-1 md:p-6 md:pl-8 flex flex-col gap-4">
       <div className="text-2xl font-bold pl-2">
         Average Pulse during workouts
       </div>

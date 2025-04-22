@@ -37,7 +37,7 @@ export const WorkoutCompletitionGraph = ({
   data: WorkoutCompletionRate[]
 }) => {
   return (
-    <div className="col-span-1 flex flex-col gap-4 p-6 pl-8">
+    <div className="col-span-1 flex flex-col gap-4 md:p-6 md:pl-8">
       <div className="text-2xl font-bold pl-2">
         Planned Exercises Completion Rate
       </div>

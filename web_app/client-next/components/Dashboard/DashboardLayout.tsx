@@ -20,7 +20,7 @@ export default function DashboardLayout({ userId }: { userId: string }) {
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center p-6 gap-4">
-      <div className="w-full h-full grid grid-cols-3 gap-4">
+      <div className="w-full h-full flex flex-col md:grid md:grid-cols-3 gap-4">
         <TotalVolumeGraph data={data.getDashboardMetrics.volumeLiftedInWeeks} />
         <div className="flex flex-col gap-4">
           <ConsistencyCard
@@ -29,7 +29,7 @@ export default function DashboardLayout({ userId }: { userId: string }) {
           <RecentPrsCard data={data.getDashboardMetrics.recentPRs} />
         </div>
       </div>
-      <div className="w-full grid grid-cols-3 gap-4">
+      <div className="w-full flex flex-col md:grid md:grid-cols-3 gap-4">
         <MuscleGroupsFocusGraph
           data={data.getDashboardMetrics.muscleGroupsFocus}
         />
@@ -37,7 +37,7 @@ export default function DashboardLayout({ userId }: { userId: string }) {
           data={data.getDashboardMetrics.progressionCurve}
         />
       </div>
-      <div className="w-full grid grid-cols-2 gap-4">
+      <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-4">
         <AveragePulseGraph />
         <WorkoutCompletitionGraph
           data={data.getDashboardMetrics.workoutCompletionRate}

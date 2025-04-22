@@ -39,7 +39,7 @@ export const ProgressionCurveGraph = ({
   )
 
   return (
-    <div className="flex flex-col gap-4 col-span-2 p-6 pl-8">
+    <div className="flex flex-col gap-4 col-span-2 md:p-6 md:pl-8">
       <div className="text-2xl font-bold pl-2">Progression Curve</div>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={transformedData}>
