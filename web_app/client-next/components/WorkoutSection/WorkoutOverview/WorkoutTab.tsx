@@ -394,7 +394,7 @@ export const WorkoutTab = ({
                 />
               </button>
               <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5 gap-4">
-                <div className="flex w-full justify-end gap-10">
+                <div className="flex w-full justify-center md:justify-end gap-10">
                   <div className="flex flex-row gap-4">
                     <Checkbox
                       value="1"
@@ -424,8 +424,8 @@ export const WorkoutTab = ({
                     </Checkbox>
                   </div>
                 </div>
-                <div className="flex flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
-                  <div className="flex flex-col gap-4 w-[40%] h-full">
+                <div className="flex flex-col md:flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
+                  <div className="flex flex-col gap-4 w-full md:w-[40%] h-full">
                     <h2 className="text-2xl font-semibold">
                       Exercise ({exerciseIndex + 1}/
                       {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
@@ -440,7 +440,7 @@ export const WorkoutTab = ({
                       fallbackSrc="https://placehold.co/500x400"
                     />
                   </div>
-                  <div className="flex flex-col items-start w-[60%] h-full">
+                  <div className="flex flex-col items-start w-full md:w-[60%] h-full">
                     <GymProgressChart
                       exercise={selectedPlannedExercise?.exercise}
                       userId={user.id}
@@ -449,8 +449,8 @@ export const WorkoutTab = ({
                   </div>
                 </div>
 
-                <div className="flex flex-row w-full h-full justify-between">
-                  <div className="flex flex-col w-1/2 h-full items-start justify-start">
+                <div className="flex flex-col md:flex-row w-full h-full justify-between gap-4">
+                  <div className="flex flex-col w-full md:w-1/2 h-full items-start justify-start">
                     <div className="grid grid-cols-2 gap-4 items-center w-full">
                       {latestExerciseRecordData && (
                         <h2 className="text-lg font-semibold flex items-center gap-2">

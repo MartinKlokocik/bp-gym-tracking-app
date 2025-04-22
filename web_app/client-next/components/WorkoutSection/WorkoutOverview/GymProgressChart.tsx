@@ -81,7 +81,7 @@ export const GymProgressChart = ({
       {chartData.length > 0 ? (
         <>
           {/* Metric Selection Buttons */}
-          <ButtonGroup className="mb-6">
+          <ButtonGroup className="flex mb-6 w-full justify-center md:justify-start items-center">
             <Button
               variant="bordered"
               onPress={() => setMetric('totalVolume')}
