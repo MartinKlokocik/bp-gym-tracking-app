@@ -315,7 +315,7 @@ export const PlanCreatorModal = ({
 
             {step === 2 && (
               <div className="space-y-6 w-full">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="flex flex-col md:grid md:grid-cols-2 gap-3 md:gap-6">
                   <div className="space-y-4 w-4/5">
                     <p className="text-medium font-medium">Workout Days</p>
                     {watch('days').map((day, index) => (
