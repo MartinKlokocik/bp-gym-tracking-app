@@ -11,19 +11,13 @@ Ensure you have the following installed:
   ```bash
   node -v  # Should print v22.11.0
   ```
-  If not, run:
-  
-  using Mac:
+  If not, run inside '/client-next' and '/node-server'
   ```bash
-  nvm install 22.11.0
+  nvm install
   ```
-  Optional
   ```bash
-  nvm alias default 22.11.0
+  nvm use
   ```
-
-  using Windows:
-  download installer
 
 - **NPM v10.9.0**
   ```bash
@@ -64,69 +58,6 @@ Ensure you have the following installed:
   ```bash
   psql --version
   ```
-
----
-
-## **Frontend Setup**
-
-The frontend is built using **Next.js**, **Apollo Client**, and **Tailwind CSS**.
-
-### **Steps to Set Up the Frontend**
-
-1. **Create a Next.js App:**
-   ```bash
-   npx create-next-app@latest my-app
-   cd my-app
-   ```
-
-2. **Install Dependencies:**
-   ```bash
-   npm install graphql @apollo/client
-   npm install -D tailwindcss postcss autoprefixer
-   ```
-
-3. **Initialize Tailwind CSS:**
-   ```bash
-   npx tailwindcss init
-   ```
-
-4. **Start the Development Server:**
-   ```bash
-   npm run dev
-   ```
-
----
-
-## **Backend Setup**
-
-The backend is built with **Node.js**, **GraphQL**, and **Prisma ORM**.
-
-### **Steps to Set Up the Backend**
-
-1. **Initialize a Node.js Project:**
-   ```bash
-   mkdir backend
-   cd backend
-   npm init -y
-   ```
-
-2. **Install Dependencies:**
-   ```bash
-   npm install graphql apollo-server @prisma/client pg
-   npm install ts-node-dev@latest typescript@latest @types/node --save-dev
-   ```
-
-3. **Initialize Prisma:**
-   ```bash
-   npx prisma init
-   ```
-
-   This creates a `prisma/schema.prisma` file where you define your database schema.
-
-4. **Start the Development Server:**
-   ```bash
-   npm run dev
-   ```
 
 ---
 
@@ -231,11 +162,11 @@ Prisma is used to manage the database. Here's how to work with Prisma:
   DATABASE_URL="postgresql://user:password@localhost:5432/database_name"
   ```
 
-## **Running scripts on the backend**
+## **Running scripts from terminal**
 
 ```bash
 cd node-server
-npx ts-node src/ai/weightOptimalizationAi.ts 
+npx ts-node 'path'
 ```
 
 ---
