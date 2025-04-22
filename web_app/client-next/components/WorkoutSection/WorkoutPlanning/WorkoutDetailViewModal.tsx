@@ -107,7 +107,7 @@ export const WorkoutDetailViewModal = ({
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="5xl">
       <ModalContent>
         <ModalHeader className="pb-2">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-col gap-3 md:flex-row items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <Dumbbell className="w-6 h-6" />
               <div className="flex flex-col items-start justify-center">
