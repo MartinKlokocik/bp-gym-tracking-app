@@ -17,6 +17,21 @@ export const CalendarBar = ({
   const [startDate, setStartDate] = useState(useGetDateFromUrl())
   const searchParams = useSearchParams()
   const router = useRouter()
+  const [visibleDays, setVisibleDays] = useState(7)
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1000) {
+        setVisibleDays(5)
+      } else {
+        setVisibleDays(7)
+      }
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handlePrevWeek = () => {
     setStartDate(subDays(startDate, 7))
@@ -43,19 +58,18 @@ export const CalendarBar = ({
   }, [selectedDate, searchParams, router])
 
   return (
-    <div className="flex items-center justify-between gap-2 bg-black p-4 rounded-lg">
-      <button className="text-white p-2" onClick={handlePrevWeek}>
-        <ChevronLeft size={32} />
+    <div className="flex items-center justify-between gap-2 bg-black p-3 sm:p-4 rounded-lg">
+      <button className="text-white p-1 sm:p-2" onClick={handlePrevWeek}>
+        <ChevronLeft size={24} className="sm:w-8 sm:h-8" />
       </button>
-      <div className="flex items-center gap-2">
-        {[...Array(7)].map((_, i) => {
+      <div className="flex items-center justify-center py-2 w-full">
+        {[...Array(visibleDays)].map((_, i) => {
           const date = addDays(startDate, i)
 
           return (
-            <div key={i} className="flex flex-row items-center gap-2">
+            <div key={i} className="flex flex-row items-center">
               <button
-                key={i}
-                className={`px-4 py-1
+                className={`px-2 sm:px-3 md:px-4 py-1
                 ${
                   format(date, 'yyyy-MM-dd') ===
                   format(selectedDate, 'yyyy-MM-dd')
@@ -64,16 +78,23 @@ export const CalendarBar = ({
                 }`}
                 onClick={() => setSelectedDate(date)}
               >
-                <div className="text-sm">{format(date, 'EEE')}</div>
-                <div className="font-semibold">{format(date, 'd.M.yyyy')}</div>
+                <div className="text-xs sm:text-sm">{format(date, 'EEE')}</div>
+                <div className="text-xs sm:text-base font-semibold">
+                  {format(date, 'd.M')}
+                  <span className="hidden md:inline">
+                    .{format(date, 'yyyy')}
+                  </span>
+                </div>
               </button>
-              {i !== 6 && <div className="text-white w-px h-9 bg-white" />}
+              {i !== visibleDays - 1 && (
+                <div className="text-white w-px h-7 sm:h-9 bg-white mx-1" />
+              )}
             </div>
           )
         })}
       </div>
-      <button className="text-white p-2" onClick={handleNextWeek}>
-        <ChevronRight size={32} />
+      <button className="text-white p-1 sm:p-2" onClick={handleNextWeek}>
+        <ChevronRight size={24} className="sm:w-8 sm:h-8" />
       </button>
     </div>
   )
