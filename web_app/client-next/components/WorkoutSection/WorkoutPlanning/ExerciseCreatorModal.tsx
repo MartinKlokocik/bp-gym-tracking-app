@@ -11,7 +11,6 @@ import {
   Input,
   Select,
   SelectItem,
-  Checkbox,
   Textarea,
 } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -53,7 +52,7 @@ export const ExerciseCreatorModal = ({
     defaultValues: {
       userId: session?.user?.id,
       isDefault: session?.user?.id === '1' ? true : false,
-      isPublic: session?.user?.id === '1' ? true : false,
+      isPublic: false,
       type: 'strength',
     },
   })
@@ -173,14 +172,6 @@ export const ExerciseCreatorModal = ({
                       errorMessage={errors.description?.message}
                       isInvalid={!!errors.description}
                     />
-
-                    <Checkbox
-                      color="primary"
-                      size="md"
-                      {...register('isPublic')}
-                    >
-                      Do you want this exercise to be public?
-                    </Checkbox>
                   </div>
 
                   {/* Right Column */}

@@ -361,6 +361,7 @@ export const PlanCreatorModal = ({
                       selectedDayIndex={selectedDayIndex}
                       type="createPlanForm"
                       form={formMethods}
+                      userId={user?.id.toString()}
                     />
                   )}
                 </div>

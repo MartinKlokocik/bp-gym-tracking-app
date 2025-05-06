@@ -4,7 +4,12 @@ const prisma = new PrismaClient();
 
 const exerciseResolvers = {
   Query: {
-    getAllExercises: async () => await prisma.exercise.findMany(),
+    getAllExercises: async (_: unknown, { userId }: { userId: string }) =>
+      await prisma.exercise.findMany({
+        where: {
+          OR: [{ isDefault: true }, { userId: userId }],
+        },
+      }),
     getExerciseById: async (_: unknown, { id }: { id: string }) =>
       await prisma.exercise.findUnique({ where: { id: id } }),
   },

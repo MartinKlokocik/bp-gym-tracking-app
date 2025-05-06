@@ -1,6 +1,6 @@
 const exercisesTypeDefs = `
   type Query {
-    getAllExercises: [Exercise!]!
+    getAllExercises(userId: String!): [Exercise!]!
     getExerciseById(id: String!): Exercise!
   }
 

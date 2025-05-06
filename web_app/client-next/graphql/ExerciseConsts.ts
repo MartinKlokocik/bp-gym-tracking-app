@@ -2,8 +2,8 @@ import { gql } from '@apollo/client'
 
 // Querries
 export const GET_ALL_EXERCISES = gql`
-  query {
-    getAllExercises {
+  query GetAllExercises($userId: String!) {
+    getAllExercises(userId: $userId) {
       id
       userId
       name

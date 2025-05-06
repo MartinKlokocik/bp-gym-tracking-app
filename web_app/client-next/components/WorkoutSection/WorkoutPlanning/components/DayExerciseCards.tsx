@@ -37,12 +37,14 @@ type DayExerciseCardsProps = {
   selectedDayIndex: number
   form: UseFormReturn<PlannedWorkoutWithoutIdsType>
   type: 'createPlanForm' | 'editPlanForm'
+  userId: string
 }
 
 export const DayExerciseCards = ({
   selectedDayIndex,
   form,
   type,
+  userId,
 }: DayExerciseCardsProps) => {
   const {
     isOpen: isExerciseCreatorModalOpen,
@@ -56,7 +58,12 @@ export const DayExerciseCards = ({
     loading: exercisesLoading,
     error: exercisesError,
     refetch: refetchExercises,
-  } = useQuery<GetAllExercisesQuery>(GET_ALL_EXERCISES)
+  } = useQuery<GetAllExercisesQuery>(GET_ALL_EXERCISES, {
+    variables: {
+      userId: userId,
+    },
+    skip: !userId,
+  })
 
   const [getExerciseById, { error: exerciseError }] =
     useLazyQuery(GET_EXERCISE_BY_ID)
