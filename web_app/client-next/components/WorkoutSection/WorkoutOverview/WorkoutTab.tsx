@@ -433,7 +433,7 @@ export const WorkoutTab = ({
                       ): {selectedPlannedExercise?.exercise.name}
                     </h2>
                     <Image
-                      src={`/assets/DummyPictures/${selectedPlannedExercise?.exercise.image}`}
+                      src={selectedPlannedExercise?.exercise.image}
                       alt={selectedPlannedExercise?.exercise.name}
                       width={500}
                       height={400}
