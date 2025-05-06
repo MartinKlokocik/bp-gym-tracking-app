@@ -111,8 +111,7 @@ const getWeightRecommendation = async (
   exerciseRecordId: string
 ) => {
   try {
-    const exerciseRecordIdOverride = "2dcc196c-b6f2-4692-af8a-bc23ff47f82f";
-    const data = await getDataForWeightOptimalization(exerciseRecordIdOverride);
+    const data = await getDataForWeightOptimalization(exerciseRecordId);
     const response = await getWeightOptimizationAi(
       data.latestRecord,
       data.previousWorkouts,

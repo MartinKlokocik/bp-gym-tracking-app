@@ -8,8 +8,7 @@ const resolvers = {
       _: unknown,
       { userId }: { userId: string }
     ) => {
-      const today = new Date(2025, 3, 26).toISOString().split("T")[0];
-      console.log(userId);
+      const today = new Date().toISOString().split("T")[0];
 
       const workout = await prisma.calendarDay.findFirst({
         where: {
