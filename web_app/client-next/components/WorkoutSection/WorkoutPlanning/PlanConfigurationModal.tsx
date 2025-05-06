@@ -156,7 +156,7 @@ export const PlanConfigurationModal = ({
                   </Button>
                   <Button
                     color="primary"
-                    onPress={() => {
+                    onClick={() => {
                       onWorkoutDetailViewModalOpen()
                     }}
                     disabled={!selectedWorkoutPlan}
