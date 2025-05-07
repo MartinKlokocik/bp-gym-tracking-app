@@ -77,7 +77,7 @@ export const ExerciseCreatorModal = ({
 
     try {
       if (file) {
-        imageUrl = await uploadImage(file)
+        imageUrl = await uploadImage(file, 'exercise_images')
       }
     } catch (e) {
       console.error(e)

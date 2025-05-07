@@ -4,6 +4,7 @@ const TypesTypeDefs = `
     email: String!
     name: String!
     createdAt: String!
+    profilePicture: String
   }
 
   type Exercise {

@@ -62,6 +62,8 @@ export default function Navbar() {
     },
   ]
 
+  console.log(session)
+
   return (
     <NavbarHeroui
       maxWidth="full"
@@ -139,6 +141,7 @@ export default function Navbar() {
                     isBordered: true,
                     size: 'sm',
                     className: 'md:w-10 md:h-10',
+                    src: session?.user?.image || undefined,
                   }}
                   className="transition-transform"
                   description={session?.user?.email}

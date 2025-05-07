@@ -8,6 +8,7 @@ declare module 'next-auth' {
       email: string
       name?: string
       token: string
+      image?: string
     }
   }
 
@@ -16,5 +17,6 @@ declare module 'next-auth' {
     email: string
     name?: string
     token: string
+    image?: string
   }
 }

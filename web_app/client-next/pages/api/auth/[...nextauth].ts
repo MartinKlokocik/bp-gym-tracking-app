@@ -26,6 +26,7 @@ export const authOptions: NextAuthOptions = {
                     id
                     email
                     name
+                    profilePicture
                   }
                 }
               }
@@ -45,6 +46,7 @@ export const authOptions: NextAuthOptions = {
             email: json.data.login.user.email,
             name: json.data.login.user.name,
             token: json.data.login.token,
+            image: json.data.login.user.profilePicture,
           }
         }
         return null

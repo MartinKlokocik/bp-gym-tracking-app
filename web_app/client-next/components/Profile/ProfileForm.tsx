@@ -15,12 +15,15 @@ import { PreferencesTab } from './ProfileForm/PreferencesTab'
 import { UPDATE_USER_PROFILE } from '@/graphql/UserProfileConsts'
 import { GET_USER_PROFILE } from '@/graphql/UserProfileConsts'
 import { userProfileSchema, UserProfileType } from '@/types/UserProfile'
+import { uploadImage } from '@/utils/upload-image'
 
 type ProfileFormProps = {
   userId: string
 }
 
 export const ProfileForm = ({ userId }: ProfileFormProps) => {
+  const [fileAvatar, setFileAvatar] = useState<File | null>(null)
+
   const [updateUserProfile] = useMutation(UPDATE_USER_PROFILE, {
     onCompleted: () => {
       toast.success('Profile updated successfully!')
@@ -51,6 +54,7 @@ export const ProfileForm = ({ userId }: ProfileFormProps) => {
         if (userProfile) {
           reset({
             userId,
+            profilePicture: userProfile.profilePicture || '',
             firstName: userProfile.firstName || '',
             lastName: userProfile.lastName || '',
             dateOfBirth: userProfile.dateOfBirth || '',
@@ -89,6 +93,13 @@ export const ProfileForm = ({ userId }: ProfileFormProps) => {
 
   const onSubmit = async (data: UserProfileType) => {
     console.log('Submitting profile:', data)
+
+    if (fileAvatar) {
+      const imageUrl = await uploadImage(fileAvatar, 'avatar')
+      data.profilePicture = imageUrl
+    } else {
+      data.profilePicture = ''
+    }
 
     await updateUserProfile({
       variables: {
@@ -137,6 +148,7 @@ export const ProfileForm = ({ userId }: ProfileFormProps) => {
                 <BasicInformationTab
                   formMethods={formMethods}
                   setActiveTab={setActiveTab}
+                  setFileAvatar={setFileAvatar}
                 />
               </Tab>
 

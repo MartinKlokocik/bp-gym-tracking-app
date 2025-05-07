@@ -2,10 +2,10 @@ import { v4 as uuid } from 'uuid'
 
 import { supabaseBrowser } from '../lib/supabase-browser'
 
-export const uploadImage = async (file: File) => {
+export const uploadImage = async (file: File, path: string) => {
   const ext = file.name.split('.').pop()
   const fileName = `${uuid()}.${ext}`
-  const filePath = `exercise_images/${fileName}`
+  const filePath = `${path}/${fileName}`
 
   const { error } = await supabaseBrowser.storage
     .from('gym-tracking-app')

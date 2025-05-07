@@ -56,7 +56,10 @@ export default {
       _: any,
       { email, password }: { email: string; password: string }
     ) => {
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await prisma.user.findUnique({
+        where: { email },
+        include: { profile: true },
+      });
 
       if (!user) throw new Error("Invalid email or password");
 
@@ -69,7 +72,13 @@ export default {
         { expiresIn: "1h" }
       );
 
-      return { token, user };
+      return {
+        token,
+        user: {
+          ...user,
+          profilePicture: user.profile?.profilePicture || null,
+        },
+      };
     },
   },
 };

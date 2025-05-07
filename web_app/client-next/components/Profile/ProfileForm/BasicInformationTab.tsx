@@ -1,5 +1,6 @@
 import { Radio, RadioGroup, Button, Input, Image } from '@heroui/react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 
 import { UserProfileType } from '@/types/UserProfile'
@@ -7,24 +8,69 @@ import { UserProfileType } from '@/types/UserProfile'
 type BasicInformationTabProps = {
   formMethods: UseFormReturn<UserProfileType>
   setActiveTab: (tab: string) => void
+  setFileAvatar: (file: File | null) => void
 }
 
 export const BasicInformationTab = ({
   formMethods,
   setActiveTab,
+  setFileAvatar,
 }: BasicInformationTabProps) => {
   const {
     formState: { errors },
     watch,
     setValue,
   } = formMethods
+  const currentAvatar = watch('profilePicture')
+
+  const [preview, setPreview] = useState<string | null>(currentAvatar || null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleFiles = async (files: FileList | null) => {
+    if (!files?.length) return
+
+    setFileAvatar(files[0] as File)
+    setPreview(URL.createObjectURL(files[0]))
+  }
+
+  useEffect(() => {
+    if (currentAvatar && typeof currentAvatar === 'string') {
+      setPreview(currentAvatar)
+    }
+  }, [currentAvatar])
+
+  console.log(preview)
 
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-center mb-8">
         <div className="relative">
-          <div className="w-32 h-32 rounded-full bg-gray-800 border-2 border-purple-500 flex items-center justify-center overflow-hidden">
-            <Image className="w-12 h-12 text-gray-600" alt="Profile picture" />
+          <div className="w-32 h-32 rounded-full bg-gray-800 border-2 border-purple-500 flex items-center justify-center overflow-hidden z-10">
+            {preview ? (
+              <>
+                <Image
+                  src={preview}
+                  alt="Profile picture"
+                  className="w-32 h-32 rounded-full bg-gray-800 border-2 border-purple-500 z-0"
+                  width={128}
+                  height={128}
+                />
+                <button
+                  className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1"
+                  onClick={e => {
+                    e.stopPropagation()
+                    setPreview(null)
+                    setFileAvatar(null)
+                  }}
+                >
+                  <X size={16} color="white" />
+                </button>
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <span className="text-gray-600">No image</span>
+              </div>
+            )}
           </div>
           <Button
             size="sm"
@@ -32,11 +78,18 @@ export const BasicInformationTab = ({
             className="absolute bottom-0 right-0 rounded-full"
             onClick={e => {
               e.preventDefault()
-              // Upload
+              inputRef.current?.click()
             }}
           >
             Upload
           </Button>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/gif"
+            className="hidden"
+            onChange={e => handleFiles(e.target.files)}
+          />
         </div>
       </div>
 
