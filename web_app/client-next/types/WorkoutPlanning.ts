@@ -31,7 +31,7 @@ export const plannedWorkoutSchema = z.object({
   days: z.array(plannedWorkoutDaySchema).min(1, 'At least one day is required'),
   schema: z.string().optional(),
   isActive: z.boolean(),
-  isPublic: z.boolean(),
+  isPublic: z.boolean().default(false),
 })
 
 // With IDs

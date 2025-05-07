@@ -14,21 +14,30 @@ import {
   PlannedWorkoutDayWithIdType,
   PlannedWorkoutWithIdsType,
 } from '@/types/WorkoutPlanning'
+
 type PlanAndDaySelectProps = {
   selectedWorkoutDay: PlannedWorkoutDayWithIdType | undefined
   setSelectedWorkoutDay: React.Dispatch<
     React.SetStateAction<PlannedWorkoutDayWithIdType | undefined>
   >
+  userId: string
 }
+
 export const PlanAndDaySelect = ({
   selectedWorkoutDay,
   setSelectedWorkoutDay,
+  userId,
 }: PlanAndDaySelectProps) => {
   const {
     data: allPlannedWorkoutsData,
     loading: allPlannedWorkoutsLoading,
     error: allPlannedWorkoutsError,
-  } = useQuery(GET_ALL_PLANNED_WORKOUTS)
+  } = useQuery(GET_ALL_PLANNED_WORKOUTS, {
+    variables: {
+      userId,
+    },
+    skip: !userId,
+  })
   const [getPlannedWorkoutById, { error: plannedWorkoutError }] = useLazyQuery(
     GET_PLANNED_WORKOUT_BY_ID
   )

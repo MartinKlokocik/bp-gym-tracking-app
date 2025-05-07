@@ -4,9 +4,14 @@ const prisma = new PrismaClient();
 
 const resolvers = {
   Query: {
-    getAllPlannedWorkouts: async () => {
+    getAllPlannedWorkouts: async (_: unknown, { userId }: { userId: string }) => {
       return await prisma.plannedWorkout.findMany({
-        where: { isDeleted: false },
+        where: { isDeleted: false, 
+          OR: [
+            { user: { id: userId } },
+            { isDefault: true },
+          ],
+         },
         include: {
           days: {
             include: {
@@ -48,7 +53,12 @@ const resolvers = {
 
   Mutation: {
     createPlannedWorkout: async (_: unknown, { input }: { input: any }) => {
-      const { userId, name, schema, isActive, isPublic, days } = input;
+      const { userId, name, schema, isActive, days } = input;
+
+      const isAdmin = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { isAdmin: true },
+      });
 
       return await prisma.plannedWorkout.create({
         data: {
@@ -58,7 +68,8 @@ const resolvers = {
           name,
           schema: schema || "",
           isActive,
-          isPublic,
+          isPublic: false,
+          isDefault: isAdmin ? true : false,
           days: {
             create: days.map((day: any) => ({
               user: {

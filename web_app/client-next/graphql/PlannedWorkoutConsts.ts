@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_ALL_PLANNED_WORKOUTS = gql`
-  query GetAllPlannedWorkouts {
-    getAllPlannedWorkouts {
+  query GetAllPlannedWorkouts($userId: String!) {
+    getAllPlannedWorkouts(userId: $userId) {
       id
       userId
       name

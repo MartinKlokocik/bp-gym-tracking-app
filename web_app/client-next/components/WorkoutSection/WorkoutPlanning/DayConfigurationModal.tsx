@@ -178,6 +178,7 @@ export const DayConfigurationModal = ({
                     <PlanAndDaySelect
                       selectedWorkoutDay={selectedWorkoutDay}
                       setSelectedWorkoutDay={setSelectedWorkoutDay}
+                      userId={user.id}
                     />
                   </div>
 

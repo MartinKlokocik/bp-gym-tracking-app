@@ -1,6 +1,6 @@
 const PlannedWorkoutTypeDefs = `
   type Query {
-    getAllPlannedWorkouts: [PlannedWorkout!]!
+    getAllPlannedWorkouts(userId: String!): [PlannedWorkout!]!
     getWorkoutPlanById(id: String!): PlannedWorkout!
   }
 

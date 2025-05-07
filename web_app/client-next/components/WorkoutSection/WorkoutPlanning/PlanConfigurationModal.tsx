@@ -42,7 +42,12 @@ export const PlanConfigurationModal = ({
     loading: allPlannedWorkoutsLoading,
     error: allPlannedWorkoutsError,
     refetch: refetchPlannedWorkouts,
-  } = useQuery(GET_ALL_PLANNED_WORKOUTS)
+  } = useQuery(GET_ALL_PLANNED_WORKOUTS, {
+    variables: {
+      userId: user.id,
+    },
+    skip: !user.id,
+  })
 
   const {
     isOpen: isPlanCreatorModalOpen,

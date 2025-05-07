@@ -68,7 +68,6 @@ export const PlanCreatorModal = ({
     resolver: zodResolver(plannedWorkoutSchema),
     defaultValues: {
       userId: user?.id.toString(),
-      isPublic: user?.id.toString() === '1' ? true : false,
       isActive: false,
       schema: '',
       name: '',
@@ -167,7 +166,6 @@ export const PlanCreatorModal = ({
   const handleReset = () => {
     reset({
       userId: user?.id.toString(),
-      isPublic: user?.id.toString() === '1' ? true : false,
       isActive: false,
       schema: '',
       name: '',
@@ -272,14 +270,6 @@ export const PlanCreatorModal = ({
                   onChange={e => setNumberOfDays(e.target.value)}
                   variant="bordered"
                 />
-                <Checkbox
-                  defaultSelected={true}
-                  color="primary"
-                  size="md"
-                  {...register('isPublic')}
-                >
-                  Do you want the plan to be public?
-                </Checkbox>
                 <div className="w-full h-[1px] bg-default-200" />
                 <Checkbox
                   defaultSelected={false}
