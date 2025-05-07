@@ -432,13 +432,22 @@ export const WorkoutTab = ({
                         .plannedExercises?.length ?? 0}
                       ): {selectedPlannedExercise?.exercise.name}
                     </h2>
-                    <Image
-                      src={selectedPlannedExercise?.exercise.image}
-                      alt={selectedPlannedExercise?.exercise.name}
-                      width={500}
-                      height={400}
-                      fallbackSrc="https://placehold.co/500x400"
-                    />
+                    {selectedPlannedExercise?.exercise.image ? (
+                      <Image
+                        src={selectedPlannedExercise?.exercise.image}
+                        alt={selectedPlannedExercise?.exercise.name}
+                        width={500}
+                        height={400}
+                        fallbackSrc="https://placehold.co/500x400"
+                      />
+                    ) : (
+                      <Image
+                        src="https://placehold.co/500x400"
+                        alt={selectedPlannedExercise?.exercise.name}
+                        width={500}
+                        height={400}
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col items-start w-full md:w-[60%] h-full">
                     <GymProgressChart
