@@ -1,35 +1,31 @@
-import { NextResponse } from 'next/server'
-import { withAuth } from 'next-auth/middleware'
+import { NextRequest, NextResponse } from 'next/server'
 
-export default withAuth(
-  // `withAuth` augments your `Request` with the user's token.
-  function middleware(_req) {
+export function middleware(request: NextRequest) {
+  // Continue to the page if the path starts with login or signup
+  const { pathname } = request.nextUrl
+  if (
+    pathname.startsWith('/auth/login') ||
+    pathname.startsWith('/auth/signup') ||
+    pathname.startsWith('/api/auth') ||
+    pathname.includes('favicon.ico') ||
+    pathname.startsWith('/_next')
+  ) {
     return NextResponse.next()
-  },
-  {
-    secret: process.env.NEXTAUTH_SECRET,
-    pages: {
-      signIn: '/auth/login', // Path to your custom login page
-    },
-    callbacks: {
-      authorized: ({ req, token }) => {
-        // Allow requests to /login and /signup without a token
-        const { pathname } = req.nextUrl
-        if (
-          pathname.startsWith('/auth/login') ||
-          pathname.startsWith('/auth/signup')
-        ) {
-          return true
-        }
-        // Otherwise, require the user to be authenticated
-        return !!token
-      },
-    },
   }
-)
 
-// Specify which routes should be checked by the middleware.
-// Here, we protect everything except favicon.ico and public routes
+  // Check for authentication
+  const authHeader = request.headers.get('authorization')
+  const cookieHeader = request.headers.get('cookie')
+
+  // If no auth header or cookies, redirect to login
+  if (!authHeader && !cookieHeader?.includes('next-auth.session-token')) {
+    const url = new URL('/auth/login', request.url)
+    return NextResponse.redirect(url)
+  }
+
+  return NextResponse.next()
+}
+
 export const config = {
-  matcher: ['/((?!favicon.ico|_next/static|_next/image|api/auth).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
