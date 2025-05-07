@@ -25,4 +25,3 @@ export default withAuth({
 export const config = {
   matcher: ['/((?!favicon.ico).*)'],
 }
-export const runtime = 'nodejs'
