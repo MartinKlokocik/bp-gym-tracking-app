@@ -36,9 +36,9 @@ const deleteCalendarDay = async (id: string) => {
 
 const resolvers = {
   Query: {
-    getCalendarDayByDate: async (_: unknown, { date }: { date: string }) => {
+    getCalendarDayByDate: async (_: unknown, { date, userId }: { date: string, userId: string }) => {
       const calendarDay = await prisma.calendarDay.findFirst({
-        where: { date: date.split("T")[0] },
+        where: { date: date.split("T")[0], user: { id: userId } },
         include: {
           plannedWorkoutDay: {
             include: {

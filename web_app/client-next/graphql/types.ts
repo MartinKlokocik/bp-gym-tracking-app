@@ -11,4 +11,5 @@ export type GetCalendarDayByDateQuery = {
 
 export type GetCalendarDayByDateQueryVariables = {
   date: string
+  userId: string
 }

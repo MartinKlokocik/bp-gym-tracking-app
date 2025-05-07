@@ -22,7 +22,10 @@ export default function Home() {
     GetCalendarDayByDateQuery,
     GetCalendarDayByDateQueryVariables
   >(GET_CALENDAR_DAY_BY_DATE, {
-    variables: { date: selectedDate.toISOString() },
+    variables: {
+      date: selectedDate.toISOString(),
+      userId: session?.user.id || '',
+    },
   })
 
   const {

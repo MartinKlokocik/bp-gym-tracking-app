@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_CALENDAR_DAY_BY_DATE = gql`
-  query GetCalendarDayByDate($date: String!) {
-    getCalendarDayByDate(date: $date) {
+  query GetCalendarDayByDate($date: String!, $userId: String!) {
+    getCalendarDayByDate(date: $date, userId: $userId) {
       id
       userId
       date

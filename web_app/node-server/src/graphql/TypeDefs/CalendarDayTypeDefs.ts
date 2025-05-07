@@ -1,6 +1,6 @@
 const CalendarDayTypeDefs = `
   type Query {
-    getCalendarDayByDate(date: String!): CalendarDay
+    getCalendarDayByDate(date: String!, userId: String!): CalendarDay
   }
 
   type Mutation {
