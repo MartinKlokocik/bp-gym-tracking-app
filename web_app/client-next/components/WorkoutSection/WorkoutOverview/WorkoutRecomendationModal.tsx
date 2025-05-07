@@ -26,9 +26,7 @@ export const WorkoutRecomendationModal = ({
   exerciseRecordId,
 }: WorkoutRecomendationModalProps) => {
   const [getWeightRecommendation, { data, loading, error, refetch }] =
-    useLazyQuery(GET_WEIGHT_RECOMMENDATION, {
-      variables: { exerciseRecordId },
-    })
+    useLazyQuery(GET_WEIGHT_RECOMMENDATION)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [recommendationData, setRecommendationData] = useState<any>(null)
@@ -40,8 +38,12 @@ export const WorkoutRecomendationModal = ({
   }, [data])
 
   const regenerateAiRecomendation = () => {
-    refetch()
+    refetch({ exerciseRecordId })
   }
+
+  useEffect(() => {
+    setRecommendationData(null)
+  }, [exerciseRecordId])
 
   const getAdjustmentIcon = (adjustment: string) => {
     if (adjustment === 'increase') {
@@ -76,66 +78,78 @@ export const WorkoutRecomendationModal = ({
                 ) : error ? (
                   <div className="text-danger">Error: {error.message}</div>
                 ) : recommendationData ? (
-                  <div>
+                  recommendationData.error ? (
                     <div className="mb-6 p-4 bg-gray-800 rounded-lg text-sm">
-                      <p>{recommendationData.strategy}</p>
+                      <p>{recommendationData.error}</p>
                     </div>
+                  ) : (
+                    <div>
+                      <div className="mb-6 p-4 bg-gray-800 rounded-lg text-sm">
+                        <p>{recommendationData.strategy}</p>
+                      </div>
 
-                    <div className="space-y-4">
-                      {Object.keys(recommendationData)
-                        .filter(key => key !== 'strategy')
-                        .map(setKey => {
-                          const set = recommendationData[setKey]
-                          return (
-                            <div
-                              key={setKey}
-                              className="bg-gray-800 p-4 rounded-lg hover:bg-gray-750 transition-all"
-                            >
-                              <div className="flex justify-between items-center mb-2">
-                                <h3 className="font-bold text-lg capitalize">
-                                  {setKey.replace('_', ' ')}
-                                </h3>
-                                <div className="flex items-center">
-                                  {getAdjustmentIcon(set.adjustment)}
-                                  <span className="text-xs ml-1 text-gray-400">
-                                    {set.adjustment}
-                                  </span>
+                      <div className="space-y-4">
+                        {Object.keys(recommendationData)
+                          .filter(key => key !== 'strategy')
+                          .map(setKey => {
+                            const set = recommendationData[setKey]
+                            return (
+                              <div
+                                key={setKey}
+                                className="bg-gray-800 p-4 rounded-lg hover:bg-gray-750 transition-all"
+                              >
+                                <div className="flex justify-between items-center mb-2">
+                                  <h3 className="font-bold text-lg capitalize">
+                                    {setKey.replace('_', ' ')}
+                                  </h3>
+                                  <div className="flex items-center">
+                                    {getAdjustmentIcon(set.adjustment)}
+                                    <span className="text-xs ml-1 text-gray-400">
+                                      {set.adjustment}
+                                    </span>
+                                  </div>
                                 </div>
+
+                                <div className="flex justify-between mb-3">
+                                  <div className="text-center px-3 py-2 bg-gray-700 rounded-lg w-2/5">
+                                    <p className="text-xs text-gray-400">
+                                      WEIGHT
+                                    </p>
+                                    <p className="text-xl font-bold">
+                                      {set.next_weight}{' '}
+                                      <span className="text-sm">kg</span>
+                                    </p>
+                                  </div>
+                                  <div className="text-center px-3 py-2 bg-gray-700 rounded-lg w-2/5">
+                                    <p className="text-xs text-gray-400">
+                                      REPS
+                                    </p>
+                                    <p className="text-xl font-bold">
+                                      {set.next_reps}
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <p className="text-sm text-gray-400 italic">
+                                  {set.reason}
+                                </p>
                               </div>
-
-                              <div className="flex justify-between mb-3">
-                                <div className="text-center px-3 py-2 bg-gray-700 rounded-lg w-2/5">
-                                  <p className="text-xs text-gray-400">
-                                    WEIGHT
-                                  </p>
-                                  <p className="text-xl font-bold">
-                                    {set.next_weight}{' '}
-                                    <span className="text-sm">kg</span>
-                                  </p>
-                                </div>
-                                <div className="text-center px-3 py-2 bg-gray-700 rounded-lg w-2/5">
-                                  <p className="text-xs text-gray-400">REPS</p>
-                                  <p className="text-xl font-bold">
-                                    {set.next_reps}
-                                  </p>
-                                </div>
-                              </div>
-
-                              <p className="text-sm text-gray-400 italic">
-                                {set.reason}
-                              </p>
-                            </div>
-                          )
-                        })}
+                            )
+                          })}
+                      </div>
                     </div>
-                  </div>
+                  )
                 ) : (
                   <div className="flex flex-col gap-4 justify-center items-center">
                     <p>No recommendation data available</p>
                     <Button
                       type="button"
                       color="primary"
-                      onClick={() => getWeightRecommendation()}
+                      onClick={() =>
+                        getWeightRecommendation({
+                          variables: { exerciseRecordId },
+                        })
+                      }
                       isLoading={loading}
                       className="w-full md:w-auto"
                     >

@@ -188,3 +188,19 @@ const getDataForWeightOptimalization = async (
 };
 
 export { getDataForWeightOptimalization };
+
+export function getJsonForPrompt(numberOfSets: number) {
+  let schema = "{\n";
+
+  for (let i = 1; i <= numberOfSets; i++) {
+    schema += `  "set_${i}": {\n`;
+    schema += '    "adjustment": "increase" | "decrease" | "maintain",\n';
+    schema += '    "next_weight": number,\n';
+    schema += '    "next_reps": number,\n';
+    schema += '    "reason": "very short reason"\n';
+    schema += i === numberOfSets ? "  }\n" : "  },\n";
+  }
+
+  schema += '  "strategy": "concise short overall recommendation"\n}';
+  return schema;
+}

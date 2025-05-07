@@ -3,12 +3,8 @@ import { getDataForWeightOptimalization } from "./getDataForWeightOptimalization
 const { OpenAI } = require("openai");
 const dotenv = require("dotenv");
 const {
-  previousWorkoutsDummy,
-  exerciseType,
-  userData,
   getJsonForPrompt,
-  numberOfSets,
-} = require("./exampleData");
+} = require("./getDataForWeightOptimalization");
 dotenv.config();
 
 const openai = new OpenAI({
@@ -22,14 +18,15 @@ async function getWeightOptimizationAi(
   userData: any
 ) {
   try {
-    const prevoiousWorkoutsDummy = previousWorkoutsDummy.sort(
-      (a: any, b: any) =>
-        new Date(a.date).getTime() - new Date(b.date).getTime()
+    if (!latestRecord?.recordSets?.length) {
+      return {
+        error: "No previous workouts data",
+      };
+    }
+
+    const jsonSchema = getJsonForPrompt(
+      latestRecord?.recordSets?.length || 3
     );
-
-    const latestRecordDummy = previousWorkouts[0];
-
-    const jsonSchema = getJsonForPrompt(numberOfSets);
 
     const systemPrompt = `
         You are an elite strength coach with deep expertise in:
@@ -58,17 +55,14 @@ async function getWeightOptimizationAi(
 
     const userMessage = `
       Here is the user's workout history for the exercise "${exerciseName}" (ordered by date):
-      ${JSON.stringify(prevoiousWorkoutsDummy, null, 2)}
+      ${JSON.stringify(previousWorkouts, null, 2)}
 
-      The best number of reps for each set is:
-      - Set 1: 8 reps
-      - Set 2: 6 reps
-      - Set 3: 5 reps
+      The best number of reps for each set is in range of 5-8 reps per set.
 
       Your goal is to provide personalized recommendations for the next workout by analyzing:
       - Progress or regression across all past records
       - Comparison of this ${JSON.stringify(
-        latestRecordDummy,
+        latestRecord,
         null,
         2
       )} most recent set vs the next set(s) 
