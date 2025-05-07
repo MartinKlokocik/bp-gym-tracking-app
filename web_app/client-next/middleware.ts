@@ -24,5 +24,5 @@ export default withAuth({
 // Here, we protect everything except favicon.ico
 export const config = {
   matcher: ['/((?!favicon.ico).*)'],
-  runtime: 'nodejs',
 }
+export const runtime = 'nodejs'
