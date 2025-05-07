@@ -8,7 +8,10 @@ export default withAuth({
     authorized: ({ req, token }) => {
       // Allow requests to /login and /signup without a token
       const { pathname } = req.nextUrl
-      if (pathname.startsWith('/auth/login') || pathname.startsWith('/auth/signup')) {
+      if (
+        pathname.startsWith('/auth/login') ||
+        pathname.startsWith('/auth/signup')
+      ) {
         return true
       }
       // Otherwise, require the user to be authenticated
@@ -21,4 +24,5 @@ export default withAuth({
 // Here, we protect everything except favicon.ico
 export const config = {
   matcher: ['/((?!favicon.ico).*)'],
+  runtime: 'nodejs',
 }
