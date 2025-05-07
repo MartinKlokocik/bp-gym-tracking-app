@@ -3,7 +3,7 @@
 import { useQuery } from '@apollo/client'
 import { Button, ButtonGroup, useDisclosure } from '@heroui/react'
 import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 import { CalendarBar } from '@/components/WorkoutSection/WorkoutOverview/CalendarBar'
 import { WorkoutTab } from '@/components/WorkoutSection/WorkoutOverview/WorkoutTab'
@@ -14,10 +14,11 @@ import { GET_CALENDAR_DAY_BY_DATE } from '@/graphql/CalendarConsts'
 import { GetCalendarDayByDateQuery } from '@/graphql/types'
 import { GetCalendarDayByDateQueryVariables } from '@/graphql/types'
 
-export default function Home() {
+function WorkoutSection() {
   const { data: session } = useSession()
 
-  const [selectedDate, setSelectedDate] = useState(useGetDateFromUrl())
+  const currentDate = useGetDateFromUrl()
+  const [selectedDate, setSelectedDate] = useState(currentDate)
   const getCalendarDayByDateQuery = useQuery<
     GetCalendarDayByDateQuery,
     GetCalendarDayByDateQueryVariables
@@ -90,5 +91,17 @@ export default function Home() {
         getCalendarDayByDateQuery={getCalendarDayByDateQuery}
       />
     </>
+  )
+}
+
+function WorkoutSectionFallback() {
+  return <div>Loading workout section...</div>
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<WorkoutSectionFallback />}>
+      <WorkoutSection />
+    </Suspense>
   )
 }

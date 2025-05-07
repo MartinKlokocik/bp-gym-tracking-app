@@ -128,6 +128,7 @@ export const NotWorkoutRecordForm = ({
         <PlanAndDaySelect
           selectedWorkoutDay={selectedWorkoutDay}
           setSelectedWorkoutDay={setSelectedWorkoutDay}
+          userId={user.id}
         />
 
         {selectedWorkoutDay && (
