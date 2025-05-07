@@ -6,6 +6,7 @@ const ExerciseRecordsTypeDefs = `
   }
   type Mutation {
     updateExerciseRecordStatus(id: String!, status: RecordStatus!): ExerciseRecord
+    updateExerciseRecordNotes(id: String!, notes: String!): ExerciseRecord
   }
 `;
 

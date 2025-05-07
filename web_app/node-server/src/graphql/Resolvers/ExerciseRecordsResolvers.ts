@@ -68,7 +68,17 @@ const exerciseRecordsResolvers = {
         where: { id: id },
         data: { status: status },
       }),
+    updateExerciseRecordNotes: async (
+      _: unknown,
+      { id, notes }: { id: string; notes: string }
+    ) => {
+      console.log('updateExerciseRecordNotes', id, notes)
+      return await prisma.exerciseRecord.update({
+        where: { id: id },
+        data: { notes: notes },
+      })
+    },
   },
-};
+}
 
-export default exerciseRecordsResolvers;
+export default exerciseRecordsResolvers

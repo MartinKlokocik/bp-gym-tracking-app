@@ -43,6 +43,9 @@ const resolvers = {
           plannedWorkoutDay: {
             include: {
               plannedExercises: {
+                orderBy: {
+                  exerciseNumber: "asc",
+                },
                 include: {
                   plannedSets: {
                     orderBy: {

@@ -21,8 +21,10 @@ import { WorkoutRecomendationModal } from './WorkoutRecomendationModal'
 import {
   GET_LATEST_EXERCISE_RECORD,
   GET_RECORD_FOR_THIS_EXERCISE_AND_DATE,
+  UPDATE_EXERCISE_RECORD_NOTES,
   UPDATE_EXERCISE_RECORD_STATUS,
 } from '@/graphql/ExerciseRecordsConsts'
+import { UPDATE_PLANNED_EXERCISE_NOTES } from '@/graphql/PlannedExerciseConsts'
 import {
   UPDATE_WEIGHT_IN_SET_RECORD,
   UPDATE_REPS_IN_SET_RECORD,
@@ -140,11 +142,57 @@ export const WorkoutTab = ({
       },
     }
   )
-
-  const [notes, setNotes] = useState(
+  const [updateExerciseRecordNotes] = useMutation(
+    UPDATE_EXERCISE_RECORD_NOTES,
+    {
+      onCompleted: () => {
+        refetchCalendarDay()
+      },
+      onError: error => {
+        toast.error(error.message)
+        console.log(error)
+      },
+    }
+  )
+  const [updatePlannedExerciseNotes] = useMutation(
+    UPDATE_PLANNED_EXERCISE_NOTES,
+    {
+      onCompleted: () => {
+        refetchCalendarDay()
+      },
+      onError: error => {
+        toast.error(error.message)
+        console.log(error)
+      },
+    }
+  )
+  const [trainingNotes, setTrainingNotes] = useState(
+    recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate?.notes?.trim() ||
+      'Put your notes for this training here'
+  )
+  const [exerciseNotes, setExerciseNotes] = useState(
     selectedPlannedExercise?.notes?.trim() ||
       'Put your notes for this exercise here'
   )
+
+  useEffect(() => {
+    console.log(
+      'recordForThisExerciseAndDateData',
+      recordForThisExerciseAndDateData
+    )
+    if (recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate) {
+      setTrainingNotes(
+        recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate.notes?.trim() ||
+          'Put your notes for this exercise here'
+      )
+    }
+  }, [recordForThisExerciseAndDateData])
+
+  useEffect(() => {
+    if (selectedPlannedExercise?.notes) {
+      setExerciseNotes(selectedPlannedExercise.notes.trim())
+    }
+  }, [selectedPlannedExercise])
 
   const refetchDayFunction = useCallback(async () => {
     const { data } = await refetchCalendarDay()
@@ -346,6 +394,33 @@ export const WorkoutTab = ({
         },
       })
       refetchRecordForThisExerciseAndDate()
+    }
+  }
+
+  const handleNotesChange = (notesType: 'trainingNotes' | 'exerciseNotes') => {
+    if (
+      notesType === 'exerciseNotes' &&
+      selectedPlannedExercise?.id &&
+      exerciseNotes !== 'Put your notes for this exercise here'
+    ) {
+      updatePlannedExerciseNotes({
+        variables: {
+          id: selectedPlannedExercise.id,
+          notes: exerciseNotes,
+        },
+      })
+    } else if (
+      notesType === 'trainingNotes' &&
+      recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate?.id &&
+      trainingNotes !== 'Put your notes for this training here'
+    ) {
+      updateExerciseRecordNotes({
+        variables: {
+          id: recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate
+            .id,
+          notes: trainingNotes,
+        },
+      })
     }
   }
 
@@ -598,18 +673,30 @@ export const WorkoutTab = ({
                       className="max-w-lg mb-4"
                       label="Notes for this training"
                       variant="bordered"
-                      value={notes}
-                      onChange={e => setNotes(e.target.value)}
-                      onClear={() => setNotes('')}
+                      value={trainingNotes}
+                      onChange={e => setTrainingNotes(e.target.value)}
+                      onBlur={() => {
+                        handleNotesChange('trainingNotes')
+                      }}
+                      onClear={() => {
+                        setTrainingNotes('')
+                        handleNotesChange('trainingNotes')
+                      }}
                     />
                     <Textarea
                       isClearable
                       className="max-w-lg"
                       label="Notes for this exercise"
                       variant="bordered"
-                      value={selectedPlannedExercise?.notes}
-                      onChange={e => setNotes(e.target.value)}
-                      onClear={() => setNotes('')}
+                      value={exerciseNotes}
+                      onChange={e => setExerciseNotes(e.target.value)}
+                      onBlur={() => {
+                        handleNotesChange('exerciseNotes')
+                      }}
+                      onClear={() => {
+                        setExerciseNotes('')
+                        handleNotesChange('exerciseNotes')
+                      }}
                     />
                   </div>
                 </div>

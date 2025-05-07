@@ -9,9 +9,13 @@ import calendarDayResolvers from "./Resolvers/CalendarDayResolvers";
 import exerciseRecordsResolvers from "./Resolvers/ExerciseRecordsResolvers";
 import recordSetResolvers from "./Resolvers/RecordSetResolvers";
 import appleWatchResolvers from "./Resolvers/AppleWatchResolvers";
-import { weightRecommendationResolver, workoutCreatorResolver } from "./Resolvers/AiCallsResolvers";
+import {
+  weightRecommendationResolver,
+  workoutCreatorResolver,
+} from "./Resolvers/AiCallsResolvers";
 import userProfileResolvers from "./Resolvers/UserProfileResolvers";
 import dashboardMetricsResolver from "./Resolvers/DashboardMetricsResolver";
+import plannedExerciseResolvers from "./Resolvers/PlannedExerciseResolvers";
 
 // TypeDefs
 import userTypeDefs from "./TypeDefs/UserTypeDefs";
@@ -30,6 +34,7 @@ import userProfileTypeDefs from "./TypeDefs/UserProfileTypeDefs";
 import appleWatchTypeDefs from "./TypeDefs/AppleWatchTypeDefs";
 import aiTypeDefs from "./TypeDefs/AiTypeDefs";
 import dashboardMetricsTypeDefs from "./TypeDefs/DashboardMetricsTypeDefs";
+import plannedExerciseTypeDefs from "./TypeDefs/PlannedExerciseTypeDefs";
 
 const schema = makeExecutableSchema({
   typeDefs: [
@@ -48,6 +53,7 @@ const schema = makeExecutableSchema({
     appleWatchTypeDefs,
     aiTypeDefs,
     dashboardMetricsTypeDefs,
+    plannedExerciseTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -62,6 +68,7 @@ const schema = makeExecutableSchema({
     weightRecommendationResolver,
     workoutCreatorResolver,
     dashboardMetricsResolver,
+    plannedExerciseResolvers,
   ],
 });
 

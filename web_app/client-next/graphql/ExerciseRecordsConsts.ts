@@ -69,6 +69,7 @@ export const GET_RECORD_FOR_THIS_EXERCISE_AND_DATE = gql`
       date
       userId
       status
+      notes
       recordSets {
         id
         reps
@@ -85,6 +86,15 @@ export const UPDATE_EXERCISE_RECORD_STATUS = gql`
     updateExerciseRecordStatus(id: $id, status: $status) {
       id
       status
+    }
+  }
+`
+
+export const UPDATE_EXERCISE_RECORD_NOTES = gql`
+  mutation UpdateExerciseRecordNotes($id: String!, $notes: String!) {
+    updateExerciseRecordNotes(id: $id, notes: $notes) {
+      id
+      notes
     }
   }
 `
