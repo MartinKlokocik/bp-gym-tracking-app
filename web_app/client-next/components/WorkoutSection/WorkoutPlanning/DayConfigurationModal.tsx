@@ -215,7 +215,11 @@ export const DayConfigurationModal = ({
                   </Button>
                   <Button
                     color="danger"
-                    onClick={handleDeleteCalendarDay}
+                    onClick={e =>
+                      handleDeleteCalendarDay(
+                        e as React.MouseEvent<HTMLButtonElement>
+                      )
+                    }
                     startContent={<Trash2 size={16} />}
                     className="w-full md:w-auto"
                   >
