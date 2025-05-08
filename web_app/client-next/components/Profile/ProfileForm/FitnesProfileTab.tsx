@@ -158,9 +158,7 @@ export const FitnessProfileTab = ({
               placeholder="Select a goal"
             >
               {goalOptions.map(goal => (
-                <SelectItem key={goal.value} value={goal.value}>
-                  {goal.label}
-                </SelectItem>
+                <SelectItem key={goal.value}>{goal.label}</SelectItem>
               ))}
             </Select>
           </div>
