@@ -4,20 +4,23 @@ import { plannedWorkoutsData } from "./plannedWorkoutsData";
 
 const prisma = new PrismaClient();
 
-const ADMIN_USER = await prisma.user.findFirst({
-  where: {
-    isAdmin: true,
-  },
-});
-
-const ADMIN_USER_ID = ADMIN_USER?.id || "";
-
 async function main() {
   console.log("Seeding database...");
 
+  const ADMIN_USER = await prisma.user.findFirst({
+    where: {
+      isAdmin: true,
+    },
+  });
+
+  const ADMIN_USER_ID = ADMIN_USER?.id || "";
+
   // Seed Exercises
   await prisma.exercise.createMany({
-    data: exercisesData,
+    data: exercisesData.map((exercise) => ({
+      ...exercise,
+      userId: ADMIN_USER_ID,
+    })),
   });
 
   console.log("Exercises seeded successfully!");

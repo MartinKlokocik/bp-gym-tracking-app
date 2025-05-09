@@ -1,18 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-const ADMIN_USER = await prisma.user.findFirst({
-  where: {
-    isAdmin: true,
-  },
-});
-
-const ADMIN_USER_ID = ADMIN_USER?.id || "";
-
 export const exercisesData = [
   {
-    userId: ADMIN_USER_ID,
     name: "Barbell Squat",
     description:
       "A fundamental lower-body exercise that targets the quads, hamstrings, and glutes.",
@@ -24,7 +11,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Deadlift",
     description:
       "A compound lift that strengthens the posterior chain, including hamstrings, glutes, and lower back.",
@@ -36,7 +22,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Bench Press",
     description:
       "Targets the chest, shoulders, and triceps with heavy pressing movement.",
@@ -48,7 +33,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Overhead Press",
     description:
       "A shoulder-dominant pressing movement that also engages the triceps and core.",
@@ -60,7 +44,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Pull-Up",
     description: "A bodyweight exercise targeting the back and biceps.",
     muscleGroup: "Back",
@@ -71,7 +54,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Barbell Row",
     description:
       "Strengthens the upper back, traps, and lats using a bent-over pulling motion.",
@@ -83,7 +65,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Romanian Deadlift",
     description:
       "Focuses on hamstring and glute development with a hip hinge movement.",
@@ -95,7 +76,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Lunges",
     description:
       "A single-leg movement that strengthens the quads, glutes, and hamstrings.",
@@ -107,7 +87,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Incline Dumbbell Press",
     description:
       "Targets the upper chest and front delts with a pressing motion.",
@@ -119,7 +98,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Dumbbell Shoulder Press",
     description:
       "A vertical pressing movement for shoulder hypertrophy and strength.",
@@ -131,7 +109,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Lat Pulldown",
     description: "Machine-based exercise targeting the lats and upper back.",
     muscleGroup: "Back",
@@ -142,7 +119,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Seated Cable Row",
     description:
       "Strengthens the middle back and biceps through horizontal pulling.",
@@ -154,7 +130,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Leg Press",
     description:
       "Machine-based compound movement targeting quads, hamstrings, and glutes.",
@@ -166,7 +141,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Bulgarian Split Squat",
     description:
       "Unilateral lower-body exercise that targets quads and glutes.",
@@ -178,7 +152,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Barbell Hip Thrust",
     description: "Focuses on glute development with a hip extension motion.",
     muscleGroup: "Glutes",
@@ -189,7 +162,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Hammer Curl",
     description: "Targets the biceps and forearms using a neutral grip curl.",
     muscleGroup: "Arms",
@@ -200,7 +172,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Skull Crushers",
     description:
       "Isolation exercise for the triceps using a lying extension motion.",
@@ -212,7 +183,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Chest Fly",
     description: "Isolation movement for the chest performed with dumbbells.",
     muscleGroup: "Chest",
@@ -223,7 +193,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Calf Raise",
     description: "Strengthens the calves using a standing or seated motion.",
     muscleGroup: "Calves",
@@ -234,7 +203,6 @@ export const exercisesData = [
     type: "strength",
   },
   {
-    userId: ADMIN_USER_ID,
     name: "Face Pull",
     description:
       "Improves rear delts and shoulder health using a cable system.",
