@@ -30,7 +30,7 @@ export default function SignupPage() {
     const password = formData.get('password') as string
     const name = formData.get('name') as string
 
-    const signupResponse = await fetch('http://localhost:4000/', {
+    const signupResponse = await fetch(process.env.NEXT_PUBLIC_API_URL!, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
