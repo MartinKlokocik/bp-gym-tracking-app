@@ -4,7 +4,13 @@ import { plannedWorkoutsData } from "./plannedWorkoutsData";
 
 const prisma = new PrismaClient();
 
-export const ADMIN_USER_ID = "4116f715-df81-4887-8010-6c77f300eea7"; // Replace this with your admin user ID
+const ADMIN_USER = await prisma.user.findFirst({
+  where: {
+    isAdmin: true,
+  },
+});
+
+const ADMIN_USER_ID = ADMIN_USER?.id || "";
 
 async function main() {
   console.log("Seeding database...");
@@ -54,9 +60,6 @@ async function main() {
   }
 
   console.log("Planned workouts seeded successfully!");
-
-
-  
 }
 
 main()

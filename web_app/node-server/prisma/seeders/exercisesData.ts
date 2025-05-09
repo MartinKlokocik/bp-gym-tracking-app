@@ -1,4 +1,14 @@
-import { ADMIN_USER_ID } from "./seed";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+const ADMIN_USER = await prisma.user.findFirst({
+  where: {
+    isAdmin: true,
+  },
+});
+
+const ADMIN_USER_ID = ADMIN_USER?.id || "";
 
 export const exercisesData = [
   {
