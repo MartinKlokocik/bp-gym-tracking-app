@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client'
 import { Button, ButtonGroup } from '@heroui/react'
+import { format } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import {
@@ -10,15 +11,32 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  TooltipProps,
 } from 'recharts'
 
 import { GET_ALL_USER_EXERCISE_RECORDS_FOR_EXERCISE } from '@/graphql/ExerciseRecordsConsts'
 import { ExerciseWithIdsType } from '@/types/Exercise'
 import { ExerciseRecordWithIdsType } from '@/types/ExerciseRecords'
+
 type GymProgressChartProps = {
   exercise: ExerciseWithIdsType | undefined
   userId: string
   updateTrigger: number
+}
+
+const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-gray-800 p-2 rounded border border-gray-700">
+        <p className="text-white">{`Date: ${format(
+          new Date(payload[0].payload.date),
+          'dd/MM'
+        )}`}</p>
+        <p className="text-white">{`Value: ${payload[0].value}`}</p>
+      </div>
+    )
+  }
+  return null
 }
 
 // TODO: CHECK IF THIS IS CORRECT
@@ -117,7 +135,7 @@ export const GymProgressChart = ({
               />
               <XAxis dataKey="date" stroke="#fff" />
               <YAxis stroke="#fff" />
-              <Tooltip />
+              <Tooltip content={<CustomTooltip />} />
               <Line
                 type="monotone"
                 dataKey="value"
