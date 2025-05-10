@@ -9,6 +9,7 @@ import {
 import { ResponsiveContainer } from 'recharts'
 import { Line } from 'recharts'
 
+import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 import { ProgressionCurve } from '@/types/DashboardMetrics'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
@@ -29,6 +30,8 @@ export const ProgressionCurveGraph = ({
 }: {
   data: ProgressionCurve[]
 }) => {
+  const isMobile = useMediaQuery('(max-width: 430px)')
+
   // Transform data for recharts
   const transformedData = data.flatMap(exercise =>
     exercise.weights.map((weight, index) => ({
@@ -41,7 +44,7 @@ export const ProgressionCurveGraph = ({
   return (
     <div className="flex flex-col gap-4 col-span-2 md:p-6 md:pl-8">
       <div className="text-2xl font-bold pl-2">Progression Curve</div>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
         <LineChart data={transformedData}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
           <XAxis dataKey="session" stroke="#fff" />

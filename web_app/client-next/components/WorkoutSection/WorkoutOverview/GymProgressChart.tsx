@@ -14,6 +14,7 @@ import {
   TooltipProps,
 } from 'recharts'
 
+import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 import { GET_ALL_USER_EXERCISE_RECORDS_FOR_EXERCISE } from '@/graphql/ExerciseRecordsConsts'
 import { ExerciseWithIdsType } from '@/types/Exercise'
 import { ExerciseRecordWithIdsType } from '@/types/ExerciseRecords'
@@ -70,6 +71,7 @@ export const GymProgressChart = ({
     variables: { exerciseId: exercise?.id, userId },
     skip: !exercise?.id,
   })
+  const isMobile = useMediaQuery('(max-width: 430px)')
 
   useEffect(() => {
     refetch()
@@ -127,7 +129,7 @@ export const GymProgressChart = ({
             </Button>
           </ButtonGroup>
 
-          <ResponsiveContainer width="100%" height={300}>
+          <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
             <LineChart data={chartData}>
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -152,7 +154,7 @@ export const GymProgressChart = ({
           </ResponsiveContainer>
         </>
       ) : (
-        <div className="text-white text-center w-full h-full flex flex-col items-center justify-center gap-1 min-h-[300px]">
+        <div className="text-white text-center w-full h-full flex flex-col items-center justify-center gap-1 min-h-[200px] md:min-h-[300px]">
           <h2 className="text-2xl font-bold">
             There are no older records for this exercise
           </h2>

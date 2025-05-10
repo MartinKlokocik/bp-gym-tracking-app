@@ -9,6 +9,8 @@ import {
   Tooltip,
   TooltipProps,
 } from 'recharts'
+
+import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 // TODO: Get data from backend
 const data = [
   { date: '2024-01-01', averagePulse: 70 },
@@ -34,12 +36,14 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 }
 
 export const AveragePulseGraph = () => {
+  const isMobile = useMediaQuery('(max-width: 430px)')
+
   return (
     <div className="col-span-1 md:p-6 md:pl-8 flex flex-col gap-4">
       <div className="text-2xl font-bold pl-2">
         Average Pulse during workouts
       </div>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
           <XAxis dataKey="date" stroke="#fff" />

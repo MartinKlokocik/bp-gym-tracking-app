@@ -78,8 +78,8 @@ export const CalendarBar = ({
                 }`}
                 onClick={() => setSelectedDate(date)}
               >
-                <div className="text-xs sm:text-sm">{format(date, 'EEE')}</div>
-                <div className="text-xs sm:text-base font-semibold">
+                <div className="sm:text-sm">{format(date, 'EEE')}</div>
+                <div className="sm:text-base font-semibold">
                   {format(date, 'd.M')}
                   <span className="hidden md:inline">
                     .{format(date, 'yyyy')}

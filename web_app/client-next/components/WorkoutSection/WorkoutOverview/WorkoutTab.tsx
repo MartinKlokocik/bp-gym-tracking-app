@@ -18,6 +18,7 @@ import { GymProgressChart } from './GymProgressChart'
 import { NotWorkoutRecordForm } from './NotWorkoutRecordForm'
 import { WorkoutRecomendationModal } from './WorkoutRecomendationModal'
 
+import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 import {
   GET_LATEST_EXERCISE_RECORD,
   GET_RECORD_FOR_THIS_EXERCISE_AND_DATE,
@@ -35,6 +36,7 @@ import {
 } from '@/graphql/types'
 import { RecordSetWithIdsType } from '@/types/ExerciseRecords'
 import { PlannedExerciseWithIdsType } from '@/types/WorkoutPlanning'
+
 type WorkoutTabProps = {
   selectedDate: Date
   user: User
@@ -58,6 +60,8 @@ export const WorkoutTab = ({
   const [isOpen, setIsOpen] = useState(false)
   const [updateTrigger, setUpdateTrigger] = useState<number>(0)
   const [exerciseIndex, setExerciseIndex] = useState<number>(0)
+  const isMobile = useMediaQuery('(max-width: 430px)')
+  const isTablet = useMediaQuery('(max-width: 768px)')
 
   useEffect(() => {
     if (selectedDate) {
@@ -443,7 +447,7 @@ export const WorkoutTab = ({
   }
 
   return (
-    <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-5">
+    <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-5 px-5">
       {calendarDayLoading ? (
         <div>Loading...</div>
       ) : (
@@ -457,7 +461,7 @@ export const WorkoutTab = ({
           ) : (
             <>
               <button
-                className="text-white p-2"
+                className="text-white flex justify-center items-center ml-1"
                 onClick={handlePrevExercise}
                 disabled={exerciseIndex == 0}
               >
@@ -465,11 +469,11 @@ export const WorkoutTab = ({
                   className={`text-white ${
                     exerciseIndex == 0 ? 'disabled-white-button' : ''
                   }`}
-                  size={80}
+                  size={isMobile ? 40 : isTablet ? 60 : 80}
                 />
               </button>
-              <div className="flex flex-col items-center w-full h-full gap-16 pl-5 pr-5 gap-4">
-                <div className="flex w-full justify-center md:justify-end gap-10">
+              <div className="flex flex-col items-center w-full h-full gap-16 p-0 md:pl-5 md:pr-5 gap-4">
+                <div className="flex w-full justify-center lg:justify-end gap-10">
                   <div className="flex flex-row gap-4">
                     <Checkbox
                       value="1"
@@ -499,8 +503,8 @@ export const WorkoutTab = ({
                     </Checkbox>
                   </div>
                 </div>
-                <div className="flex flex-col md:flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
-                  <div className="flex flex-col gap-4 w-full md:w-[40%] h-full">
+                <div className="flex flex-col lg:flex-row justify-between items-start justify-start w-full h-full gap-8 mb-12">
+                  <div className="flex flex-col gap-4 w-full lg:w-[40%] h-full">
                     <h2 className="text-2xl font-semibold">
                       Exercise ({exerciseIndex + 1}/
                       {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay
@@ -512,7 +516,7 @@ export const WorkoutTab = ({
                         src={selectedPlannedExercise?.exercise.image}
                         alt={selectedPlannedExercise?.exercise.name}
                         width={500}
-                        height={400}
+                        height={isMobile ? 300 : 400}
                         fallbackSrc="https://placehold.co/500x400"
                       />
                     ) : (
@@ -520,11 +524,11 @@ export const WorkoutTab = ({
                         src="https://placehold.co/500x400"
                         alt={selectedPlannedExercise?.exercise.name}
                         width={500}
-                        height={400}
+                        height={isMobile ? 300 : 400}
                       />
                     )}
                   </div>
-                  <div className="flex flex-col items-start w-full md:w-[60%] h-full">
+                  <div className="flex flex-col items-start w-full lg:w-[60%] h-full">
                     <GymProgressChart
                       exercise={selectedPlannedExercise?.exercise}
                       userId={user.id}
@@ -533,8 +537,8 @@ export const WorkoutTab = ({
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row w-full h-full justify-between gap-4">
-                  <div className="flex flex-col w-full md:w-1/2 h-full items-start justify-start">
+                <div className="flex flex-col lg:flex-row w-full h-full justify-between gap-4">
+                  <div className="flex flex-col w-full lg:w-1/2 h-full items-start justify-start">
                     <div className="grid grid-cols-2 gap-4 items-center w-full">
                       {latestExerciseRecordData && (
                         <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -701,7 +705,10 @@ export const WorkoutTab = ({
                   </div>
                 </div>
               </div>
-              <button className="text-white p-2" onClick={handleNextExercise}>
+              <button
+                className="text-white flex justify-center items-center mr-1"
+                onClick={handleNextExercise}
+              >
                 <ChevronRight
                   className={`text-white ${
                     exerciseIndex ==
@@ -711,7 +718,7 @@ export const WorkoutTab = ({
                       ? 'disabled-white-button'
                       : ''
                   }`}
-                  size={80}
+                  size={isMobile ? 40 : isTablet ? 60 : 80}
                 />
               </button>
             </>

@@ -11,6 +11,7 @@ import {
   TooltipProps,
 } from 'recharts'
 
+import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 import { WorkoutCompletionRate } from '@/types/DashboardMetrics'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
@@ -36,12 +37,14 @@ export const WorkoutCompletitionGraph = ({
 }: {
   data: WorkoutCompletionRate[]
 }) => {
+  const isMobile = useMediaQuery('(max-width: 430px)')
+
   return (
     <div className="col-span-1 flex flex-col gap-4 md:p-6 md:pl-8">
       <div className="text-2xl font-bold pl-2">
         Planned Exercises Completion Rate
       </div>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
           <XAxis

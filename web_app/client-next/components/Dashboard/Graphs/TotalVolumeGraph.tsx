@@ -5,6 +5,7 @@ import { LineChart } from 'recharts'
 import { ResponsiveContainer } from 'recharts'
 import { TooltipProps } from 'recharts'
 
+import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 import { VolumeLiftedInWeeks } from '@/types/DashboardMetrics'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
@@ -25,10 +26,12 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 }
 
 export const TotalVolumeGraph = ({ data }: { data: VolumeLiftedInWeeks[] }) => {
+  const isMobile = useMediaQuery('(max-width: 430px)')
+
   return (
     <div className="col-span-2 md:pl-2 flex flex-col gap-4">
       <div className="text-2xl font-bold pl-2">Total Volume in Weeks</div>
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.2)" />
           <XAxis dataKey="dateFrom" stroke="#fff" />
