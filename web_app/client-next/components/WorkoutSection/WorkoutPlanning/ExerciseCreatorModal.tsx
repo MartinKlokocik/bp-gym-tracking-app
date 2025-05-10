@@ -225,20 +225,9 @@ export const ExerciseCreatorModal = ({
                                 Drop images here or click to upload
                               </p>
                               <p className="text-xs text-default-400">
-                                Supports JPG, PNG, GIF
+                                Supports JPG, JPEG,PNG
                               </p>
                             </div>
-                            <Button
-                              color="primary"
-                              variant="flat"
-                              size="sm"
-                              onClick={e => {
-                                e.stopPropagation()
-                                inputRef.current?.click()
-                              }}
-                            >
-                              Upload Media
-                            </Button>
                           </div>
                         ) : (
                           <div className="relative">
