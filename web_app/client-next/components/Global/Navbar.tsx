@@ -62,8 +62,6 @@ export default function Navbar() {
     },
   ]
 
-  console.log(session)
-
   return (
     <NavbarHeroui
       maxWidth="full"

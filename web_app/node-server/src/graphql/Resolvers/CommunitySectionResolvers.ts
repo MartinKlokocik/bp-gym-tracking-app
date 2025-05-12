@@ -5,23 +5,49 @@ const prisma = new PrismaClient();
 const buildPostCounts = (posts: any[], userId: string) => {
   return posts.map((post) => ({
     ...post,
-    likesCount: post.reactions.filter((r: any) => r.type === ReactionType.LIKE)
-      .length,
-    dislikesCount: post.reactions.filter(
-      (r: any) => r.type === ReactionType.DISLIKE
-    ).length,
-    commentsCount: post.comments.length,
+    likesCount:
+      post.reactions?.filter((r: any) => r.type === ReactionType.LIKE).length ||
+      0,
+    dislikesCount:
+      post.reactions?.filter((r: any) => r.type === ReactionType.DISLIKE)
+        .length || 0,
+    commentsCount: post.comments?.length || 0,
     user: {
       ...post.user,
       profilePicture: post.user.profile?.profilePicture,
     },
-    isLiked: post.reactions.some(
-      (r: any) => r.userId === userId && r.type === ReactionType.LIKE
-    ),
-    isDisliked: post.reactions.some(
-      (r: any) => r.userId === userId && r.type === ReactionType.DISLIKE
-    ),
+    isLiked:
+      post.reactions?.some(
+        (r: any) => r.userId === userId && r.type === ReactionType.LIKE
+      ) || false,
+    isDisliked:
+      post.reactions?.some(
+        (r: any) => r.userId === userId && r.type === ReactionType.DISLIKE
+      ) || false,
     isUserCreator: post.userId === userId,
+    comments:
+      post.comments?.map((comment: any) => ({
+        ...comment,
+        user: {
+          ...comment.user,
+          profilePicture: comment.user.profile?.profilePicture,
+        },
+        likesCount:
+          comment.reactions?.filter((r: any) => r.type === ReactionType.LIKE)
+            .length || 0,
+        dislikesCount:
+          comment.reactions?.filter((r: any) => r.type === ReactionType.DISLIKE)
+            .length || 0,
+        isLiked:
+          comment.reactions?.some(
+            (r: any) => r.userId === userId && r.type === ReactionType.LIKE
+          ) || false,
+        isDisliked:
+          comment.reactions?.some(
+            (r: any) => r.userId === userId && r.type === ReactionType.DISLIKE
+          ) || false,
+        isUserCreator: comment.userId === userId,
+      })) || [],
   }));
 };
 
@@ -34,7 +60,22 @@ const resolvers = {
         },
         include: {
           reactions: true,
-          comments: true,
+          comments: {
+            include: {
+              reactions: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  profile: {
+                    select: {
+                      profilePicture: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           user: {
             select: {
               id: true,
@@ -66,6 +107,8 @@ const resolvers = {
 
       const postsWithCounts = buildPostCounts(posts, userId);
 
+      console.log(JSON.stringify(postsWithCounts, null, 2));
+
       return postsWithCounts;
     },
 
@@ -76,7 +119,22 @@ const resolvers = {
         },
         include: {
           reactions: true,
-          comments: true,
+          comments: {
+            include: {
+              reactions: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  profile: {
+                    select: {
+                      profilePicture: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           user: {
             select: {
               id: true,
@@ -109,7 +167,22 @@ const resolvers = {
         },
         include: {
           reactions: true,
-          comments: true,
+          comments: {
+            include: {
+              reactions: true,
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  profile: {
+                    select: {
+                      profilePicture: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           user: {
             select: {
               id: true,
@@ -167,6 +240,23 @@ const resolvers = {
       return post;
     },
 
+    createComment: async (
+      _: unknown,
+      { input }: { input: { postId: string; userId: string; content: string } }
+    ) => {
+      const { postId, userId, content } = input;
+
+      const comment = await prisma.postComment.create({
+        data: {
+          postId,
+          userId,
+          content,
+        },
+      });
+
+      return comment;
+    },
+
     hitLikePost: async (
       _: unknown,
       { postId, userId }: { postId: string; userId: string }
@@ -194,6 +284,7 @@ const resolvers = {
           },
         });
       }
+
       return true;
     },
 
@@ -224,6 +315,70 @@ const resolvers = {
           },
         });
       }
+      return true;
+    },
+
+    hitLikeComment: async (
+      _: unknown,
+      { userId, commentId }: { userId: string; commentId: string }
+    ) => {
+      const existingReaction = await prisma.reaction.findFirst({
+        where: {
+          postCommentId: commentId,
+          userId,
+          type: ReactionType.LIKE,
+        },
+      });
+
+      if (existingReaction) {
+        await prisma.reaction.delete({
+          where: { id: existingReaction.id },
+        });
+      } else {
+        const reaction = await prisma.reaction.create({
+          data: {
+            postId: null,
+            userId,
+            type: ReactionType.LIKE,
+            target: ReactionTarget.COMMENT,
+            postCommentId: commentId,
+          },
+        });
+      }
+      console.log("hit like comment");
+
+      return true;
+    },
+
+    hitDislikeComment: async (
+      _: unknown,
+      { userId, commentId }: { userId: string; commentId: string }
+    ) => {
+      const existingReaction = await prisma.reaction.findFirst({
+        where: {
+          postCommentId: commentId,
+          userId,
+          type: ReactionType.DISLIKE,
+        },
+      });
+
+      if (existingReaction) {
+        await prisma.reaction.delete({
+          where: { id: existingReaction.id },
+        });
+      } else {
+        const reaction = await prisma.reaction.create({
+          data: {
+            postId: null,
+            userId,
+            type: ReactionType.DISLIKE,
+            target: ReactionTarget.COMMENT,
+            postCommentId: commentId,
+          },
+        });
+      }
+      console.log("hit dislike comment");
+
       return true;
     },
   },

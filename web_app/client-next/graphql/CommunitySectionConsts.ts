@@ -39,6 +39,15 @@ export const GET_TRENDING_POSTS = gql`
         createdAt
         updatedAt
         isDeleted
+        user {
+          id
+          name
+          profilePicture
+        }
+        isLiked
+        isDisliked
+        likesCount
+        dislikesCount
       }
 
       reactions {
@@ -82,6 +91,15 @@ export const GET_RECENT_POSTS = gql`
         createdAt
         updatedAt
         isDeleted
+        user {
+          id
+          name
+          profilePicture
+        }
+        isLiked
+        isDisliked
+        likesCount
+        dislikesCount
       }
 
       reactions {
@@ -125,6 +143,15 @@ export const GET_MY_POSTS = gql`
         createdAt
         updatedAt
         isDeleted
+        user {
+          id
+          name
+          profilePicture
+        }
+        isLiked
+        isDisliked
+        likesCount
+        dislikesCount
       }
 
       reactions {
@@ -154,5 +181,31 @@ export const HIT_LIKE_POST = gql`
 export const HIT_DISLIKE_POST = gql`
   mutation HitDislikePost($postId: String!, $userId: String!) {
     hitDislikePost(postId: $postId, userId: $userId)
+  }
+`
+
+export const CREATE_COMMENT = gql`
+  mutation CreateComment($input: CommentInput!) {
+    createComment(input: $input) {
+      id
+      content
+      createdAt
+      updatedAt
+      isDeleted
+      postId
+      userId
+    }
+  }
+`
+
+export const HIT_LIKE_COMMENT = gql`
+  mutation HitLikeComment($commentId: String!, $userId: String!) {
+    hitLikeComment(commentId: $commentId, userId: $userId)
+  }
+`
+
+export const HIT_DISLIKE_COMMENT = gql`
+  mutation HitDislikeComment($commentId: String!, $userId: String!) {
+    hitDislikeComment(commentId: $commentId, userId: $userId)
   }
 `

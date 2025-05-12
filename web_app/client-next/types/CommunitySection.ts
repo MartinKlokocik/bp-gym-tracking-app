@@ -9,6 +9,29 @@ export const postSchema = z.object({
   image: z.string().optional(),
 })
 
+export const commentCreationSchema = z.object({
+  postId: z.string().min(1, { message: 'Post ID is required' }),
+  userId: z.string().min(1, { message: 'User ID is required' }),
+  content: z.string().min(1, { message: 'Content is required' }),
+})
+
+export const commentSchema = commentCreationSchema.extend({
+  id: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  isDeleted: z.boolean(),
+  likesCount: z.number(),
+  dislikesCount: z.number(),
+  isLiked: z.boolean(),
+  isDisliked: z.boolean(),
+  isUserCreator: z.boolean(),
+  user: z.object({
+    id: z.string(),
+    name: z.string(),
+    profilePicture: z.string().optional(),
+  }),
+})
+
 export const postCardSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -27,14 +50,7 @@ export const postCardSchema = z.object({
       postId: z.string(),
     })
   ),
-  comments: z.array(
-    z.object({
-      id: z.string(),
-      content: z.string(),
-      userId: z.string(),
-      postId: z.string(),
-    })
-  ),
+  comments: z.array(commentSchema),
   user: z.object({
     id: z.string(),
     name: z.string(),
@@ -50,3 +66,5 @@ export const postCardSchema = z.object({
 
 export type NewPost = z.infer<typeof postSchema>
 export type PostCard = z.infer<typeof postCardSchema>
+export type Comment = z.infer<typeof commentSchema>
+export type CommentCreation = z.infer<typeof commentCreationSchema>

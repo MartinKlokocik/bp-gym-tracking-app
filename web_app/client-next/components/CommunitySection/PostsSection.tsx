@@ -60,7 +60,7 @@ export default function PostsSection({
           <PostCard
             key={post.id}
             post={post}
-            userId={user.id}
+            user={user}
             refetchPosts={refetchPosts}
           />
         ))

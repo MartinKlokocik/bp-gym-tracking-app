@@ -5,6 +5,12 @@ const CommunitySectionTypeDefs = `
     createdAt: String!
     updatedAt: String!
     isDeleted: Boolean!
+    user: PostUser!
+    likesCount: Int!
+    dislikesCount: Int!
+    isLiked: Boolean!
+    isDisliked: Boolean!
+    isUserCreator: Boolean!
   }
 
   type Reaction {
@@ -64,6 +70,22 @@ const CommunitySectionTypeDefs = `
     isDeleted: Boolean!
   }
 
+  input CommentInput {
+    postId: String!
+    userId: String!
+    content: String!
+  }
+
+  type CreateCommentResponse {
+    id: String!
+    content: String!
+    createdAt: String!
+    updatedAt: String!
+    isDeleted: Boolean!
+    postId: String!
+    userId: String!
+  }
+
   type Query {
     getTrendingPosts(userId: String!): [Post!]!
     getRecentPosts(userId: String!): [Post!]!
@@ -74,6 +96,9 @@ const CommunitySectionTypeDefs = `
     createPost(input: PostInput!): CreatePostResponse!
     hitLikePost(postId: String!, userId: String!): Boolean!
     hitDislikePost(postId: String!, userId: String!): Boolean!
+    createComment(input: CommentInput!): CreateCommentResponse!
+    hitLikeComment(commentId: String!, userId: String!): Boolean!
+    hitDislikeComment(commentId: String!, userId: String!): Boolean!
   }
 `;
 
