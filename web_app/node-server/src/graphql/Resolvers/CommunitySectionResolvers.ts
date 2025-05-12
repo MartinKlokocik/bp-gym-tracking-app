@@ -1,8 +1,8 @@
-import { PrismaClient, ReactionType } from "@prisma/client";
+import { PrismaClient, ReactionTarget, ReactionType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const buildPostCounts = (posts: any[]) => {
+const buildPostCounts = (posts: any[], userId: string) => {
   return posts.map((post) => ({
     ...post,
     likesCount: post.reactions.filter((r: any) => r.type === ReactionType.LIKE)
@@ -15,12 +15,19 @@ const buildPostCounts = (posts: any[]) => {
       ...post.user,
       profilePicture: post.user.profile?.profilePicture,
     },
+    isLiked: post.reactions.some(
+      (r: any) => r.userId === userId && r.type === ReactionType.LIKE
+    ),
+    isDisliked: post.reactions.some(
+      (r: any) => r.userId === userId && r.type === ReactionType.DISLIKE
+    ),
+    isUserCreator: post.userId === userId,
   }));
 };
 
 const resolvers = {
   Query: {
-    getTrendingPosts: async () => {
+    getTrendingPosts: async (_: unknown, { userId }: { userId: string }) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
@@ -57,12 +64,12 @@ const resolvers = {
         ],
       });
 
-      const postsWithCounts = buildPostCounts(posts);
+      const postsWithCounts = buildPostCounts(posts, userId);
 
       return postsWithCounts;
     },
 
-    getRecentPosts: async () => {
+    getRecentPosts: async (_: unknown, { userId }: { userId: string }) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
@@ -89,7 +96,7 @@ const resolvers = {
         ],
       });
 
-      const postsWithCounts = buildPostCounts(posts);
+      const postsWithCounts = buildPostCounts(posts, userId);
 
       return postsWithCounts;
     },
@@ -122,7 +129,7 @@ const resolvers = {
         ],
       });
 
-      const postsWithCounts = buildPostCounts(posts);
+      const postsWithCounts = buildPostCounts(posts, userId);
 
       return postsWithCounts;
     },
@@ -158,6 +165,66 @@ const resolvers = {
       });
 
       return post;
+    },
+
+    hitLikePost: async (
+      _: unknown,
+      { postId, userId }: { postId: string; userId: string }
+    ) => {
+      const existingReaction = await prisma.reaction.findFirst({
+        where: {
+          postId,
+          userId,
+          type: ReactionType.LIKE,
+        },
+      });
+
+      if (existingReaction) {
+        await prisma.reaction.delete({
+          where: { id: existingReaction.id },
+        });
+      } else {
+        const reaction = await prisma.reaction.create({
+          data: {
+            postId,
+            userId,
+            type: ReactionType.LIKE,
+            target: ReactionTarget.POST,
+            postCommentId: null,
+          },
+        });
+      }
+      return true;
+    },
+
+    hitDislikePost: async (
+      _: unknown,
+      { postId, userId }: { postId: string; userId: string }
+    ) => {
+      const existingReaction = await prisma.reaction.findFirst({
+        where: {
+          postId,
+          userId,
+          type: ReactionType.DISLIKE,
+        },
+      });
+
+      if (existingReaction) {
+        await prisma.reaction.delete({
+          where: { id: existingReaction.id },
+        });
+      } else {
+        const reaction = await prisma.reaction.create({
+          data: {
+            postId,
+            userId,
+            type: ReactionType.DISLIKE,
+            target: ReactionTarget.POST,
+            postCommentId: null,
+          },
+        });
+      }
+      return true;
     },
   },
 };

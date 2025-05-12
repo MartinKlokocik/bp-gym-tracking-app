@@ -13,14 +13,10 @@ import { NewPost as NewPostType, postSchema } from '@/types/CommunitySection'
 
 export default function NewPost({
   user,
-  refetchTrendingPosts,
-  refetchRecentPosts,
-  refetchMyPosts,
+  refetchPosts,
 }: {
   user: User
-  refetchTrendingPosts: () => void
-  refetchRecentPosts: () => void
-  refetchMyPosts: () => void
+  refetchPosts: () => void
 }) {
   const [createPost, { data, loading, error }] = useMutation(CREATE_POST)
 
@@ -46,9 +42,7 @@ export default function NewPost({
 
     if (data) {
       toast.success('Post created successfully')
-      refetchTrendingPosts()
-      refetchRecentPosts()
-      refetchMyPosts()
+      refetchPosts()
     } else if (error) {
       toast.error('Failed to create post')
     }

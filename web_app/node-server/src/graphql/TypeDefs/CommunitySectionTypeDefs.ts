@@ -37,6 +37,9 @@ const CommunitySectionTypeDefs = `
     likesCount: Int!
     dislikesCount: Int!
     commentsCount: Int!
+    isLiked: Boolean!
+    isDisliked: Boolean!
+    isUserCreator: Boolean!
   }
 
   input PostInput {
@@ -62,13 +65,15 @@ const CommunitySectionTypeDefs = `
   }
 
   type Query {
-    getTrendingPosts: [Post!]!
-    getRecentPosts: [Post!]!
+    getTrendingPosts(userId: String!): [Post!]!
+    getRecentPosts(userId: String!): [Post!]!
     getMyPosts(userId: String!): [Post!]!
   }
 
   type Mutation {
     createPost(input: PostInput!): CreatePostResponse!
+    hitLikePost(postId: String!, userId: String!): Boolean!
+    hitDislikePost(postId: String!, userId: String!): Boolean!
   }
 `;
 

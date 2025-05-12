@@ -1,10 +1,47 @@
+import { useMutation } from '@apollo/client'
 import { Image } from '@heroui/react'
 import { format } from 'date-fns'
 import { Heart, MessageCircle, ThumbsDown } from 'lucide-react'
+import { useEffect } from 'react'
+import { toast } from 'react-toastify'
 
+import {
+  HIT_DISLIKE_POST,
+  HIT_LIKE_POST,
+} from '@/graphql/CommunitySectionConsts'
 import { PostCard as PostCardType } from '@/types/CommunitySection'
 
-export default function PostCard({ post }: { post: PostCardType }) {
+export default function PostCard({
+  post,
+  userId,
+  refetchPosts,
+}: {
+  post: PostCardType
+  userId: string
+  refetchPosts: () => void
+}) {
+  const [hitLikePost, { error: likeError }] = useMutation(HIT_LIKE_POST)
+  const [hitDislikePost, { error: dislikeError }] =
+    useMutation(HIT_DISLIKE_POST)
+  const handleLikePost = async () => {
+    await hitLikePost({ variables: { postId: post.id, userId } })
+    refetchPosts()
+  }
+
+  useEffect(() => {
+    if (likeError) {
+      toast.error('Error liking post')
+    }
+    if (dislikeError) {
+      toast.error('Error disliking post')
+    }
+  }, [likeError, dislikeError])
+
+  const handleDislikePost = async () => {
+    await hitDislikePost({ variables: { postId: post.id, userId } })
+    refetchPosts()
+  }
+
   return (
     <div className="flex flex-col gap-2 w-full h-full">
       <div className="flex justify-start items-center gap-1">
@@ -43,15 +80,23 @@ export default function PostCard({ post }: { post: PostCardType }) {
 
       <div className="flex justify-start items-center gap-5">
         <div className="flex items-center gap-1">
-          <Heart className="w-6 h-6" />
+          <Heart
+            className="w-6 h-6 cursor-pointer"
+            onClick={handleLikePost}
+            color={post.isLiked ? 'red' : 'white'}
+          />
           <p className="text-md text-gray-200">{post.likesCount}</p>
         </div>
         <div className="flex items-center gap-1">
-          <ThumbsDown className="w-6 h-6" />
+          <ThumbsDown
+            className="w-6 h-6 cursor-pointer"
+            onClick={handleDislikePost}
+            color={post.isDisliked ? 'red' : 'white'}
+          />
           <p className="text-md text-gray-200">{post.dislikesCount}</p>
         </div>
         <div className="flex items-center gap-1">
-          <MessageCircle className="w-6 h-6" />
+          <MessageCircle className="w-6 h-6 cursor-pointer" />
           <p className="text-md text-gray-200">{post.commentsCount}</p>
         </div>
       </div>

@@ -17,8 +17,8 @@ export const CREATE_POST = gql`
 `
 
 export const GET_TRENDING_POSTS = gql`
-  query GetTrendingPosts {
-    getTrendingPosts {
+  query GetTrendingPosts($userId: String!) {
+    getTrendingPosts(userId: $userId) {
       id
       title
       content
@@ -52,13 +52,16 @@ export const GET_TRENDING_POSTS = gql`
       likesCount
       dislikesCount
       commentsCount
+      isLiked
+      isDisliked
+      isUserCreator
     }
   }
 `
 
 export const GET_RECENT_POSTS = gql`
-  query GetRecentPosts {
-    getRecentPosts {
+  query GetRecentPosts($userId: String!) {
+    getRecentPosts(userId: $userId) {
       id
       title
       content
@@ -92,6 +95,9 @@ export const GET_RECENT_POSTS = gql`
       likesCount
       dislikesCount
       commentsCount
+      isLiked
+      isDisliked
+      isUserCreator
     }
   }
 `
@@ -132,6 +138,21 @@ export const GET_MY_POSTS = gql`
       likesCount
       dislikesCount
       commentsCount
+      isLiked
+      isDisliked
+      isUserCreator
     }
+  }
+`
+
+export const HIT_LIKE_POST = gql`
+  mutation HitLikePost($postId: String!, $userId: String!) {
+    hitLikePost(postId: $postId, userId: $userId)
+  }
+`
+
+export const HIT_DISLIKE_POST = gql`
+  mutation HitDislikePost($postId: String!, $userId: String!) {
+    hitDislikePost(postId: $postId, userId: $userId)
   }
 `

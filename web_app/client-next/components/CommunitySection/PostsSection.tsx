@@ -39,14 +39,15 @@ export default function PostsSection({
           ? myPosts
           : []
 
+  const refetchPosts = () => {
+    refetchTrendingPosts()
+    refetchRecentPosts()
+    refetchMyPosts()
+  }
+
   return (
     <div className="flex flex-col gap-10 w-[90%] h-full p-10">
-      <NewPost
-        user={user}
-        refetchTrendingPosts={refetchTrendingPosts}
-        refetchRecentPosts={refetchRecentPosts}
-        refetchMyPosts={refetchMyPosts}
-      />
+      <NewPost user={user} refetchPosts={refetchPosts} />
       {(activeTab === 'trending' && trendingPostsLoading) ||
       (activeTab === 'recent' && recentPostsLoading) ||
       (activeTab === 'my-posts' && myPostsLoading) ? (
@@ -56,7 +57,12 @@ export default function PostsSection({
       ) : (
         posts &&
         posts.map((post: PostCardType) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard
+            key={post.id}
+            post={post}
+            userId={user.id}
+            refetchPosts={refetchPosts}
+          />
         ))
       )}
     </div>

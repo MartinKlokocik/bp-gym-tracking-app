@@ -19,14 +19,24 @@ export default function Home() {
     loading: trendingPostsLoading,
     error: trendingPostsError,
     refetch: refetchTrendingPosts,
-  } = useQuery(GET_TRENDING_POSTS)
+  } = useQuery(GET_TRENDING_POSTS, {
+    variables: {
+      userId: session?.user.id,
+    },
+    skip: !session?.user.id,
+  })
 
   const {
     data: recentPosts,
     loading: recentPostsLoading,
     error: recentPostsError,
     refetch: refetchRecentPosts,
-  } = useQuery(GET_RECENT_POSTS)
+  } = useQuery(GET_RECENT_POSTS, {
+    variables: {
+      userId: session?.user.id,
+    },
+    skip: !session?.user.id,
+  })
 
   const {
     data: myPosts,

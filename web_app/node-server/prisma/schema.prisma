@@ -230,12 +230,12 @@ model Reaction {
   isDeleted Boolean @default(false)
 
   // Relations
-  post Post @relation(fields: [postId], references: [id])
-  postId String
+  post Post? @relation(fields: [postId], references: [id])
+  postId String?
   user User @relation(fields: [userId], references: [id])
   userId String
-  postComment PostComment @relation(fields: [postCommentId], references: [id])
-  postCommentId String
+  postComment PostComment? @relation(fields: [postCommentId], references: [id])
+  postCommentId String?
 }
 
 enum ReactionType {
