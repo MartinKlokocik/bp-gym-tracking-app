@@ -1,24 +1,25 @@
 import { Image } from '@heroui/react'
-import { Heart, MessageCircle } from 'lucide-react'
+import { format } from 'date-fns'
+import { Heart, MessageCircle, ThumbsDown } from 'lucide-react'
 
-import { Post } from '../DummyData'
+import { PostCard as PostCardType } from '@/types/CommunitySection'
 
-export default function PostCard({ post }: { post: Post }) {
+export default function PostCard({ post }: { post: PostCardType }) {
   return (
     <div className="flex flex-col gap-2 w-full h-full">
       <div className="flex justify-start items-center gap-1">
         <div className="flex items-center gap-4">
           <Image
-            src={post.user.image || ''}
+            src={post.user.profilePicture || '/user.png'}
             alt={post.user.name}
-            width={70}
-            height={70}
+            width={60}
+            height={60}
             className="rounded-full"
           />
           <div className="flex flex-col">
             <p className="text-xl font-medium">{post.user.name}</p>
             <p className="text-md text-gray-400">
-              {post.createdAt.toLocaleDateString()}
+              {format(new Date(parseInt(post.createdAt)), 'MMM d, yyyy')}
             </p>
           </div>
         </div>
@@ -43,11 +44,15 @@ export default function PostCard({ post }: { post: Post }) {
       <div className="flex justify-start items-center gap-5">
         <div className="flex items-center gap-1">
           <Heart className="w-6 h-6" />
-          <p className="text-md text-gray-200">{post.reactions.length}</p>
+          <p className="text-md text-gray-200">{post.likesCount}</p>
+        </div>
+        <div className="flex items-center gap-1">
+          <ThumbsDown className="w-6 h-6" />
+          <p className="text-md text-gray-200">{post.dislikesCount}</p>
         </div>
         <div className="flex items-center gap-1">
           <MessageCircle className="w-6 h-6" />
-          <p className="text-md text-gray-200">{post.comments.length}</p>
+          <p className="text-md text-gray-200">{post.commentsCount}</p>
         </div>
       </div>
     </div>

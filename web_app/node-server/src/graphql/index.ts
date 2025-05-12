@@ -16,6 +16,7 @@ import {
 import userProfileResolvers from "./Resolvers/UserProfileResolvers";
 import dashboardMetricsResolver from "./Resolvers/DashboardMetricsResolver";
 import plannedExerciseResolvers from "./Resolvers/PlannedExerciseResolvers";
+import communitySectionResolvers from "./Resolvers/CommunitySectionResolvers";
 
 // TypeDefs
 import userTypeDefs from "./TypeDefs/UserTypeDefs";
@@ -35,6 +36,7 @@ import appleWatchTypeDefs from "./TypeDefs/AppleWatchTypeDefs";
 import aiTypeDefs from "./TypeDefs/AiTypeDefs";
 import dashboardMetricsTypeDefs from "./TypeDefs/DashboardMetricsTypeDefs";
 import plannedExerciseTypeDefs from "./TypeDefs/PlannedExerciseTypeDefs";
+import communitySectionTypeDefs from "./TypeDefs/CommunitySectionTypeDefs";
 
 const schema = makeExecutableSchema({
   typeDefs: [
@@ -54,6 +56,7 @@ const schema = makeExecutableSchema({
     aiTypeDefs,
     dashboardMetricsTypeDefs,
     plannedExerciseTypeDefs,
+    communitySectionTypeDefs,
   ],
   resolvers: [
     userResolvers,
@@ -69,6 +72,7 @@ const schema = makeExecutableSchema({
     workoutCreatorResolver,
     dashboardMetricsResolver,
     plannedExerciseResolvers,
+    communitySectionResolvers,
   ],
 });
 
