@@ -99,6 +99,7 @@ const CommunitySectionTypeDefs = `
     createComment(input: CommentInput!): CreateCommentResponse!
     hitLikeComment(commentId: String!, userId: String!): Boolean!
     hitDislikeComment(commentId: String!, userId: String!): Boolean!
+    saveWorkoutToMyPlans(userId: String!, workoutPlanId: String!): Boolean!
   }
 `;
 

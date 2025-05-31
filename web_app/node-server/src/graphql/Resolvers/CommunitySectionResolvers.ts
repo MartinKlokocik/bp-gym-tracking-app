@@ -379,6 +379,83 @@ const resolvers = {
 
       return true;
     },
+
+    saveWorkoutToMyPlans: async (
+            _: unknown,
+      { userId, workoutPlanId }: { userId: string; workoutPlanId: string }
+    ) => {
+      const existingWorkoutPlan = await prisma.plannedWorkout.findFirst({
+        where: {
+          id: workoutPlanId
+        },
+        include: {
+          days: {
+            include: {
+              plannedExercises: {
+                include: {
+                  plannedSets: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (existingWorkoutPlan) {
+        await prisma.plannedWorkout.create({
+            data: {
+          user: {
+            connect: { id: userId },
+          },
+          name: existingWorkoutPlan.name,
+          schema: existingWorkoutPlan.schema || "",
+          isActive: false,
+          isPublic: false,
+          isDefault: false,
+          days: {
+            create: existingWorkoutPlan.days.map((day: any) => ({
+              user: {
+                connect: { id: userId },
+              },
+              name: day.name,
+              plannedExercises: {
+                create: day.plannedExercises.map((plannedExercise: any) => ({
+                  user: {
+                    connect: { id: userId },
+                  },
+                  exercise: {
+                    connect: { id: plannedExercise.exerciseId },
+                  },
+                  exerciseNumber: plannedExercise.exerciseNumber,
+                  notes: plannedExercise.notes || "",
+                  plannedSets: {
+                    create: plannedExercise.plannedSets.map((set: any) => ({
+                      setNumber: set.setNumber,
+                      reps: set.reps,
+                      restTime: set.restTime || null,
+                    })),
+                  },
+                })),
+              },
+            })),
+          },
+        },
+        include: {
+          days: {
+            include: {
+              plannedExercises: {
+                include: {
+                  plannedSets: true,
+                },
+              },
+            },
+          },
+        },
+        });
+        return true;
+      }
+      return false;
+    },
   },
 };
 

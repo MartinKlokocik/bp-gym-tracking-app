@@ -209,3 +209,9 @@ export const HIT_DISLIKE_COMMENT = gql`
     hitDislikeComment(commentId: $commentId, userId: $userId)
   }
 `
+
+export const SAVE_WORKOUT_TO_MY_PLANS = gql`
+  mutation SaveWorkoutToMyPlans($userId: String!, $workoutPlanId: String!) {
+    saveWorkoutToMyPlans(userId: $userId, workoutPlanId: $workoutPlanId)
+  }
+`

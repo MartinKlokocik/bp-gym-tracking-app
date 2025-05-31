@@ -12,6 +12,7 @@ import { WorkoutDetailViewModal } from '@/components/WorkoutSection/WorkoutPlann
 import {
   HIT_DISLIKE_POST,
   HIT_LIKE_POST,
+  SAVE_WORKOUT_TO_MY_PLANS,
 } from '@/graphql/CommunitySectionConsts'
 import { PostCard as PostCardType } from '@/types/CommunitySection'
 
@@ -33,6 +34,11 @@ export default function PostCard({
   const [hitLikePost, { error: likeError }] = useMutation(HIT_LIKE_POST)
   const [hitDislikePost, { error: dislikeError }] =
     useMutation(HIT_DISLIKE_POST)
+  const [
+    saveWorkoutToMyPlans,
+    { data: saveWorkoutToMyPlansData, error: saveWorkoutToMyPlansError },
+  ] = useMutation(SAVE_WORKOUT_TO_MY_PLANS)
+
   const handleLikePost = async () => {
     await hitLikePost({ variables: { postId: post.id, userId: user.id } })
     refetchPosts()
@@ -45,7 +51,18 @@ export default function PostCard({
     if (dislikeError) {
       toast.error('Error disliking post')
     }
-  }, [likeError, dislikeError])
+    if (saveWorkoutToMyPlansError) {
+      toast.error('Error saving workout to my plans')
+    }
+    if (saveWorkoutToMyPlansData) {
+      toast.success('Workout saved successfully')
+    }
+  }, [
+    likeError,
+    dislikeError,
+    saveWorkoutToMyPlansData,
+    saveWorkoutToMyPlansError,
+  ])
 
   const handleDislikePost = async () => {
     await hitDislikePost({ variables: { postId: post.id, userId: user.id } })
@@ -87,7 +104,14 @@ export default function PostCard({
             <Button
               color="default"
               className="cursor-pointer"
-              onClick={() => {}}
+              onClick={() => {
+                saveWorkoutToMyPlans({
+                  variables: {
+                    userId: user.id,
+                    workoutPlanId: post.attachedWorkoutPlan,
+                  },
+                })
+              }}
             >
               Save to My Plans
             </Button>
