@@ -46,13 +46,13 @@ export default function PostsSection({
   }
 
   return (
-    <div className="flex flex-col gap-10 w-[90%] h-full p-10">
+    <div className="flex flex-col gap-4 md:gap-10 w-full md:w-[90%] h-full p-1 md:p-10">
       <NewPost user={user} refetchPosts={refetchPosts} />
       {(activeTab === 'trending' && trendingPostsLoading) ||
       (activeTab === 'recent' && recentPostsLoading) ||
       (activeTab === 'my-posts' && myPostsLoading) ? (
         <div className="flex justify-center items-center h-full">
-          <Loader2 className="w-10 h-10 animate-spin" />
+          <Loader2 className="w-6 h-6 md:w-10 md:h-10 animate-spin" />
         </div>
       ) : (
         posts &&

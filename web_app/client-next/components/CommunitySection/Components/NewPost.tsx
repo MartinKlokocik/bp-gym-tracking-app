@@ -77,21 +77,21 @@ export default function NewPost({
 
   return (
     <>
-      <div className="flex flex-col gap-2 w-full h-full p-4 bg-gray-900 rounded-2xl">
-        <div className="flex justify-start items-center gap-4">
+      <div className="flex flex-col gap-1 md:gap-2 w-full h-full p-3 md:p-4 bg-gray-900 rounded-xl md:rounded-2xl">
+        <div className="flex justify-start items-center gap-2 md:gap-4">
           <Image
             src={user.image || '/avatar.png'}
             alt="avatar"
             width={70}
             height={70}
-            className="rounded-full"
+            className="rounded-full hidden md:block"
           />
-          <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-col gap-1 md:gap-2 w-full">
             <Input
               {...register('title')}
               value={watch('title')}
               placeholder="Title"
-              className="text-2xl font-medium"
+              className="text-lg md:text-2xl font-medium"
               variant="bordered"
               radius="full"
               errorMessage={errors.title?.message}
@@ -100,7 +100,7 @@ export default function NewPost({
               {...register('content')}
               value={watch('content')}
               placeholder="What's on your mind?"
-              className="text-2xl font-medium"
+              className="text-lg md:text-2xl font-medium"
               variant="bordered"
               radius="full"
               errorMessage={errors.content?.message}
@@ -108,22 +108,30 @@ export default function NewPost({
           </div>
         </div>
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center justify-center gap-2">
-            <div className="flex items-center justify-center gap-2">
-              <Plus />
-              <p>Photo</p>
+          <div className="flex items-center justify-center gap-2 md:gap-4">
+            <div className="flex items-center justify-center gap-1 md:gap-2">
+              <Plus className="w-4 h-4 md:w-5 md:h-5" />
+              <p className="text-xs md:text-sm">Photo</p>
             </div>
-            <div className="flex items-center justify-center gap-2">
-              <Plus onClick={onOpenChange} className="cursor-pointer" />
-              <p>Workout</p>
+            <div className="flex items-center justify-center gap-1 md:gap-2">
+              <Plus
+                onClick={onOpenChange}
+                className="cursor-pointer w-4 h-4 md:w-5 md:h-5"
+              />
+              <p className="text-xs md:text-sm">Workout</p>
             </div>
           </div>
           <Button
             color="primary"
-            className="text-lg"
+            className="text-sm md:text-lg"
+            size="sm"
             onClick={handleSubmit(onSubmit)}
           >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Post'}
+            {loading ? (
+              <Loader2 className="w-3 h-3 md:w-4 md:h-4 animate-spin" />
+            ) : (
+              'Post'
+            )}
           </Button>
         </div>
       </div>

@@ -60,7 +60,7 @@ export default function NewComment({
           alt={user.name}
           width={50}
           height={50}
-          className="rounded-full"
+          className="rounded-full hidden md:block"
         />
         <Textarea
           placeholder="Add a comment"
