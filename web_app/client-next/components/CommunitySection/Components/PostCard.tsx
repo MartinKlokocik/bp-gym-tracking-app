@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { Image, useDisclosure } from '@heroui/react'
+import { Button, Image, useDisclosure } from '@heroui/react'
 import { format } from 'date-fns'
 import { Heart, MessageCircle, ThumbsDown } from 'lucide-react'
 import { User } from 'next-auth'
@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 
 import CommentsModal from '../CommentsModal'
 
+import { WorkoutDetailViewModal } from '@/components/WorkoutSection/WorkoutPlanning/WorkoutDetailViewModal'
 import {
   HIT_DISLIKE_POST,
   HIT_LIKE_POST,
@@ -23,7 +24,12 @@ export default function PostCard({
   user: User
   refetchPosts: () => void
 }) {
-  const { isOpen, onOpenChange } = useDisclosure()
+  const { isOpen: isOpenComments, onOpenChange: onOpenChangeComments } =
+    useDisclosure()
+  const {
+    isOpen: isOpenWorkoutDetailView,
+    onOpenChange: onOpenChangeWorkoutDetailView,
+  } = useDisclosure()
   const [hitLikePost, { error: likeError }] = useMutation(HIT_LIKE_POST)
   const [hitDislikePost, { error: dislikeError }] =
     useMutation(HIT_DISLIKE_POST)
@@ -69,6 +75,24 @@ export default function PostCard({
 
         <h2 className="text-2xl font-bold">{post.title}</h2>
         <p className="text-lg text-gray-100">{post.content}</p>
+        {post.attachedWorkoutPlan && (
+          <div className="flex items-center gap-2 mt-3">
+            <Button
+              color="default"
+              className="cursor-pointer"
+              onClick={onOpenChangeWorkoutDetailView}
+            >
+              View Attached Workout Plan
+            </Button>
+            <Button
+              color="default"
+              className="cursor-pointer"
+              onClick={() => {}}
+            >
+              Save to My Plans
+            </Button>
+          </div>
+        )}
 
         <div className="flex justify-start items-center gap-1 mt-1">
           {post.tags.map(tag => (
@@ -103,20 +127,28 @@ export default function PostCard({
           <div className="flex items-center gap-1">
             <MessageCircle
               className="w-6 h-6 cursor-pointer"
-              onClick={onOpenChange}
+              onClick={onOpenChangeComments}
             />
             <p className="text-md text-gray-200">{post.commentsCount}</p>
           </div>
         </div>
       </div>
       <CommentsModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        isOpen={isOpenComments}
+        onOpenChange={onOpenChangeComments}
         comments={post.comments}
         postId={post.id}
         user={user}
         refetchPosts={refetchPosts}
       />
+      {post.attachedWorkoutPlan && (
+        <WorkoutDetailViewModal
+          isOpen={isOpenWorkoutDetailView}
+          onOpenChange={onOpenChangeWorkoutDetailView}
+          selectedWorkoutPlanId={post.attachedWorkoutPlan}
+          isPreview={true}
+        />
+      )}
     </>
   )
 }

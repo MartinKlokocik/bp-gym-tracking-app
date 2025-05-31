@@ -219,11 +219,11 @@ const resolvers = {
           content: string;
           image?: string;
           tags?: string[];
-          attachedWorkoutPLan?: string;
+          attachedWorkoutPlan?: string;
         };
       }
     ) => {
-      const { userId, title, content, image, tags, attachedWorkoutPLan } =
+      const { userId, title, content, image, tags, attachedWorkoutPlan } =
         input;
 
       const post = await prisma.post.create({
@@ -233,7 +233,7 @@ const resolvers = {
           content,
           image,
           tags,
-          attachedWorkoutPLan,
+          attachedWorkoutPlan,
         },
       });
 
@@ -345,7 +345,6 @@ const resolvers = {
           },
         });
       }
-      console.log("hit like comment");
 
       return true;
     },
@@ -377,7 +376,6 @@ const resolvers = {
           },
         });
       }
-      console.log("hit dislike comment");
 
       return true;
     },

@@ -33,7 +33,8 @@ type WorkoutDetailViewModalProps = {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   selectedWorkoutPlanId: string
-  refetchPlannedWorkouts: () => void
+  refetchPlannedWorkouts?: () => void
+  isPreview?: boolean
 }
 
 export const WorkoutDetailViewModal = ({
@@ -41,6 +42,7 @@ export const WorkoutDetailViewModal = ({
   onOpenChange,
   selectedWorkoutPlanId,
   refetchPlannedWorkouts,
+  isPreview,
 }: WorkoutDetailViewModalProps) => {
   const {
     data: workoutPlanData,
@@ -96,7 +98,7 @@ export const WorkoutDetailViewModal = ({
     try {
       await deletePlannedWorkout({ variables: { id: selectedWorkoutPlanId } })
       toast.success('Workout plan deleted successfully')
-      refetchPlannedWorkouts()
+      refetchPlannedWorkouts?.()
     } catch (error) {
       console.error('Error deleting workout plan: ', error)
       toast.error('Error deleting workout plan')
@@ -124,25 +126,27 @@ export const WorkoutDetailViewModal = ({
                 </div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button variant="flat" color="default">
-                <Edit className="w-4 h-4 mr-1" />
-                Edit
-              </Button>
-              <Button
-                color="danger"
-                size="md"
-                variant="flat"
-                onPress={handleDeletePlannedWorkout}
-                startContent={<Trash size={14} />}
-              >
-                {deletePlannedWorkoutLoading ? (
-                  <Spinner size="sm" />
-                ) : (
-                  'Delete this plan'
-                )}
-              </Button>
-            </div>
+            {!isPreview && (
+              <div className="flex gap-2">
+                <Button variant="flat" color="default">
+                  <Edit className="w-4 h-4 mr-1" />
+                  Edit
+                </Button>
+                <Button
+                  color="danger"
+                  size="md"
+                  variant="flat"
+                  onPress={handleDeletePlannedWorkout}
+                  startContent={<Trash size={14} />}
+                >
+                  {deletePlannedWorkoutLoading ? (
+                    <Spinner size="sm" />
+                  ) : (
+                    'Delete this plan'
+                  )}
+                </Button>
+              </div>
+            )}
           </div>
         </ModalHeader>
         <ModalBody className="p-4 max-h-[80vh] overflow-y-auto">

@@ -194,7 +194,7 @@ model Post {
   content String
   image   String?
   tags    String[] @default([])
-  attachedWorkoutPLan String?
+  attachedWorkoutPlan String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   isDeleted Boolean @default(false)
