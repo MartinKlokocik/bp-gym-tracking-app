@@ -2,7 +2,7 @@
 
 import { useQuery } from '@apollo/client'
 import { useSession } from 'next-auth/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import CommunityLayout from '@/components/CommunitySection/CommunityLayout'
 import {
@@ -13,6 +13,7 @@ import {
 
 export default function Home() {
   const { data: session } = useSession()
+  const [search, setSearch] = useState('')
 
   const {
     data: trendingPosts,
@@ -22,6 +23,7 @@ export default function Home() {
   } = useQuery(GET_TRENDING_POSTS, {
     variables: {
       userId: session?.user.id,
+      searchTerm: search,
     },
     skip: !session?.user.id,
   })
@@ -34,6 +36,7 @@ export default function Home() {
   } = useQuery(GET_RECENT_POSTS, {
     variables: {
       userId: session?.user.id,
+      searchTerm: search,
     },
     skip: !session?.user.id,
   })
@@ -46,6 +49,7 @@ export default function Home() {
   } = useQuery(GET_MY_POSTS, {
     variables: {
       userId: session?.user.id,
+      searchTerm: search,
     },
     skip: !session?.user.id,
   })
@@ -79,6 +83,8 @@ export default function Home() {
       myPosts={myPosts?.getMyPosts}
       myPostsLoading={myPostsLoading}
       refetchMyPosts={refetchMyPosts}
+      search={search}
+      setSearch={setSearch}
     />
   )
 }

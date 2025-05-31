@@ -87,9 +87,9 @@ const CommunitySectionTypeDefs = `
   }
 
   type Query {
-    getTrendingPosts(userId: String!): [Post!]!
-    getRecentPosts(userId: String!): [Post!]!
-    getMyPosts(userId: String!): [Post!]!
+    getTrendingPosts(userId: String!, searchTerm: String): [Post!]!
+    getRecentPosts(userId: String!, searchTerm: String): [Post!]!
+    getMyPosts(userId: String!, searchTerm: String): [Post!]!
   }
 
   type Mutation {

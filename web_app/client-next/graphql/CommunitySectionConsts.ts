@@ -17,8 +17,8 @@ export const CREATE_POST = gql`
 `
 
 export const GET_TRENDING_POSTS = gql`
-  query GetTrendingPosts($userId: String!) {
-    getTrendingPosts(userId: $userId) {
+  query GetTrendingPosts($userId: String!, $searchTerm: String) {
+    getTrendingPosts(userId: $userId, searchTerm: $searchTerm) {
       id
       title
       content
@@ -69,8 +69,8 @@ export const GET_TRENDING_POSTS = gql`
 `
 
 export const GET_RECENT_POSTS = gql`
-  query GetRecentPosts($userId: String!) {
-    getRecentPosts(userId: $userId) {
+  query GetRecentPosts($userId: String!, $searchTerm: String) {
+    getRecentPosts(userId: $userId, searchTerm: $searchTerm) {
       id
       title
       content
@@ -121,8 +121,8 @@ export const GET_RECENT_POSTS = gql`
 `
 
 export const GET_MY_POSTS = gql`
-  query GetMyPosts($userId: String!) {
-    getMyPosts(userId: $userId) {
+  query GetMyPosts($userId: String!, $searchTerm: String) {
+    getMyPosts(userId: $userId, searchTerm: $searchTerm) {
       id
       title
       content

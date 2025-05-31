@@ -18,6 +18,8 @@ export default function CommunityLayout({
   refetchTrendingPosts,
   refetchRecentPosts,
   refetchMyPosts,
+  search,
+  setSearch,
 }: {
   user: User
   trendingPosts: PostCard[]
@@ -29,12 +31,14 @@ export default function CommunityLayout({
   refetchTrendingPosts: () => void
   refetchRecentPosts: () => void
   refetchMyPosts: () => void
+  search: string
+  setSearch: (search: string) => void
 }) {
   const [activeTab, setActiveTab] = useState('trending')
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full p-4">
-      <CommunityHeader />
+      <CommunityHeader search={search} setSearch={setSearch} />
       <SectionSelector activeTab={activeTab} setActiveTab={setActiveTab} />
       <PostsSection
         user={user}

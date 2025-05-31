@@ -53,10 +53,32 @@ const buildPostCounts = (posts: any[], userId: string) => {
 
 const resolvers = {
   Query: {
-    getTrendingPosts: async (_: unknown, { userId }: { userId: string }) => {
+    getTrendingPosts: async (_: unknown, { userId, searchTerm }: { userId: string, searchTerm: string }) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
+          ...(searchTerm &&
+            searchTerm.trim() !== "" && {
+              OR: [
+                {
+                  title: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  tags: {
+                    has: searchTerm,
+                  },
+                },
+              ],
+            }),
         },
         include: {
           reactions: true,
@@ -112,10 +134,32 @@ const resolvers = {
       return postsWithCounts;
     },
 
-    getRecentPosts: async (_: unknown, { userId }: { userId: string }) => {
+    getRecentPosts: async (_: unknown, { userId, searchTerm }: { userId: string, searchTerm: string }) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
+          ...(searchTerm &&
+            searchTerm.trim() !== "" && {
+              OR: [
+                {
+                  title: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  tags: {
+                    has: searchTerm,
+                  },
+                },
+              ],
+            }),
         },
         include: {
           reactions: true,
@@ -159,11 +203,33 @@ const resolvers = {
       return postsWithCounts;
     },
 
-    getMyPosts: async (_: unknown, { userId }: { userId: string }) => {
+    getMyPosts: async (_: unknown, { userId, searchTerm }: { userId: string, searchTerm: string }) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
           userId: userId,
+          ...(searchTerm &&
+            searchTerm.trim() !== "" && {
+              OR: [
+                {
+                  title: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: searchTerm,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  tags: {
+                    has: searchTerm,
+                  },
+                },
+              ],
+            }),
         },
         include: {
           reactions: true,
