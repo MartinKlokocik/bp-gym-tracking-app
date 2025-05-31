@@ -92,6 +92,9 @@ export default function PostCard({
 
         <h2 className="text-lg md:text-2xl font-bold">{post.title}</h2>
         <p className="text-sm md:text-lg text-gray-100">{post.content}</p>
+        {post.image && (
+          <Image src={post.image} alt="post image" width={450} height={450} />
+        )}
         {post.attachedWorkoutPlan && (
           <div className="flex gap-2 mt-2 md:mt-3 flex-col md:flex-row md:items-center">
             <Button

@@ -53,7 +53,10 @@ const buildPostCounts = (posts: any[], userId: string) => {
 
 const resolvers = {
   Query: {
-    getTrendingPosts: async (_: unknown, { userId, searchTerm }: { userId: string, searchTerm: string }) => {
+    getTrendingPosts: async (
+      _: unknown,
+      { userId, searchTerm }: { userId: string; searchTerm: string }
+    ) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
@@ -129,12 +132,13 @@ const resolvers = {
 
       const postsWithCounts = buildPostCounts(posts, userId);
 
-      console.log(JSON.stringify(postsWithCounts, null, 2));
-
       return postsWithCounts;
     },
 
-    getRecentPosts: async (_: unknown, { userId, searchTerm }: { userId: string, searchTerm: string }) => {
+    getRecentPosts: async (
+      _: unknown,
+      { userId, searchTerm }: { userId: string; searchTerm: string }
+    ) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
@@ -203,7 +207,10 @@ const resolvers = {
       return postsWithCounts;
     },
 
-    getMyPosts: async (_: unknown, { userId, searchTerm }: { userId: string, searchTerm: string }) => {
+    getMyPosts: async (
+      _: unknown,
+      { userId, searchTerm }: { userId: string; searchTerm: string }
+    ) => {
       const posts = await prisma.post.findMany({
         where: {
           isDeleted: false,
@@ -291,6 +298,8 @@ const resolvers = {
     ) => {
       const { userId, title, content, image, tags, attachedWorkoutPlan } =
         input;
+
+      console.log("image", image);
 
       const post = await prisma.post.create({
         data: {
@@ -447,12 +456,12 @@ const resolvers = {
     },
 
     saveWorkoutToMyPlans: async (
-            _: unknown,
+      _: unknown,
       { userId, workoutPlanId }: { userId: string; workoutPlanId: string }
     ) => {
       const existingWorkoutPlan = await prisma.plannedWorkout.findFirst({
         where: {
-          id: workoutPlanId
+          id: workoutPlanId,
         },
         include: {
           days: {
@@ -469,54 +478,54 @@ const resolvers = {
 
       if (existingWorkoutPlan) {
         await prisma.plannedWorkout.create({
-            data: {
-          user: {
-            connect: { id: userId },
+          data: {
+            user: {
+              connect: { id: userId },
+            },
+            name: existingWorkoutPlan.name,
+            schema: existingWorkoutPlan.schema || "",
+            isActive: false,
+            isPublic: false,
+            isDefault: false,
+            days: {
+              create: existingWorkoutPlan.days.map((day: any) => ({
+                user: {
+                  connect: { id: userId },
+                },
+                name: day.name,
+                plannedExercises: {
+                  create: day.plannedExercises.map((plannedExercise: any) => ({
+                    user: {
+                      connect: { id: userId },
+                    },
+                    exercise: {
+                      connect: { id: plannedExercise.exerciseId },
+                    },
+                    exerciseNumber: plannedExercise.exerciseNumber,
+                    notes: plannedExercise.notes || "",
+                    plannedSets: {
+                      create: plannedExercise.plannedSets.map((set: any) => ({
+                        setNumber: set.setNumber,
+                        reps: set.reps,
+                        restTime: set.restTime || null,
+                      })),
+                    },
+                  })),
+                },
+              })),
+            },
           },
-          name: existingWorkoutPlan.name,
-          schema: existingWorkoutPlan.schema || "",
-          isActive: false,
-          isPublic: false,
-          isDefault: false,
-          days: {
-            create: existingWorkoutPlan.days.map((day: any) => ({
-              user: {
-                connect: { id: userId },
-              },
-              name: day.name,
-              plannedExercises: {
-                create: day.plannedExercises.map((plannedExercise: any) => ({
-                  user: {
-                    connect: { id: userId },
+          include: {
+            days: {
+              include: {
+                plannedExercises: {
+                  include: {
+                    plannedSets: true,
                   },
-                  exercise: {
-                    connect: { id: plannedExercise.exerciseId },
-                  },
-                  exerciseNumber: plannedExercise.exerciseNumber,
-                  notes: plannedExercise.notes || "",
-                  plannedSets: {
-                    create: plannedExercise.plannedSets.map((set: any) => ({
-                      setNumber: set.setNumber,
-                      reps: set.reps,
-                      restTime: set.restTime || null,
-                    })),
-                  },
-                })),
-              },
-            })),
-          },
-        },
-        include: {
-          days: {
-            include: {
-              plannedExercises: {
-                include: {
-                  plannedSets: true,
                 },
               },
             },
           },
-        },
         });
         return true;
       }

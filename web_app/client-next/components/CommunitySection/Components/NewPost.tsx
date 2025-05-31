@@ -5,14 +5,16 @@ import { Button } from '@heroui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Plus } from 'lucide-react'
 import { User } from 'next-auth'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 import WorkoutAttachmentModal from './WorkoutAttachmentModal'
+import WorkoutPhotoUploadModal from './WorkoutPhotoUploadModal'
 
 import { CREATE_POST } from '@/graphql/CommunitySectionConsts'
 import { NewPost as NewPostType, postSchema } from '@/types/CommunitySection'
+import { uploadImage } from '@/utils/upload-image'
 export default function NewPost({
   user,
   refetchPosts,
@@ -21,7 +23,16 @@ export default function NewPost({
   refetchPosts: () => void
 }) {
   const [createPost, { loading, error }] = useMutation(CREATE_POST)
-  const { isOpen, onOpenChange } = useDisclosure()
+  const {
+    isOpen: isWorkoutAttachmentOpen,
+    onOpenChange: onWorkoutAttachmentOpenChange,
+  } = useDisclosure()
+  const {
+    isOpen: isWorkoutPhotoUploadOpen,
+    onOpenChange: onWorkoutPhotoUploadOpenChange,
+  } = useDisclosure()
+  const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
 
   const {
     register,
@@ -45,9 +56,25 @@ export default function NewPost({
     console.log('Form Submitted:', formData)
 
     try {
+      let imageUrl = ''
+
+      try {
+        if (file) {
+          imageUrl = await uploadImage(file, 'post_images')
+        }
+      } catch (e) {
+        console.error(e)
+        toast.error('Upload failed')
+      }
+
+      console.log('imageUrl', imageUrl)
+
       await createPost({
         variables: {
-          input: formData,
+          input: {
+            ...formData,
+            image: imageUrl,
+          },
         },
       })
 
@@ -60,6 +87,8 @@ export default function NewPost({
         content: '',
         image: '',
       })
+      setFile(null)
+      setPreview(null)
     } catch (error) {
       toast.error('Failed to create post')
       console.error('Mutation error:', error)
@@ -110,12 +139,15 @@ export default function NewPost({
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center justify-center gap-2 md:gap-4">
             <div className="flex items-center justify-center gap-1 md:gap-2">
-              <Plus className="w-4 h-4 md:w-5 md:h-5" />
+              <Plus
+                onClick={onWorkoutPhotoUploadOpenChange}
+                className="cursor-pointer w-4 h-4 md:w-5 md:h-5"
+              />
               <p className="text-xs md:text-sm">Photo</p>
             </div>
             <div className="flex items-center justify-center gap-1 md:gap-2">
               <Plus
-                onClick={onOpenChange}
+                onClick={onWorkoutAttachmentOpenChange}
                 className="cursor-pointer w-4 h-4 md:w-5 md:h-5"
               />
               <p className="text-xs md:text-sm">Workout</p>
@@ -136,11 +168,18 @@ export default function NewPost({
         </div>
       </div>
       <WorkoutAttachmentModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        isOpen={isWorkoutAttachmentOpen}
+        onOpenChange={onWorkoutAttachmentOpenChange}
         user={user}
         setValue={setValue}
         watch={watch}
+      />
+      <WorkoutPhotoUploadModal
+        isOpen={isWorkoutPhotoUploadOpen}
+        onOpenChange={onWorkoutPhotoUploadOpenChange}
+        setFile={setFile}
+        preview={preview}
+        setPreview={setPreview}
       />
     </>
   )
