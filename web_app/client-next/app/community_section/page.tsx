@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@apollo/client'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
@@ -13,7 +14,9 @@ import {
 
 export default function Home() {
   const { data: session } = useSession()
-  const [search, setSearch] = useState('')
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [search, setSearch] = useState(searchParams?.get('q') || '')
 
   const {
     data: trendingPosts,
@@ -67,6 +70,20 @@ export default function Home() {
       console.error(myPostsError)
     }
   }, [trendingPostsError, recentPostsError, myPostsError])
+
+  useEffect(() => {
+    const currentParams = new URLSearchParams(searchParams?.toString() || '')
+
+    if (search && search.trim() !== '') {
+      currentParams.set('q', search)
+    } else {
+      currentParams.delete('q')
+    }
+
+    router.push(`/community_section?${currentParams.toString()}`, {
+      scroll: false,
+    })
+  }, [search, router, searchParams])
 
   if (!session) {
     return <div>Loading...</div>
