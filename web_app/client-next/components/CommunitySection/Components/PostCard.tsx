@@ -1,9 +1,21 @@
 import { useMutation } from '@apollo/client'
-import { Button, Image, useDisclosure } from '@heroui/react'
+import {
+  Button,
+  Image,
+  PopoverContent,
+  PopoverTrigger,
+  Popover,
+  useDisclosure,
+} from '@heroui/react'
 import { format } from 'date-fns'
-import { Heart, MessageCircle, ThumbsDown } from 'lucide-react'
+import {
+  EllipsisVertical,
+  Heart,
+  MessageCircle,
+  ThumbsDown,
+} from 'lucide-react'
 import { User } from 'next-auth'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import CommentsModal from '../CommentsModal'
@@ -13,6 +25,7 @@ import {
   HIT_DISLIKE_POST,
   HIT_LIKE_POST,
   SAVE_WORKOUT_TO_MY_PLANS,
+  DELETE_POST,
 } from '@/graphql/CommunitySectionConsts'
 import { PostCard as PostCardType } from '@/types/CommunitySection'
 
@@ -27,6 +40,7 @@ export default function PostCard({
 }) {
   const { isOpen: isOpenComments, onOpenChange: onOpenChangeComments } =
     useDisclosure()
+  const [isPostPopoverOpen, setIsPostPopoverOpen] = useState(false)
   const {
     isOpen: isOpenWorkoutDetailView,
     onOpenChange: onOpenChangeWorkoutDetailView,
@@ -38,6 +52,7 @@ export default function PostCard({
     saveWorkoutToMyPlans,
     { data: saveWorkoutToMyPlansData, error: saveWorkoutToMyPlansError },
   ] = useMutation(SAVE_WORKOUT_TO_MY_PLANS)
+  const [deletePost, { error: deletePostError }] = useMutation(DELETE_POST)
 
   const handleLikePost = async () => {
     await hitLikePost({ variables: { postId: post.id, userId: user.id } })
@@ -57,11 +72,15 @@ export default function PostCard({
     if (saveWorkoutToMyPlansData) {
       toast.success('Workout saved successfully')
     }
+    if (deletePostError) {
+      toast.error('Error deleting post')
+    }
   }, [
     likeError,
     dislikeError,
     saveWorkoutToMyPlansData,
     saveWorkoutToMyPlansError,
+    deletePostError,
   ])
 
   const handleDislikePost = async () => {
@@ -69,10 +88,16 @@ export default function PostCard({
     refetchPosts()
   }
 
+  const handleDeletePost = async () => {
+    await deletePost({ variables: { postId: post.id } })
+    setIsPostPopoverOpen(false)
+    refetchPosts()
+  }
+
   return (
     <>
       <div className="flex flex-col gap-1 md:gap-2 w-full h-full">
-        <div className="flex justify-start items-center gap-1">
+        <div className="flex justify-between items-center gap-1 w-full">
           <div className="flex items-center gap-2 md:gap-4">
             <Image
               src={post.user.profilePicture || '/user.png'}
@@ -88,6 +113,34 @@ export default function PostCard({
               </p>
             </div>
           </div>
+
+          {post.isUserCreator && (
+            <div className="flex items-center justify-center">
+              <Popover
+                placement="bottom"
+                isOpen={isPostPopoverOpen}
+                onOpenChange={open => {
+                  setIsPostPopoverOpen(open)
+                }}
+              >
+                <PopoverTrigger>
+                  <EllipsisVertical className="w-5 h-5 md:w-6 md:h-6 cursor-pointer text-white" />
+                </PopoverTrigger>
+                <PopoverContent>
+                  <div className="px-1 py-2">
+                    <Button
+                      variant="ghost"
+                      color="default"
+                      size="sm"
+                      onClick={handleDeletePost}
+                    >
+                      Delete Post
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
         </div>
 
         <h2 className="text-lg md:text-2xl font-bold">{post.title}</h2>

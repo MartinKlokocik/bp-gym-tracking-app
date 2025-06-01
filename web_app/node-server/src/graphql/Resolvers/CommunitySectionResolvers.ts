@@ -531,7 +531,20 @@ const resolvers = {
       }
       return false;
     },
+
+    deletePost: async (
+      _: unknown,
+      { postId }: { postId: string }
+    ) => {
+      await prisma.post.update({
+        where: { id: postId },
+        data: { isDeleted: true },
+      });
+
+      return true;
+    },
   },
+
 };
 
 export default resolvers;

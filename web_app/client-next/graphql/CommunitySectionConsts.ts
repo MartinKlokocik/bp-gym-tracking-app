@@ -215,3 +215,9 @@ export const SAVE_WORKOUT_TO_MY_PLANS = gql`
     saveWorkoutToMyPlans(userId: $userId, workoutPlanId: $workoutPlanId)
   }
 `
+
+export const DELETE_POST = gql`
+  mutation DeletePost($postId: String!) {
+    deletePost(postId: $postId)
+  }
+`
