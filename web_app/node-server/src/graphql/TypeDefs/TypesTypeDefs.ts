@@ -68,6 +68,7 @@ const TypesTypeDefs = `
     weight: Float!
     restTime: Int
     setNumber: Int!
+    avgPulse: Int
   }
 
   type ExerciseRecord {

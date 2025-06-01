@@ -428,6 +428,9 @@ export const WorkoutTab = ({
     }
   }
 
+  console.log(calendarDayData)
+  console.log(JSON.stringify(latestExerciseRecordData, null, 2))
+
   const isDisplaying = () => {
     if (!calendarDayData) {
       return false
@@ -601,7 +604,7 @@ export const WorkoutTab = ({
                                     <div className="text-gray-300">
                                       <p>📊 {previousSetData?.reps} reps</p>
                                       <p>⏳ {previousSetData?.restTime} sec</p>
-                                      <p>💓 {/* TODO: Add pulse data */}</p>
+                                      <p>💓 {previousSetData?.avgPulse} bpm</p>
                                     </div>
                                   </AccordionItem>
                                 </Accordion>

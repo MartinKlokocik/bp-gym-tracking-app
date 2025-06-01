@@ -21,6 +21,7 @@ export const GET_ALL_USER_EXERCISE_RECORDS_FOR_EXERCISE = gql`
         weight
         restTime
         setNumber
+        avgPulse
       }
     }
   }
@@ -49,6 +50,7 @@ export const GET_LATEST_EXERCISE_RECORD = gql`
         weight
         restTime
         setNumber
+        avgPulse
       }
     }
   }
@@ -76,6 +78,7 @@ export const GET_RECORD_FOR_THIS_EXERCISE_AND_DATE = gql`
         weight
         restTime
         setNumber
+        avgPulse
       }
     }
   }
