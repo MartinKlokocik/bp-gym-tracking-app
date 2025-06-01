@@ -1,18 +1,59 @@
 import Foundation
 
 class GraphQLService {
-    private let urlString = "https://bp-gym-tracking-app-be.onrender.com/graphql"
-    private let userId = "687c7c59-2fab-4ab3-989f-cae5dd86bfba"
+    private let urlString = "http://localhost:4000/graphql"
 
-    func fetchWorkoutData(completion: @escaping (Result<WatchesWorkout?, Error>) -> Void) {
+    func checkDevicePairing(deviceUUID: String, completion: @escaping (Result<Bool, Error>) -> Void) {        
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "InvalidURL", code: 0)))
             return
         }
 
         let query = """
-            query GetWorkoutForToday($userId: String!) {
-              getWorkoutForToday(userId: $userId) {
+            query IsDevicePaired($deviceUUID: String!) {
+              isDevicePaired(deviceUUID: $deviceUUID)
+            }
+            """
+
+        let jsonBody: [String: Any] = [
+            "query": query,
+            "variables": [
+                "deviceUUID": deviceUUID
+            ]
+        ]
+
+        performRequest(url: url, body: jsonBody) { result in
+            switch result {
+            case .success(let data):
+                // Check for GraphQL errors first
+                if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let errors = jsonObject["errors"] as? [[String: Any]] {
+                    print("GraphQL errors: \(errors)")
+                    completion(.failure(NSError(domain: "GraphQLError", code: 0, userInfo: [NSLocalizedDescriptionKey: "GraphQL query failed"])))
+                    return
+                }
+                
+                do {
+                    let decoded = try JSONDecoder().decode(IsDevicePairedResponse.self, from: data)
+                    completion(.success(decoded.data.isDevicePaired))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchWorkoutData(deviceUUID: String, completion: @escaping (Result<WatchesWorkout?, Error>) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "InvalidURL", code: 0)))
+            return
+        }
+
+        let query = """
+            query GetWorkoutForToday($deviceUUID: String!) {
+              getWorkoutForToday(deviceUUID: $deviceUUID) {
                 id
                 plannedWorkoutDay {
                   name
@@ -34,11 +75,69 @@ class GraphQLService {
         let jsonBody: [String: Any] = [
                 "query": query,
                 "variables": [
-                    "userId": userId
+                    "deviceUUID": deviceUUID
                 ]
             ]
 
-        guard let bodyData = try? JSONSerialization.data(withJSONObject: jsonBody) else {
+        performRequest(url: url, body: jsonBody) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let decoded = try JSONDecoder().decode(GetWorkoutForTodayResponse.self, from: data)
+                    let workout = decoded.data.getWorkoutForToday
+                    completion(.success(workout))
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func sendPulseData(deviceUUID: String, pulse: Int, exerciseIndex: Int, setIndex: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+           guard let url = URL(string: urlString) else {
+               completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
+               return
+           }
+
+           let mutation = """
+           mutation SendPulseData($avgPulse: Int!, $exerciseIndex: Int!, $setIndex: Int!, $deviceUUID: String!) {
+             sendPulseData(avgPulse: $avgPulse, exerciseIndex: $exerciseIndex, setIndex: $setIndex)
+           }
+           """
+
+           let variables: [String: Any] = [
+               "avgPulse": pulse,
+               "exerciseIndex": exerciseIndex,
+               "setIndex": setIndex,
+               "deviceUUID": deviceUUID
+           ]
+
+           let body: [String: Any] = [
+               "query": mutation,
+               "variables": variables
+           ]
+
+           performRequest(url: url, body: body) { result in
+               switch result {
+               case .success(let data):
+                   do {
+                       let decoded = try JSONDecoder().decode(SendPulseDataResponse.self, from: data)
+                       let success = decoded.data.sendPulseData
+                       completion(.success(success))
+                   } catch {
+                       completion(.failure(error))
+                   }
+               case .failure(let error):
+                   completion(.failure(error))
+               }
+           }
+       }
+    
+    // MARK: - Private Helper Methods
+    private func performRequest(url: URL, body: [String: Any], completion: @escaping (Result<Data, Error>) -> Void) {
+        guard let bodyData = try? JSONSerialization.data(withJSONObject: body) else {
             completion(.failure(NSError(domain: "JSONSerialization", code: 0)))
             return
         }
@@ -63,86 +162,22 @@ class GraphQLService {
                 return
             }
 
-            do {
-                let decoded = try JSONDecoder().decode(GetWorkoutForTodayResponse.self, from: data)
-                let workout = decoded.data.getWorkoutForToday
-
-                DispatchQueue.main.async {
-                    completion(.success(workout))
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+            DispatchQueue.main.async {
+                completion(.success(data))
             }
         }.resume()
     }
-    
-    func sendPulseData(pulse: Int, exerciseIndex: Int, setIndex: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
-           guard let url = URL(string: urlString) else {
-               completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
-               return
-           }
-
-           let mutation = """
-           mutation SendPulseData($avgPulse: Int!, $exerciseIndex: Int!, $setIndex: Int!) {
-             sendPulseData(avgPulse: $avgPulse, exerciseIndex: $exerciseIndex, setIndex: $setIndex)
-           }
-           """
-
-           let variables: [String: Any] = [
-               "avgPulse": pulse,
-               "exerciseIndex": exerciseIndex,
-               "setIndex": setIndex
-           ]
-
-           let body: [String: Any] = [
-               "query": mutation,
-               "variables": variables
-           ]
-
-           guard let bodyData = try? JSONSerialization.data(withJSONObject: body, options: []) else {
-               completion(.failure(NSError(domain: "JSONSerialization", code: 0, userInfo: nil)))
-               return
-           }
-
-           var request = URLRequest(url: url)
-           request.httpMethod = "POST"
-           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-           request.httpBody = bodyData
-
-           URLSession.shared.dataTask(with: request) { data, response, error in
-               if let error = error {
-                   DispatchQueue.main.async {
-                       completion(.failure(error))
-                   }
-                   return
-               }
-
-               guard let data = data else {
-                   DispatchQueue.main.async {
-                       completion(.failure(NSError(domain: "NoData", code: 0, userInfo: nil)))
-                   }
-                   return
-               }
-
-               do {
-                   let decoded = try JSONDecoder().decode(SendPulseDataResponse.self, from: data)
-                   let success = decoded.data.sendPulseData
-
-                   DispatchQueue.main.async {
-                       completion(.success(success))
-                   }
-               } catch {
-                   DispatchQueue.main.async {
-                       completion(.failure(error))
-                   }
-               }
-           }.resume()
-       }
 }
 
 // MARK: - Helper Models
+struct IsDevicePairedResponse: Decodable {
+    let data: PairingData
+    
+    struct PairingData: Decodable {
+        let isDevicePaired: Bool
+    }
+}
+
 struct GetWorkoutForTodayResponse: Decodable {
     let data: DataContainer
 
@@ -175,7 +210,6 @@ struct WatchesPlannedSet: Decodable {
     let reps: Int?
     let restTime: Int?
 }
-
 
 struct SendPulseDataResponse: Decodable {
     let data: MutationData

@@ -5,6 +5,7 @@ struct WorkoutInProgressView: View {
     let exerciseIndex: Int
     let setIndex: Int
     let isMonitoring: Bool
+    let deviceUUID: String
     
     let nextSet: () -> Void
     let toggleMonitor: () -> Void
@@ -61,7 +62,7 @@ struct WorkoutInProgressView: View {
                     } else {
                         Button("Complete") {
                             completeSet()
-                            heartRateManger.stopMonitoring(setIndex: setIndex, exerciseIndex: exerciseIndex)
+                            heartRateManger.stopMonitoring(setIndex: setIndex, exerciseIndex: exerciseIndex, deviceUUID: deviceUUID)
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)

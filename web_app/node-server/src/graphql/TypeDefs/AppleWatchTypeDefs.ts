@@ -26,7 +26,7 @@ type WatchesWorkout {
 }
 
 type Query {
-  getWorkoutForToday(userId: String!): WatchesWorkout
+  getWorkoutForToday(deviceUUID: String!): WatchesWorkout
   isDevicePaired(deviceUUID: String!): Boolean
   isUserPaired(userId: String!): Boolean
 }

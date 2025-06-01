@@ -3,6 +3,7 @@ import Foundation
 
 // MARK: - Main View
 struct WorkoutFlowView: View {
+    @ObservedObject var deviceManager: DeviceManager
     @StateObject private var viewModel = WorkoutFlowViewModel()
     
     var body: some View {
@@ -23,6 +24,7 @@ struct WorkoutFlowView: View {
                     exerciseIndex: exerciseIndex,
                     setIndex: setIndex,
                     isMonitoring: isMonitoring,
+                    deviceUUID: deviceManager.deviceUUID,
                     nextSet: viewModel.nextSet,
                     toggleMonitor: viewModel.toggleMonitor,
                     completeSet: viewModel.completeSet
@@ -42,7 +44,7 @@ struct WorkoutFlowView: View {
             }
         }
         .onAppear {
-            viewModel.loadData()
+            viewModel.loadData(deviceUUID: deviceManager.deviceUUID)
         }
         .padding()
     }
@@ -75,10 +77,10 @@ class WorkoutFlowViewModel: ObservableObject {
     private let service = GraphQLService()
     
     // MARK: - Data Loading
-    func loadData() {
+    func loadData(deviceUUID: String) {
         self.state = .loading
         
-        service.fetchWorkoutData { [weak self] result in
+        service.fetchWorkoutData(deviceUUID: deviceUUID) { [weak self] result in
             guard let self = self else { return }
             
             switch result {

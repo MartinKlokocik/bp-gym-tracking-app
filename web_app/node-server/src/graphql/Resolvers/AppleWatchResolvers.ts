@@ -4,12 +4,31 @@ const prisma = new PrismaClient();
 
 const resolvers = {
   Query: {
-    getWorkoutForToday: async (_: unknown, { userId }: { userId: string }) => {
+    getWorkoutForToday: async (
+      _: unknown,
+      { deviceUUID }: { deviceUUID: string }
+    ) => {
+      console.log("getWorkoutForToday", deviceUUID);
+      const userId = await prisma.devicePairing.findFirst({
+        where: {
+          deviceUUID,
+          isPaired: true,
+          isDeleted: false,
+        },
+        select: {
+          userId: true,
+        },
+      });
+
+      if (!userId || !userId.userId) {
+        return null;
+      }
+
       const today = new Date().toISOString().split("T")[0];
 
       const workout = await prisma.calendarDay.findFirst({
         where: {
-          userId,
+          userId: userId.userId,
           date: today,
         },
         select: {
