@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
+import TagInput from './TagInput'
 import WorkoutAttachmentModal from './WorkoutAttachmentModal'
 import WorkoutPhotoUploadModal from './WorkoutPhotoUploadModal'
 
@@ -49,6 +50,7 @@ export default function NewPost({
       attachedWorkoutPlan: '',
       content: '',
       image: '',
+      tags: [],
     },
   })
 
@@ -86,6 +88,7 @@ export default function NewPost({
         attachedWorkoutPlan: '',
         content: '',
         image: '',
+        tags: [],
       })
       setFile(null)
       setPreview(null)
@@ -133,6 +136,11 @@ export default function NewPost({
               variant="bordered"
               radius="full"
               errorMessage={errors.content?.message}
+            />
+            <TagInput
+              tags={(watch('tags') || []) as string[]}
+              onTagsChange={(value: string[]) => setValue('tags', value)}
+              error={errors.tags?.message}
             />
           </div>
         </div>

@@ -180,9 +180,9 @@ export default function PostCard({
           {post.tags.map(tag => (
             <div
               key={tag}
-              className="flex items-center gap-1 md:gap-2 bg-gray-300 px-2 md:px-3 py-1 rounded-md"
+              className="flex items-center gap-1 md:gap-2 bg-blue-600 px-2 md:px-3 py-1 rounded-md"
             >
-              <p className="text-xs md:text-md text-black">#{tag}</p>
+              <p className="text-xs md:text-md text-white">#{tag}</p>
             </div>
           ))}
         </div>
