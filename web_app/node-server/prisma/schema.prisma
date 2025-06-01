@@ -26,6 +26,7 @@ model User {
   posts              Post[]
   postComments       PostComment[]
   reactions          Reaction[]
+  devicePairing      DevicePairing[]
 }
 
 model UserProfile {
@@ -236,6 +237,18 @@ model Reaction {
   userId String
   postComment PostComment? @relation(fields: [postCommentId], references: [id])
   postCommentId String?
+}
+
+model DevicePairing {
+  id String @id @default(uuid())
+  userId String? 
+  deviceUUID String
+  isPaired Boolean @default(false)
+  isDeleted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
 }
 
 enum ReactionType {

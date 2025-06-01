@@ -27,9 +27,13 @@ type WatchesWorkout {
 
 type Query {
   getWorkoutForToday(userId: String!): WatchesWorkout
+  isDevicePaired(deviceUUID: String!): Boolean
+  isUserPaired(userId: String!): Boolean
 }
 type Mutation {
   sendPulseData(avgPulse: Int!, exerciseIndex: Int!, setIndex: Int!): Boolean
+  pairDevice(deviceUUID: String!, userId: String!): Boolean
+  unpairUser(userId: String!): Boolean
 }
 `;
 

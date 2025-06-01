@@ -154,6 +154,9 @@ export default function Navbar() {
                 <DropdownItem key="profile" as={Link} href="/profile">
                   Profile
                 </DropdownItem>
+                <DropdownItem key="settings" as={Link} href="/settings">
+                  Settings
+                </DropdownItem>
                 <DropdownItem
                   key="logout"
                   color="danger"
