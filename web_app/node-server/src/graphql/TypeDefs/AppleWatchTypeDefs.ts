@@ -31,7 +31,7 @@ type Query {
   isUserPaired(userId: String!): Boolean
 }
 type Mutation {
-  sendPulseData(avgPulse: Int!, exerciseIndex: Int!, setIndex: Int!): Boolean
+  sendPulseData(avgPulse: Int!, exerciseIndex: Int!, setIndex: Int!, exerciseId: String!, deviceUUID: String!, calendarDayId: String!): Boolean
   pairDevice(deviceUUID: String!, userId: String!): Boolean
   unpairUser(userId: String!): Boolean
 }

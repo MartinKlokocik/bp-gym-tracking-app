@@ -169,6 +169,7 @@ model RecordSet {
   reps     Int
   restTime Int?
   weight   Float
+  avgPulse Int?
 
   // Relations
   exerciseRecord   ExerciseRecord @relation(fields: [exerciseRecordId], references: [id])

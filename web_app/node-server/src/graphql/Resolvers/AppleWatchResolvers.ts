@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, RecordStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -117,11 +117,54 @@ const resolvers = {
         avgPulse,
         exerciseIndex,
         setIndex,
-      }: { avgPulse: number; exerciseIndex: number; setIndex: number }
+        exerciseId,
+        deviceUUID,
+        calendarDayId,
+      }: {
+        avgPulse: number;
+        exerciseIndex: number;
+        setIndex: number;
+        exerciseId: string;
+        deviceUUID: string;
+        calendarDayId: string;
+      }
     ) => {
-      console.log("avgPulse", avgPulse);
-      console.log("exerciseIndex", exerciseIndex);
-      console.log("setIndex", setIndex);
+      const exerciseRecord = await prisma.exerciseRecord.findFirst({
+        where: {
+          exerciseId,
+          calendarDayId,
+        },
+        include: {
+          recordSets: true,
+        },
+      });
+
+      if (!exerciseRecord) {
+        return false;
+      }
+
+      const recordSet = exerciseRecord.recordSets.find(
+        (set) => set.setNumber === setIndex + 1
+      );
+
+      if (!recordSet) {
+        return false;
+      }
+
+      await prisma.recordSet.update({
+        where: { id: recordSet.id },
+        data: {
+          avgPulse: avgPulse,
+        },
+      });
+
+      if (setIndex === exerciseRecord.recordSets.length - 1) {
+        await prisma.exerciseRecord.update({
+          where: { id: exerciseRecord.id },
+          data: { status: RecordStatus.COMPLETED },
+        });
+      }
+
       return true;
     },
 

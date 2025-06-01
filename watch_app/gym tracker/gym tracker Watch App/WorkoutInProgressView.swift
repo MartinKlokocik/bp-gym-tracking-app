@@ -62,7 +62,9 @@ struct WorkoutInProgressView: View {
                     } else {
                         Button("Complete") {
                             completeSet()
-                            heartRateManger.stopMonitoring(setIndex: setIndex, exerciseIndex: exerciseIndex, deviceUUID: deviceUUID)
+                            let exerciseId = exercise.exercise?.id ?? ""
+                            let calendarDayId = workout.id ?? ""
+                            heartRateManger.stopMonitoring(setIndex: setIndex, exerciseIndex: exerciseIndex, exerciseId: exerciseId, calendarDayId: calendarDayId, deviceUUID: deviceUUID)
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)

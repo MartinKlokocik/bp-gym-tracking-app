@@ -95,15 +95,15 @@ class GraphQLService {
         }
     }
     
-    func sendPulseData(deviceUUID: String, pulse: Int, exerciseIndex: Int, setIndex: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func sendPulseData(deviceUUID: String, pulse: Int, exerciseIndex: Int, setIndex: Int, exerciseId: String, calendarDayId: String, completion: @escaping (Result<Bool, Error>) -> Void) {
            guard let url = URL(string: urlString) else {
                completion(.failure(NSError(domain: "InvalidURL", code: 0, userInfo: nil)))
                return
            }
 
            let mutation = """
-           mutation SendPulseData($avgPulse: Int!, $exerciseIndex: Int!, $setIndex: Int!, $deviceUUID: String!) {
-             sendPulseData(avgPulse: $avgPulse, exerciseIndex: $exerciseIndex, setIndex: $setIndex)
+           mutation SendPulseData($avgPulse: Int!, $exerciseIndex: Int!, $setIndex: Int!, $exerciseId: String!, $deviceUUID: String!, $calendarDayId: String!) {
+             sendPulseData(avgPulse: $avgPulse, exerciseIndex: $exerciseIndex, setIndex: $setIndex, exerciseId: $exerciseId, deviceUUID: $deviceUUID, calendarDayId: $calendarDayId)
            }
            """
 
@@ -111,7 +111,9 @@ class GraphQLService {
                "avgPulse": pulse,
                "exerciseIndex": exerciseIndex,
                "setIndex": setIndex,
-               "deviceUUID": deviceUUID
+               "exerciseId": exerciseId,
+               "deviceUUID": deviceUUID,
+               "calendarDayId": calendarDayId
            ]
 
            let body: [String: Any] = [

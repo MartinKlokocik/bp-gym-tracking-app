@@ -102,7 +102,7 @@ class HeartRateManager: NSObject, ObservableObject {
     }
 
     // Stop monitoring and send average pulse to the server
-    func stopMonitoring(setIndex: Int, exerciseIndex: Int, deviceUUID: String) {
+    func stopMonitoring(setIndex: Int, exerciseIndex: Int, exerciseId: String, calendarDayId: String, deviceUUID: String) {
         guard isMonitoring else { return }
         isMonitoring = false
         
@@ -123,12 +123,12 @@ class HeartRateManager: NSObject, ObservableObject {
         }
         let averagePulse = Int(avgBPM)
         
-        sendAveragePulseToServer(averagePulse, setIndex: setIndex, exerciseIndex: exerciseIndex, deviceUUID: deviceUUID)
+        sendAveragePulseToServer(averagePulse, setIndex: setIndex, exerciseIndex: exerciseIndex, exerciseId: exerciseId, calendarDayId: calendarDayId, deviceUUID: deviceUUID)
     }
     
     // Send the computed average pulse to the server
-    private func sendAveragePulseToServer(_ avgPulse: Int, setIndex: Int, exerciseIndex: Int, deviceUUID: String) {
-        service.sendPulseData(deviceUUID: deviceUUID, pulse: avgPulse, exerciseIndex: exerciseIndex, setIndex: setIndex) { result in
+    private func sendAveragePulseToServer(_ avgPulse: Int, setIndex: Int, exerciseIndex: Int, exerciseId: String, calendarDayId: String, deviceUUID: String) {
+        service.sendPulseData(deviceUUID: deviceUUID, pulse: avgPulse, exerciseIndex: exerciseIndex, setIndex: setIndex, exerciseId: exerciseId, calendarDayId: calendarDayId) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let success):
