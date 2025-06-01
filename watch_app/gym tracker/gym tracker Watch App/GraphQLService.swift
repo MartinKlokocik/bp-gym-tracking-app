@@ -1,8 +1,8 @@
 import Foundation
 
 class GraphQLService {
-    private let urlString = "https://96be-213-81-189-105.ngrok-free.app/graphql"
-    private let userId = "4116f715-df81-4887-8010-6c77f300eea7"
+    private let urlString = "https://bp-gym-tracking-app-be.onrender.com/graphql"
+    private let userId = "687c7c59-2fab-4ab3-989f-cae5dd86bfba"
 
     func fetchWorkoutData(completion: @escaping (Result<WatchesWorkout?, Error>) -> Void) {
         guard let url = URL(string: urlString) else {
