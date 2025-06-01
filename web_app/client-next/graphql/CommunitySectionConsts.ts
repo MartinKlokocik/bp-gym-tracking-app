@@ -48,6 +48,7 @@ export const GET_TRENDING_POSTS = gql`
         isDisliked
         likesCount
         dislikesCount
+        isUserCreator
       }
 
       reactions {
@@ -100,6 +101,7 @@ export const GET_RECENT_POSTS = gql`
         isDisliked
         likesCount
         dislikesCount
+        isUserCreator
       }
 
       reactions {
@@ -152,6 +154,7 @@ export const GET_MY_POSTS = gql`
         isDisliked
         likesCount
         dislikesCount
+        isUserCreator
       }
 
       reactions {
@@ -219,5 +222,11 @@ export const SAVE_WORKOUT_TO_MY_PLANS = gql`
 export const DELETE_POST = gql`
   mutation DeletePost($postId: String!) {
     deletePost(postId: $postId)
+  }
+`
+
+export const DELETE_COMMENT = gql`
+  mutation DeleteComment($commentId: String!) {
+    deleteComment(commentId: $commentId)
   }
 `

@@ -86,6 +86,9 @@ const resolvers = {
         include: {
           reactions: true,
           comments: {
+            where: {
+              isDeleted: false,
+            },
             include: {
               reactions: true,
               user: {
@@ -168,6 +171,9 @@ const resolvers = {
         include: {
           reactions: true,
           comments: {
+            where: {
+              isDeleted: false,
+            },
             include: {
               reactions: true,
               user: {
@@ -241,6 +247,9 @@ const resolvers = {
         include: {
           reactions: true,
           comments: {
+            where: {
+              isDeleted: false,
+            },
             include: {
               reactions: true,
               user: {
@@ -532,10 +541,7 @@ const resolvers = {
       return false;
     },
 
-    deletePost: async (
-      _: unknown,
-      { postId }: { postId: string }
-    ) => {
+    deletePost: async (_: unknown, { postId }: { postId: string }) => {
       await prisma.post.update({
         where: { id: postId },
         data: { isDeleted: true },
@@ -543,8 +549,16 @@ const resolvers = {
 
       return true;
     },
-  },
 
+    deleteComment: async (_: unknown, { commentId }: { commentId: string }) => {
+      await prisma.postComment.update({
+        where: { id: commentId },
+        data: { isDeleted: true },
+      });
+
+      return true;
+    },
+  },
 };
 
 export default resolvers;
