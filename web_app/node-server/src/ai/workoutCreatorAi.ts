@@ -99,12 +99,11 @@ async function createWorkouts(
     `;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "o4-mini",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.3,
       response_format: { type: "json_object" },
     });
 

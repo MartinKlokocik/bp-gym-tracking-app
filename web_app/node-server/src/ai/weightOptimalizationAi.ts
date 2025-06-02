@@ -2,9 +2,7 @@ import { getDataForWeightOptimalization } from "./getDataForWeightOptimalization
 
 const { OpenAI } = require("openai");
 const dotenv = require("dotenv");
-const {
-  getJsonForPrompt,
-} = require("./getDataForWeightOptimalization");
+const { getJsonForPrompt } = require("./getDataForWeightOptimalization");
 dotenv.config();
 
 const openai = new OpenAI({
@@ -24,9 +22,7 @@ async function getWeightOptimizationAi(
       };
     }
 
-    const jsonSchema = getJsonForPrompt(
-      latestRecord?.recordSets?.length || 3
-    );
+    const jsonSchema = getJsonForPrompt(latestRecord?.recordSets?.length || 3);
 
     const systemPrompt = `
         You are an elite strength coach with deep expertise in:
@@ -69,7 +65,7 @@ async function getWeightOptimizationAi(
     `;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "o4-mini",
       messages: [
         {
           role: "system",
@@ -80,7 +76,6 @@ async function getWeightOptimizationAi(
           content: userMessage,
         },
       ],
-      temperature: 0.4,
       response_format: { type: "json_object" },
     });
 
@@ -101,9 +96,7 @@ async function getWeightOptimizationAi(
   }
 }
 
-const getWeightRecommendation = async (
-  exerciseRecordId: string
-) => {
+const getWeightRecommendation = async (exerciseRecordId: string) => {
   try {
     const data = await getDataForWeightOptimalization(exerciseRecordId);
     const response = await getWeightOptimizationAi(
