@@ -112,6 +112,11 @@ npm run dev
 ```bash
 cd ../client-next
 npm install
+
+# Setup env
+cp .env.example .env
+# ➤ Fill in credentials
+
 npm run dev
 # ➤ Runs at http://localhost:3000
 ```
