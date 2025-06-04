@@ -177,6 +177,7 @@ export default function Navbar() {
               <Link
                 href={item.href}
                 className={`w-full ${item.isActive ? 'text-primary' : ''}`}
+                onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
               </Link>
