@@ -1,172 +1,186 @@
-# BP Gym Tracking App
+<div align="center">
 
-This is a bachelor's project for tracking progress in the gym. The app uses a **Next.js frontend**, a **Node.js backend**, and a **PostgreSQL database**. The backend is built with **GraphQL** and **Prisma ORM** for database management. The frontend leverages **Apollo Client** and **Tailwind CSS** for efficient styling and GraphQL queries.
+# 🏋️ BP Gym Tracking App
 
----
+**A full-stack gym progress tracking platform with AI-powered personalization and Apple Watch integration.**
 
-## **Requirements**
-Ensure you have the following installed:
+[![Next.js](https://img.shields.io/badge/Next.js-15.0.3-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat-square&logo=openai&logoColor=white)](https://openai.com/)
+[![Apollo GraphQL](https://img.shields.io/badge/Apollo-GraphQL-311C87?style=flat-square&logo=apollo-graphql)](https://www.apollographql.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=flat-square&logo=prisma)](https://prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white)](https://postgresql.org/)
+[![Swift](https://img.shields.io/badge/Swift-FA7343?style=flat-square&logo=swift&logoColor=white)](https://developer.apple.com/swift/)
 
-- **Node.js v22.11.0**
-  ```bash
-  node -v  # Should print v22.11.0
-  ```
-  If not, run inside '/client-next' and '/node-server'
-  ```bash
-  nvm install
-  ```
-  ```bash
-  nvm use
-  ```
-
-- **NPM v10.9.0**
-  ```bash
-  npm -v  # Should print 10.9.0
-  ```
-  if not, run:
-
-  using Windows:
-  ```bash
-  npm install -g npm@10.9.1
-  ```
-
-- **NVM (Node Version Manager)**
-  ```bash
-  nvm --version  # Should print 0.39.7
-  ```
-  if not, run:
-
-  using Windows:
-  download installer
-
-- **PostgreSQL**
-  - Mac:
-    ```bash
-    brew install postgresql
-    ```
-    ```bash
-    brew services start postgresql
-    ```
-    ```bash
-    createdb gymtrackdb
-    ```
-    You can also download PostgreSQL from the official site to have pg admin 4 graphical IDE.
-  - Windows:
-    Download and install PostgreSQL from the official site.
-
-  Verify installation:
-  ```bash
-  psql --version
-  ```
+</div>
 
 ---
 
-## **Using Prisma ORM**
+## 📋 Overview
 
-Prisma is used to manage the database. Here's how to work with Prisma:
-
-### **Database Migrations**
-
-1. **Define Your Schema:**
-   Edit the `prisma/schema.prisma` file to define your database tables and relationships. Example:
-   ```prisma
-   model User {
-     id    Int     @id @default(autoincrement())
-     name  String
-     email String  @unique
-   }
-   ```
-
-2. **Run a Migration:**
-   To create/update the database schema:
-   ```bash
-   npx prisma migrate dev --name init
-   ```
-
-3. **Generate the Prisma Client:**
-   After every schema change, regenerate the Prisma Client:
-   ```bash
-   npx prisma generate
-   ```
-
-4. **View the Database in Prisma Studio:**
-   Open a visual interface to interact with your database:
-   ```bash
-   npx prisma studio
-   ```
-
-5. **Reset the Database:**
-   Reset the database to the initial state:
-   ```bash
-   npx prisma migrate reset
-   ```
-   Seed the database with example data:
-   ```bash
-   npm run seed
-   ```
+A modern full-stack application designed for tracking gym progress, analyzing training data, and generating personalized workout plans. Created as part of a bachelor’s thesis with a strong focus on usability, intelligent assistance, and real-time integration with wearables.
 
 ---
 
-## **Running the App**
+## 🧠 AI Integration
 
-### **Frontend:**
-1. Navigate to the frontend directory:
-   ```bash
-   cd next-client
-   ```
+The system integrates OpenAI’s GPT-o4-mini model for two core use cases:
 
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
+- **Workout Generation** – Custom weekly plans based on user profile, fitness level, and preferences.
+- **Set Recommendation** – Smart weight and rep suggestions based on progressive overload, previous performance, and training goals.
 
-3. Open the app in the browser:
-   ```
-   http://localhost:3000
-   ```
-
-### **Backend:**
-1. Navigate to the backend directory:
-   ```bash
-   cd node-server
-   ```
-
-2. Start the backend server:
-   ```bash
-   npm run dev
-   ```
-
-3. Test the GraphQL API:
-   Visit:
-   ```
-   http://localhost:4000/graphql
-   ```
-
-   Example query:
-   ```graphql
-   query {
-     users {
-       id
-       name
-       email
-     }
-   }
-   ```
+Prompts are engineered to produce structured JSON responses matching frontend schemas. The system supports both prompt tuning and progress-based adaptation.
 
 ---
 
-## **Tips for Development**
-- **Database Configuration:**
-  Ensure your `.env` file in the backend contains the correct database URL:
-  ```dotenv
-  DATABASE_URL="postgresql://user:password@localhost:5432/database_name"
-  ```
+## 📱 Apple Watch Companion App
 
-## **Running scripts from terminal**
+The application includes a **watchOS companion app** for real-time tracking of pulse and workout data. It supports:
+
+- **Device pairing** via secure 6-character code (no login on the watch)
+- **Pulse streaming** and integration with GraphQL backend
+- **Workout syncing** – pulls daily workouts directly to the watch
+
+> Note: The Apple Watch app must be built and deployed manually via Xcode (see below).
+
+---
+
+## 🏗️ Architecture
+
+- **Frontend**: Next.js 15 (TypeScript, Tailwind CSS, Apollo Client)
+- **Backend**: Node.js GraphQL API (Apollo Server)
+- **Database**: PostgreSQL + Prisma ORM
+- **Authentication**: NextAuth.js (JWT-based)
+- **Wearable**: Apple Watch app (Swift/SwiftUI)
+- **AI**: GPT-o4-mini via OpenAI API
+
+---
+
+## ✨ Features
+
+- 📈 AI-generated, personalized training plans
+- 📊 Progress analytics with charts and volume graphs
+- 🔐 Secure authentication and profile management
+- 🧠 Smart recommendations based on previous sets
+- 💪 Full exercise database with images
+- 🕹️ Real-time Apple Watch data streaming
+- 📱 Responsive mobile-first design
+- 💬 Community features with posts and comments
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 22.11.0+ and npm 10.9.0+
+- PostgreSQL
+- Git
+- Xcode (for watchOS app)
+
+---
+
+### 🛠️ Setup
+
+#### 1. Clone and install dependencies
 
 ```bash
-cd node-server
-npx ts-node 'path'
+git clone <repository-url>
+cd bp-gym-tracking-app
 ```
+
+#### 2. Backend (Node.js GraphQL)
+
+```bash
+cd web_app/node-server
+npm install
+
+# Setup env
+cp .env.example .env
+# ➤ Fill in DB credentials and OpenAI API key
+
+# Initialize DB
+npx prisma migrate dev
+npm run seed  # optional
+
+npm run dev
+# ➤ Runs at http://localhost:4000
+```
+
+#### 3. Frontend (Next.js client)
+
+```bash
+cd ../client-next
+npm install
+npm run dev
+# ➤ Runs at http://localhost:3000
+```
+
+#### 4. Apple Watch App (Manual steps)
+
+- Open `watch_app` project in Xcode.
+- Connect a physical Apple Watch or use simulator.
+- Build & run.
+- On first launch, the app generates a 6-character code.
+- Enter this code on the web client to pair the device.
+
+---
+
+## 🔍 GraphQL Playground
+
+Once the backend is running, explore queries at:
+
+```
+http://localhost:4000/graphql
+```
+
+Sample query:
+
+```graphql
+query GetUserWorkouts {
+  me {
+    name
+    workouts {
+      name
+      date
+    }
+  }
+}
+```
+
+---
+
+## 🗄️ Database & Prisma
+
+### Common Commands
+
+```bash
+# Navigate to backend
+cd web_app/node-server
+
+npx prisma generate            # Sync types
+npx prisma migrate dev         # Create new migration
+npx prisma studio              # Browse data
+npx prisma migrate reset       # (Destructive reset)
+```
+
+---
+
+## 📦 Project Structure
+
+```
+bp-gym-tracking-app/
+├── web_app/
+│   ├── client-next/        # Next.js frontend
+│   └── node-server/        # GraphQL backend
+├── watch_app/              # Apple Watch app (Swift)
+└── README.md
+```
+
+---
+
+## 📜 License
+
+This project is a part of a bachelor’s thesis.
 
 ---
