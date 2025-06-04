@@ -567,115 +567,104 @@ export const WorkoutTab = ({
 
                     {calendarDayData?.getCalendarDayByDate.plannedWorkoutDay.plannedExercises[
                       exerciseIndex
-                    ]?.plannedSets?.map(
-                      (
-                        set: { id: string; reps: number; restTime?: number },
-                        index: number
-                      ) => {
-                        if (
-                          latestExerciseRecordLoading ||
-                          recordForThisExerciseAndDateLoading
-                        ) {
-                          return null
-                        }
-                        const previousSetData =
-                          latestExerciseRecordData?.getLatestExerciseRecord?.recordSets.find(
-                            (s: RecordSetWithIdsType) =>
-                              s.setNumber === index + 1
-                          )
-                        const currentSetData =
-                          recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate?.recordSets.find(
-                            (s: RecordSetWithIdsType) =>
-                              s.setNumber === index + 1
-                          )
-
-                        return (
-                          <div
-                            key={index}
-                            className="grid grid-cols-2 gap-4 items-center w-full"
-                          >
-                            {/* Previous Section */}
-                            {latestExerciseRecordData && (
-                              <div className="w-full">
-                                <Accordion>
-                                  <AccordionItem
-                                    aria-label={`Set ${index + 1}`}
-                                    title={`Set ${index + 1}: ${previousSetData?.weight} kg`}
-                                    subtitle="See details"
-                                    className="w-full"
-                                  >
-                                    <div className="text-gray-300">
-                                      <p>📊 {previousSetData?.reps} reps</p>
-                                      <p>⏳ {previousSetData?.restTime} sec</p>
-                                      <p>💓 {previousSetData?.avgPulse} bpm</p>
-                                    </div>
-                                  </AccordionItem>
-                                </Accordion>
-                              </div>
-                            )}
-
-                            {/* Current Section */}
-                            <div className="w-full mb-2">
-                              <Input
-                                key={`${currentSetData?.id}-weight`}
-                                label={`Weight set: ${index + 1}`}
-                                placeholder="Current weight"
-                                type="number"
-                                value={
-                                  sets[currentSetData?.id]?.weight !== '' &&
-                                  sets[currentSetData?.id]?.weight !== '0'
-                                    ? sets[currentSetData?.id]?.weight
-                                    : previousSetData?.weight.toString()
-                                }
-                                variant="underlined"
-                                className="w-full"
-                                onChange={e => {
-                                  handleSetChange(
-                                    currentSetData?.id,
-                                    'weight',
-                                    e.target.value
-                                  )
-                                }}
-                                onBlur={() => {
-                                  handleUpdateSet(
-                                    currentSetData?.id,
-                                    'weight',
-                                    sets[currentSetData?.id]?.weight
-                                  )
-                                }}
-                              />
-                              <Input
-                                key={`${currentSetData?.id}-reps`}
-                                label={`Reps set: ${index + 1}`}
-                                placeholder="Current reps"
-                                type="number"
-                                value={
-                                  sets[currentSetData?.id]?.reps !== ''
-                                    ? sets[currentSetData?.id]?.reps
-                                    : previousSetData?.reps.toString()
-                                }
-                                variant="underlined"
-                                className="w-full"
-                                onChange={e => {
-                                  handleSetChange(
-                                    currentSetData?.id,
-                                    'reps',
-                                    e.target.value
-                                  )
-                                }}
-                                onBlur={() => {
-                                  handleUpdateSet(
-                                    currentSetData?.id,
-                                    'reps',
-                                    sets[currentSetData?.id]?.reps
-                                  )
-                                }}
-                              />
-                            </div>
-                          </div>
+                    ]?.plannedSets?.map((plannedSet, index) => {
+                      const previousSetData =
+                        latestExerciseRecordData?.getLatestExerciseRecord?.recordSets.find(
+                          (s: RecordSetWithIdsType) =>
+                            s.setNumber === plannedSet.setNumber
                         )
-                      }
-                    ) ?? null}
+                      const currentSetData =
+                        recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate?.recordSets.find(
+                          (s: RecordSetWithIdsType) =>
+                            s.setNumber === plannedSet.setNumber
+                        )
+
+                      return (
+                        <div
+                          key={index}
+                          className="grid grid-cols-2 gap-4 items-center w-full"
+                        >
+                          {/* Previous Section */}
+                          {latestExerciseRecordData && (
+                            <div className="w-full">
+                              <Accordion>
+                                <AccordionItem
+                                  aria-label={`Set ${index + 1}`}
+                                  title={`Set ${index + 1}: ${previousSetData?.weight} kg`}
+                                  subtitle="See details"
+                                  className="w-full"
+                                >
+                                  <div className="text-gray-300">
+                                    <p>📊 {previousSetData?.reps} reps</p>
+                                    <p>⏳ {previousSetData?.restTime} sec</p>
+                                    <p>💓 {previousSetData?.avgPulse} bpm</p>
+                                  </div>
+                                </AccordionItem>
+                              </Accordion>
+                            </div>
+                          )}
+
+                          {/* Current Section */}
+                          <div className="w-full mb-2">
+                            <Input
+                              key={`${currentSetData?.id}-weight`}
+                              label={`Weight set: ${index + 1}`}
+                              placeholder="Current weight"
+                              type="number"
+                              value={
+                                sets[currentSetData?.id]?.weight !== '' &&
+                                sets[currentSetData?.id]?.weight !== '0'
+                                  ? sets[currentSetData?.id]?.weight
+                                  : previousSetData?.weight.toString()
+                              }
+                              variant="underlined"
+                              className="w-full"
+                              onChange={e => {
+                                handleSetChange(
+                                  currentSetData?.id,
+                                  'weight',
+                                  e.target.value
+                                )
+                              }}
+                              onBlur={() => {
+                                handleUpdateSet(
+                                  currentSetData?.id,
+                                  'weight',
+                                  sets[currentSetData?.id]?.weight
+                                )
+                              }}
+                            />
+                            <Input
+                              key={`${currentSetData?.id}-reps`}
+                              label={`Reps set: ${index + 1}`}
+                              placeholder="Current reps"
+                              type="number"
+                              value={
+                                sets[currentSetData?.id]?.reps !== ''
+                                  ? sets[currentSetData?.id]?.reps
+                                  : previousSetData?.reps.toString()
+                              }
+                              variant="underlined"
+                              className="w-full"
+                              onChange={e => {
+                                handleSetChange(
+                                  currentSetData?.id,
+                                  'reps',
+                                  e.target.value
+                                )
+                              }}
+                              onBlur={() => {
+                                handleUpdateSet(
+                                  currentSetData?.id,
+                                  'reps',
+                                  sets[currentSetData?.id]?.reps
+                                )
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    }) ?? null}
                   </div>
                   <div className="flex flex-col items-end w-full h-full">
                     <Textarea
