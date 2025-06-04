@@ -1,6 +1,15 @@
 -- CreateEnum
 CREATE TYPE "RecordStatus" AS ENUM ('PENDING', 'COMPLETED', 'SKIPPED');
 
+-- CreateEnum
+CREATE TYPE "FitnessLevel" AS ENUM ('BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'EXPERT');
+
+-- CreateEnum
+CREATE TYPE "ReactionType" AS ENUM ('LIKE', 'DISLIKE');
+
+-- CreateEnum
+CREATE TYPE "ReactionTarget" AS ENUM ('POST', 'COMMENT');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -8,8 +17,35 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isAdmin" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserProfile" (
+    "id" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "dateOfBirth" TEXT,
+    "gender" TEXT,
+    "profilePicture" TEXT,
+    "height" INTEGER,
+    "weight" DOUBLE PRECISION,
+    "fitnessLevel" "FitnessLevel",
+    "yearsOfExperience" DOUBLE PRECISION,
+    "primaryGoal" TEXT,
+    "secondaryGoals" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "preferredWorkoutDays" INTEGER,
+    "workoutDuration" INTEGER,
+    "availableEquipment" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "healthIssues" TEXT,
+    "injuries" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "UserProfile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -68,6 +104,8 @@ CREATE TABLE "PlannedWorkout" (
     "schema" TEXT NOT NULL DEFAULT '',
     "isActive" BOOLEAN NOT NULL DEFAULT false,
     "isPublic" BOOLEAN NOT NULL DEFAULT false,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "isDefault" BOOLEAN NOT NULL DEFAULT false,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "PlannedWorkout_pkey" PRIMARY KEY ("id")
@@ -103,13 +141,77 @@ CREATE TABLE "RecordSet" (
     "reps" INTEGER NOT NULL,
     "restTime" INTEGER,
     "weight" DOUBLE PRECISION NOT NULL,
+    "avgPulse" INTEGER,
     "exerciseRecordId" TEXT NOT NULL,
 
     CONSTRAINT "RecordSet_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Post" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "image" TEXT,
+    "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "attachedWorkoutPlan" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PostComment" (
+    "id" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "postId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "PostComment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Reaction" (
+    "id" TEXT NOT NULL,
+    "type" "ReactionType" NOT NULL,
+    "target" "ReactionTarget" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "postId" TEXT,
+    "userId" TEXT NOT NULL,
+    "postCommentId" TEXT,
+
+    CONSTRAINT "Reaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DevicePairing" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "deviceUUID" TEXT NOT NULL,
+    "isPaired" BOOLEAN NOT NULL DEFAULT false,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "DevicePairing_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserProfile_userId_key" ON "UserProfile"("userId");
+
+-- AddForeignKey
+ALTER TABLE "UserProfile" ADD CONSTRAINT "UserProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Exercise" ADD CONSTRAINT "Exercise_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -152,3 +254,24 @@ ALTER TABLE "ExerciseRecord" ADD CONSTRAINT "ExerciseRecord_calendarDayId_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "RecordSet" ADD CONSTRAINT "RecordSet_exerciseRecordId_fkey" FOREIGN KEY ("exerciseRecordId") REFERENCES "ExerciseRecord"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Post" ADD CONSTRAINT "Post_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PostComment" ADD CONSTRAINT "PostComment_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PostComment" ADD CONSTRAINT "PostComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reaction" ADD CONSTRAINT "Reaction_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reaction" ADD CONSTRAINT "Reaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reaction" ADD CONSTRAINT "Reaction_postCommentId_fkey" FOREIGN KEY ("postCommentId") REFERENCES "PostComment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DevicePairing" ADD CONSTRAINT "DevicePairing_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
