@@ -1,7 +1,7 @@
 import Foundation
 
 class GraphQLService {
-    private let urlString = "http://localhost:4000/graphql"
+    private let urlString = "https://bp-gym-tracking-app-be.onrender.com/graphql"
 
     func checkDevicePairing(deviceUUID: String, completion: @escaping (Result<Bool, Error>) -> Void) {        
         guard let url = URL(string: urlString) else {
