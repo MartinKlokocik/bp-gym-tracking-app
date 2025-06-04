@@ -158,7 +158,7 @@ const getProgressionCurveForKeyLifts = async (userId: string) => {
       status: RecordStatus.COMPLETED,
       exercise: {
         name: {
-          in: ["Bench Press", "Squat", "Deadlift"],
+          in: ["Bench Press", "Barbell Squat", "Deadlift"],
         },
       },
     },
