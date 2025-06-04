@@ -256,8 +256,10 @@ export const WorkoutTab = ({
       const previousSets =
         latestExerciseRecordData.getLatestExerciseRecord.recordSets
 
-      currentSets.forEach((currentSet: RecordSetWithIdsType, index: number) => {
-        const previousSet = previousSets[index]
+      currentSets.forEach((currentSet: RecordSetWithIdsType) => {
+        const previousSet = previousSets.find(
+          (s: RecordSetWithIdsType) => s.setNumber === currentSet.setNumber
+        )
 
         if (currentSet.weight === 0 && previousSet && previousSet.weight > 0) {
           updateWeightInSetRecord({
@@ -441,6 +443,14 @@ export const WorkoutTab = ({
     }
     return true
   }
+
+  useEffect(() => {
+    console.log('latestExerciseRecordData', latestExerciseRecordData)
+    console.log(
+      'recordForThisExerciseAndDateData',
+      recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate
+    )
+  }, [latestExerciseRecordData, recordForThisExerciseAndDateData])
 
   return (
     <div className="flex flex-row justify-center items-center w-[90%] h-full pb-10 mt-5 px-5">
