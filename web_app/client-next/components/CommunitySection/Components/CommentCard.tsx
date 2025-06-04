@@ -56,8 +56,6 @@ export default function CommentCard({
     refetchPosts()
   }
 
-  console.log(comment)
-
   const handleDislikeComment = async () => {
     await hitDislikeComment({
       variables: {

@@ -64,10 +64,6 @@ export default function WorkoutAttachmentModal({
   }, [allPlannedWorkoutsError])
 
   useEffect(() => {
-    console.log('attachedWorkoutPlan', attachedWorkoutPlan)
-  }, [attachedWorkoutPlan])
-
-  useEffect(() => {
     const workoutPlan = allPlannedWorkoutsData?.getAllPlannedWorkouts.find(
       (workout: PlannedWorkoutWithIdsType) =>
         workout.id === attachedWorkoutPlanIdWatcher

@@ -8,7 +8,6 @@ const resolvers = {
       _: unknown,
       { deviceUUID }: { deviceUUID: string }
     ) => {
-      console.log("getWorkoutForToday", deviceUUID);
       const userId = await prisma.devicePairing.findFirst({
         where: {
           deviceUUID,
@@ -63,8 +62,6 @@ const resolvers = {
         },
       });
 
-      console.log(JSON.stringify(workout, null, 2));
-
       return workout ?? null;
     },
 
@@ -72,8 +69,6 @@ const resolvers = {
       _: unknown,
       { deviceUUID }: { deviceUUID: string }
     ) => {
-      console.log("deviceUUID", deviceUUID);
-
       const deviceRecord = await prisma.devicePairing.findFirst({
         where: {
           deviceUUID,
@@ -172,9 +167,6 @@ const resolvers = {
       _: unknown,
       { deviceUUID, userId }: { deviceUUID: string; userId: string }
     ) => {
-      console.log("deviceUUID", deviceUUID);
-      console.log("userId", userId);
-
       const device = await prisma.devicePairing.findFirst({
         where: {
           deviceUUID,

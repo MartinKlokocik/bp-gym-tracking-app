@@ -180,10 +180,6 @@ export const WorkoutTab = ({
   )
 
   useEffect(() => {
-    console.log(
-      'recordForThisExerciseAndDateData',
-      recordForThisExerciseAndDateData
-    )
     if (recordForThisExerciseAndDateData?.getRecordForThisExerciseAndDate) {
       setTrainingNotes(
         recordForThisExerciseAndDateData.getRecordForThisExerciseAndDate.notes?.trim() ||
@@ -427,9 +423,6 @@ export const WorkoutTab = ({
       })
     }
   }
-
-  console.log(calendarDayData)
-  console.log(JSON.stringify(latestExerciseRecordData, null, 2))
 
   const isDisplaying = () => {
     if (!calendarDayData) {

@@ -92,8 +92,6 @@ export const ProfileForm = ({ userId }: ProfileFormProps) => {
   const [activeTab, setActiveTab] = useState('basicInfo')
 
   const onSubmit = async (data: UserProfileType) => {
-    console.log('Submitting profile:', data)
-
     if (fileAvatar) {
       const imageUrl = await uploadImage(fileAvatar, 'avatar')
       data.profilePicture = imageUrl

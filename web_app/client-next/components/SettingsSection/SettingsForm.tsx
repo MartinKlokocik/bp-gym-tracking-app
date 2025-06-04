@@ -47,8 +47,6 @@ export default function SettingsForm({ userId }: { userId: string }) {
   } = formMethods
 
   const onSubmit = async (data: DevicePairingType) => {
-    console.log(data)
-
     await pairDevice({ variables: data })
     await refetchIsUserPaired()
 

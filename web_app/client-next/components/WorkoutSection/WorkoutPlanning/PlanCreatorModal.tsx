@@ -101,8 +101,6 @@ export const PlanCreatorModal = ({
   }, [errors])
 
   const onSubmit = async (formData: PlannedWorkoutWithoutIdsType) => {
-    console.log('Form submitted:', formData)
-
     try {
       await createPlannedWorkout({
         variables: {
@@ -151,10 +149,8 @@ export const PlanCreatorModal = ({
           useProfileData: profileDataUsage,
         },
       })
-      console.log('Generated plan:', result)
 
       const parsedResult = JSON.parse(result.data.generateWorkouts)
-      console.log('Parsed result:', parsedResult)
       reset(parsedResult)
       setNumberOfDays(parsedResult.days.length.toString())
       setStep(2)

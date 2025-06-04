@@ -64,8 +64,6 @@ export const ExerciseCreatorModal = ({
   })
 
   const onSubmit = async (formData: ExerciseWithoutIdsType) => {
-    console.log('Form Submitted:', formData)
-
     let equipmentArray: string[] = []
     if (typeof formData.equipment === 'string') {
       equipmentArray = formData.equipment?.split(',').map(item => item.trim())

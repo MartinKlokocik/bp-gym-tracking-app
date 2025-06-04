@@ -39,8 +39,6 @@ export const BasicInformationTab = ({
     }
   }, [currentAvatar])
 
-  console.log(preview)
-
   return (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-center mb-8">

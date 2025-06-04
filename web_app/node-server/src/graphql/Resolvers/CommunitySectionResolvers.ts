@@ -307,9 +307,6 @@ const resolvers = {
     ) => {
       const { userId, title, content, image, tags, attachedWorkoutPlan } =
         input;
-
-      console.log("image", image);
-
       const post = await prisma.post.create({
         data: {
           userId,

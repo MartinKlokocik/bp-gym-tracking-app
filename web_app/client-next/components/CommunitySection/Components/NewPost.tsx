@@ -55,8 +55,6 @@ export default function NewPost({
   })
 
   const onSubmit = async (formData: NewPostType) => {
-    console.log('Form Submitted:', formData)
-
     try {
       let imageUrl = ''
 
@@ -68,8 +66,6 @@ export default function NewPost({
         console.error(e)
         toast.error('Upload failed')
       }
-
-      console.log('imageUrl', imageUrl)
 
       await createPost({
         variables: {

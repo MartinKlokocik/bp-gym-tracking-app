@@ -59,8 +59,6 @@ export default function CommunityLayout({ user }: { user: User }) {
     skip: !user.id,
   })
 
-  console.log(trendingPosts)
-
   useEffect(() => {
     if (trendingPostsError) {
       console.error(trendingPostsError)
