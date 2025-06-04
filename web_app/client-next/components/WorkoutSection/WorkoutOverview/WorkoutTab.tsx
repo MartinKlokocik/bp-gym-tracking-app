@@ -102,7 +102,6 @@ export const WorkoutTab = ({
 
   const {
     data: recordForThisExerciseAndDateData,
-    loading: recordForThisExerciseAndDateLoading,
     error: recordForThisExerciseAndDateError,
     refetch: refetchRecordForThisExerciseAndDate,
   } = useQuery(GET_RECORD_FOR_THIS_EXERCISE_AND_DATE, {
