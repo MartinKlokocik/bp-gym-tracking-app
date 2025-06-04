@@ -242,6 +242,54 @@ const getWorkoutCompletionRate = async (userId: string) => {
   }));
 };
 
+const getAveragePulseData = async (userId: string) => {
+  const exerciseRecords = await prisma.exerciseRecord.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      date: true,
+      recordSets: {
+        where: {
+          avgPulse: {
+            not: null,
+            gt: 0,
+          },
+        },
+        select: {
+          avgPulse: true,
+        },
+      },
+    },
+    orderBy: {
+      date: "asc",
+    },
+  });
+
+  const dailyPulseMap = new Map();
+
+  exerciseRecords.forEach((record) => {
+    if (record.recordSets.length === 0) return;
+
+    const date = record.date;
+
+    if (!dailyPulseMap.has(date)) {
+      dailyPulseMap.set(date, []);
+    }
+
+    record.recordSets.forEach((set) => {
+      dailyPulseMap.get(date).push(set.avgPulse);
+    });
+  });
+
+  return Array.from(dailyPulseMap.entries()).map(([date, pulses]) => ({
+    date,
+    averagePulse: Math.round(
+      pulses.reduce((sum: number, pulse: number) => sum + pulse, 0) / pulses.length
+    ),
+  }));
+};
+
 const resolvers = {
   Query: {
     getDashboardMetrics: async (_: unknown, { userId }: { userId: string }) => {
@@ -251,6 +299,7 @@ const resolvers = {
       const muscleGroupsFocus = await getMuscleGroupsFocus(userId);
       const progressionCurve = await getProgressionCurveForKeyLifts(userId);
       const workoutCompletionRate = await getWorkoutCompletionRate(userId);
+      const averagePulseData = await getAveragePulseData(userId);
       return {
         last7DaysConsistency,
         volumeLiftedInWeeks,
@@ -258,6 +307,7 @@ const resolvers = {
         muscleGroupsFocus,
         progressionCurve,
         workoutCompletionRate,
+        averagePulseData,
       };
     },
   },

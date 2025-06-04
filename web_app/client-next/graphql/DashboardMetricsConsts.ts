@@ -31,6 +31,10 @@ export const GET_DASHBOARD_METRICS = gql`
         numberOfSkipped
         numberOfPending
       }
+      averagePulseData {
+        date
+        averagePulse
+      }
     }
   }
 `

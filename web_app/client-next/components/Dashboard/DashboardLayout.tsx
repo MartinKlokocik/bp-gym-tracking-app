@@ -38,7 +38,7 @@ export default function DashboardLayout({ userId }: { userId: string }) {
         />
       </div>
       <div className="w-full flex flex-col md:grid md:grid-cols-2 gap-4">
-        <AveragePulseGraph />
+        <AveragePulseGraph data={data.getDashboardMetrics.averagePulseData} />
         <WorkoutCompletitionGraph
           data={data.getDashboardMetrics.workoutCompletionRate}
         />

@@ -11,14 +11,6 @@ import {
 } from 'recharts'
 
 import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
-// TODO: Get data from backend
-const data = [
-  { date: '2024-01-01', averagePulse: 70 },
-  { date: '2024-01-02', averagePulse: 72 },
-  { date: '2024-01-03', averagePulse: 75 },
-  { date: '2024-01-04', averagePulse: 78 },
-  { date: '2024-01-05', averagePulse: 80 },
-]
 
 const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
@@ -35,7 +27,11 @@ const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   return null
 }
 
-export const AveragePulseGraph = () => {
+export const AveragePulseGraph = ({
+  data,
+}: {
+  data: { date: string; averagePulse: number }[]
+}) => {
   const isMobile = useMediaQuery('(max-width: 430px)')
 
   return (

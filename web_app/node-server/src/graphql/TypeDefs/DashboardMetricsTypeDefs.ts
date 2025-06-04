@@ -31,6 +31,11 @@ const DashboardMetricsTypeDefs = `
     numberOfPending: Int!
   }
 
+  type AveragePulseData {
+    date: String!
+    averagePulse: Int!
+  }
+
   type DashboardMetrics {
     last7DaysConsistency: Int!
     volumeLiftedInWeeks: [VolumeLiftedInWeek!]!
@@ -38,6 +43,7 @@ const DashboardMetricsTypeDefs = `
     muscleGroupsFocus: [MuscleGroupFocus!]!
     progressionCurve: [ProgressionCurve!]!
     workoutCompletionRate: [WorkoutCompletionRate!]!
+    averagePulseData: [AveragePulseData!]!
   }
 
   type Query {
