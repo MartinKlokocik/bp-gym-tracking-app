@@ -12,13 +12,20 @@ import { Line } from 'recharts'
 import { useMediaQuery } from '@/CustomHooks/useMediaQueryHook'
 import { ProgressionCurve } from '@/types/DashboardMetrics'
 
-const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-gray-800 p-2 rounded border border-gray-700">
-        <p className="text-white">{`Exercise: ${payload[0].payload.exerciseName}`}</p>
-        <p className="text-white">{`Session: ${payload[0].payload.session}`}</p>
-        <p className="text-amber-500">{`Weight: ${payload[0].value}kg`}</p>
+        <p className="text-white">{`Session: ${label}`}</p>
+        {payload.map((entry, index) => (
+          <p key={index} style={{ color: entry.color }}>
+            {`${entry.dataKey}: ${entry.value}kg`}
+          </p>
+        ))}
       </div>
     )
   }
