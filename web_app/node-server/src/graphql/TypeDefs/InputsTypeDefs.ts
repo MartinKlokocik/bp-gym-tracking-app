@@ -42,9 +42,9 @@ const UpdateInputsTypeDefs = `
     gender: String
     profilePicture: String
     height: Int
-    weight: Int
+    weight: Float
     fitnessLevel: FitnessLevel
-    yearsOfExperience: Int
+    yearsOfExperience: Float
     primaryGoal: String
     secondaryGoals: [String]
     preferredWorkoutDays: Int
