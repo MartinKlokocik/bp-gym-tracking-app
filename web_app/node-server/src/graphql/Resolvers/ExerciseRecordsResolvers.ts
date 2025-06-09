@@ -10,7 +10,7 @@ const exerciseRecordsResolvers = {
     ) =>
       await prisma.exerciseRecord.findMany({
         where: { exerciseId: exerciseId, userId: userId, status: "COMPLETED" },
-        orderBy: { date: "desc" },
+        orderBy: { date: "asc" },
         include: {
           recordSets: {
             orderBy: {
